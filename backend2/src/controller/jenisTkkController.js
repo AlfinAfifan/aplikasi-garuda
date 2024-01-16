@@ -1,0 +1,115 @@
+import { response } from 'express';
+import jenisTkkModel from '../models/jenisTkkModel.js';
+
+// CONTROLLER GET ALL SURAT
+
+export const getJenisTkk = async (req, res) => {
+  try {
+    const response = await jenisTkkModel.findAll();
+
+    res.json(response);
+  } catch (error) {
+    res.json(error);
+  }
+};
+
+// CONTROLLER GET SURAT BY ID
+export const getJenisTkkById = async (req, res) => {
+  try {
+    const response = await jenisTkkModel.findOne({
+      where: {
+        id: req.params.id,
+      },
+    });
+    res.json(response);
+  } catch (error) {
+    response;
+  }
+};
+
+// CONTROLLER CREATE SURAT
+export const createJenisTkk = async (req, res) => {
+  // request body
+  const { nama, bidang, warna } = req.body;
+
+  try {
+    // Save data to database without file processing
+    await jenisTkkModel.create({
+      nama,
+      bidang,
+      warna,
+    });
+    res.status(201).json({ message: 'creating jenis tkk success' });
+  } catch (error) {
+    res.status(500).json({
+      message: 'creating jenis tkk failed',
+      error: error,
+    });
+  }
+};
+
+// CONTROLLER UPDATdataK SURAT
+export const updateJenisTkk = async (req, res) => {
+  // cek if there is data by id
+  const dataUpdate = await jenisTkkModel.findOne({
+    where: {
+      id: req.params.id,
+    },
+  });
+  if (!dataUpdate)
+    return res.status(404).json({
+      message: 'No Data Found',
+    });
+
+  // request new update
+  const { nama, bidang, warna } = req.body;
+
+  // save update to database
+  try {
+    await jenisTkkModel.update(
+      {
+        nama,
+        bidang,
+        warna,
+      },
+      {
+        where: {
+          id: req.params.id,
+        },
+      }
+    );
+    res.status(200).json({ message: 'updated jenis tkk successfully' });
+  } catch (error) {
+    res.json({
+      message: 'updated jenis tkk failed',
+      error: error,
+    });
+  }
+};
+
+// CONTROLLER DELETE SURAT
+export const deleteJenisTkk = async (req, res) => {
+  const dataDelete = await jenisTkkModel.findOne({
+    where: {
+      id: req.params.id,
+    },
+  });
+
+  // cek if there is no data
+  if (!dataDelete) return res.status(404).json({ message: 'No Data Found' });
+
+  // if there is data
+  try {
+    await jenisTkkModel.destroy({
+      where: {
+        id: req.params.id,
+      },
+    });
+    res.status(200).json({ message: 'deleted jenis tkk success' });
+  } catch (error) {
+    res.json({
+      message: 'delete jenis tkk failed',
+      Error: error,
+    });
+  }
+};
