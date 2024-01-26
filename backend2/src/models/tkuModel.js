@@ -12,7 +12,7 @@ const tkuModel = db.define(
   }
 );
 
-tkuModel.belongsTo(anggotaModel, { foreignKey: 'id_anggota' });
+tkuModel.belongsTo(anggotaModel, { foreignKey: 'id_anggota', as: 'anggota' });
 
 export default tkuModel;
 

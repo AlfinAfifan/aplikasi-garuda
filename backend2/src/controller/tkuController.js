@@ -2,6 +2,7 @@ import { response } from 'express';
 import moment from 'moment';
 import tkuModel from '../models/tkuModel.js';
 import anggotaModel from '../models/anggotaModel.js';
+import lembagaModel from '../models/lembagaModel.js';
 
 // CONTROLLER GET ALL SURAT
 
@@ -11,7 +12,14 @@ export const getTku = async (req, res) => {
       include: [
         {
           model: anggotaModel,
+          as: 'anggota',
           attributes: ['nama'],
+          include: [
+            {
+              model: lembagaModel,
+              attributes: ['nama_lembaga'],
+            },
+          ],
         },
       ],
     });
@@ -31,7 +39,14 @@ export const getRamu = async (req, res) => {
       include: [
         {
           model: anggotaModel,
+          as: 'anggota',
           attributes: ['nama'],
+          include: [
+            {
+              model: lembagaModel,
+              attributes: ['nama_lembaga'],
+            },
+          ],
         },
       ],
     });
@@ -51,7 +66,14 @@ export const getRakit = async (req, res) => {
       include: [
         {
           model: anggotaModel,
+          as: 'anggota',
           attributes: ['nama'],
+          include: [
+            {
+              model: lembagaModel,
+              attributes: ['nama_lembaga'],
+            },
+          ],
         },
       ],
     });
@@ -71,7 +93,14 @@ export const getTerap = async (req, res) => {
       include: [
         {
           model: anggotaModel,
+          as: 'anggota',
           attributes: ['nama'],
+          include: [
+            {
+              model: lembagaModel,
+              attributes: ['nama_lembaga'],
+            },
+          ],
         },
       ],
     });
@@ -92,7 +121,14 @@ export const getTkuById = async (req, res) => {
       include: [
         {
           model: anggotaModel,
+          as: 'anggota',
           attributes: ['nama'],
+          include: [
+            {
+              model: lembagaModel,
+              attributes: ['nama_lembaga'],
+            },
+          ],
         },
       ],
     });
