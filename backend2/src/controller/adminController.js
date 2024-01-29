@@ -128,7 +128,22 @@ export const updateAdmin = async (req, res) => {
       id: req.params.id,
     },
   });
-  if (!dataUpdate)
+
+  // CEK EMAIL USER
+  let dataEmail = '';
+  if (dataUpdate?.email) {
+    dataEmail = dataUpdate.email;
+  }
+
+  const dataUser = await usersModel.findOne({
+    where: {
+      email: dataEmail,
+    },
+  });
+
+  console.log('USERRRRRR', dataUser);
+
+  if (!dataUpdate || !dataUser)
     return res.status(404).json({
       message: 'No Data Found',
     });
@@ -157,7 +172,7 @@ export const updateAdmin = async (req, res) => {
       }
     );
 
-    // CREATE NEW USER
+    // UPDATE USER
     await usersModel.update(
       {
         name: nama,
@@ -165,7 +180,7 @@ export const updateAdmin = async (req, res) => {
       },
       {
         where: {
-          id: req.params.id,
+          email: dataEmail,
         },
       }
     );
