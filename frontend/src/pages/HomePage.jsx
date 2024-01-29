@@ -1,7 +1,8 @@
-import React from 'react';
+import React from "react";
+import DashboardLayout from "../components/Layouts/DashboardLayout";
 
 const HomePage = () => {
-  return <div>HomePage</div>;
+  return <>tes</>;
 };
 
 export default HomePage;
