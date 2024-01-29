@@ -1,9 +1,20 @@
 import { response } from 'express';
 import jenisTkkModel from '../models/jenisTkkModel.js';
+import usersModel from '../models/usersModel.js';
 
 // CONTROLLER GET ALL SURAT
 
 export const getJenisTkk = async (req, res) => {
+  // CEK TOKEN
+  const refreshToken = req.cookies.refreshToken;
+  if (!refreshToken) return res.sendStatus(401);
+  const user = await usersModel.findAll({
+    where: {
+      refresh_token: refreshToken,
+    },
+  });
+  if (!user[0]) return res.sendStatus(403);
+
   try {
     const response = await jenisTkkModel.findAll();
 
@@ -15,6 +26,16 @@ export const getJenisTkk = async (req, res) => {
 
 // CONTROLLER GET SURAT BY ID
 export const getJenisTkkById = async (req, res) => {
+  // CEK TOKEN
+  const refreshToken = req.cookies.refreshToken;
+  if (!refreshToken) return res.sendStatus(401);
+  const user = await usersModel.findAll({
+    where: {
+      refresh_token: refreshToken,
+    },
+  });
+  if (!user[0]) return res.sendStatus(403);
+
   try {
     const response = await jenisTkkModel.findOne({
       where: {
@@ -29,6 +50,16 @@ export const getJenisTkkById = async (req, res) => {
 
 // CONTROLLER CREATE SURAT
 export const createJenisTkk = async (req, res) => {
+  // CEK TOKEN
+  const refreshToken = req.cookies.refreshToken;
+  if (!refreshToken) return res.sendStatus(401);
+  const user = await usersModel.findAll({
+    where: {
+      refresh_token: refreshToken,
+    },
+  });
+  if (!user[0]) return res.sendStatus(403);
+
   // request body
   const { nama, bidang, warna } = req.body;
 
@@ -50,6 +81,16 @@ export const createJenisTkk = async (req, res) => {
 
 // CONTROLLER UPDATdataK SURAT
 export const updateJenisTkk = async (req, res) => {
+  // CEK TOKEN
+  const refreshToken = req.cookies.refreshToken;
+  if (!refreshToken) return res.sendStatus(401);
+  const user = await usersModel.findAll({
+    where: {
+      refresh_token: refreshToken,
+    },
+  });
+  if (!user[0]) return res.sendStatus(403);
+
   // cek if there is data by id
   const dataUpdate = await jenisTkkModel.findOne({
     where: {
@@ -89,6 +130,16 @@ export const updateJenisTkk = async (req, res) => {
 
 // CONTROLLER DELETE SURAT
 export const deleteJenisTkk = async (req, res) => {
+  // CEK TOKEN
+  const refreshToken = req.cookies.refreshToken;
+  if (!refreshToken) return res.sendStatus(401);
+  const user = await usersModel.findAll({
+    where: {
+      refresh_token: refreshToken,
+    },
+  });
+  if (!user[0]) return res.sendStatus(403);
+
   const dataDelete = await jenisTkkModel.findOne({
     where: {
       id: req.params.id,

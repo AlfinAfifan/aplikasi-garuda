@@ -3,7 +3,7 @@ import { createAnggota, deleteAnggota, getAnggota, getAnggotaById, updateAnggota
 import { verifyToken } from '../middleware/verifyToken.js';
 
 const router = express.Router();
-router.use(verifyToken);
+// router.use(verifyToken);
 
 // ROUTE GET ALL SURAT
 router.get('/anggota', getAnggota);
