@@ -6,7 +6,17 @@ const { DataTypes } = Sequelize;
 
 const adminModel = db.define(
   'admin',
-  { nama: DataTypes.STRING, id_lembaga: DataTypes.INTEGER, nta: DataTypes.STRING, tmpt_lahir: DataTypes.STRING, tgl_lahir: DataTypes.DATEONLY, alamat: DataTypes.TEXT, agama: DataTypes.STRING, jabatan: DataTypes.STRING },
+  {
+    nama: DataTypes.STRING,
+    email: DataTypes.STRING,
+    id_lembaga: DataTypes.INTEGER,
+    nta: DataTypes.STRING,
+    tmpt_lahir: DataTypes.STRING,
+    tgl_lahir: DataTypes.DATEONLY,
+    alamat: DataTypes.TEXT,
+    agama: DataTypes.STRING,
+    jabatan: DataTypes.STRING,
+  },
   {
     freezeTableName: true,
   }

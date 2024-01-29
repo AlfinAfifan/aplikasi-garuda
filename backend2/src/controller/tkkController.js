@@ -4,9 +4,20 @@ import tkkModel from '../models/tkkModel.js';
 import anggotaModel from '../models/anggotaModel.js';
 import jenisTkkModel from '../models/jenisTkkModel.js';
 import lembagaModel from '../models/lembagaModel.js';
+import usersModel from '../models/usersModel.js';
 
 // CONTROLLER GET ALL SURAT
 export const getTkk = async (req, res) => {
+  // CEK TOKEN
+  const refreshToken = req.cookies.refreshToken;
+  if (!refreshToken) return res.sendStatus(401);
+  const user = await usersModel.findAll({
+    where: {
+      refresh_token: refreshToken,
+    },
+  });
+  if (!user[0]) return res.sendStatus(403);
+
   try {
     const response = await tkkModel.findAll({
       include: [
@@ -36,6 +47,16 @@ export const getTkk = async (req, res) => {
 };
 
 export const getPurwa = async (req, res) => {
+  // CEK TOKEN
+  const refreshToken = req.cookies.refreshToken;
+  if (!refreshToken) return res.sendStatus(401);
+  const user = await usersModel.findAll({
+    where: {
+      refresh_token: refreshToken,
+    },
+  });
+  if (!user[0]) return res.sendStatus(403);
+
   try {
     const response = await tkkModel.findAll({
       where: {
@@ -68,6 +89,16 @@ export const getPurwa = async (req, res) => {
 };
 
 export const getMadya = async (req, res) => {
+  // CEK TOKEN
+  const refreshToken = req.cookies.refreshToken;
+  if (!refreshToken) return res.sendStatus(401);
+  const user = await usersModel.findAll({
+    where: {
+      refresh_token: refreshToken,
+    },
+  });
+  if (!user[0]) return res.sendStatus(403);
+
   try {
     const response = await tkkModel.findAll({
       where: {
@@ -99,6 +130,16 @@ export const getMadya = async (req, res) => {
   }
 };
 export const getUtama = async (req, res) => {
+  // CEK TOKEN
+  const refreshToken = req.cookies.refreshToken;
+  if (!refreshToken) return res.sendStatus(401);
+  const user = await usersModel.findAll({
+    where: {
+      refresh_token: refreshToken,
+    },
+  });
+  if (!user[0]) return res.sendStatus(403);
+
   try {
     const response = await tkkModel.findAll({
       where: {
@@ -132,6 +173,16 @@ export const getUtama = async (req, res) => {
 
 // CONTROLLER GET SURAT BY ID
 export const getTkkById = async (req, res) => {
+  // CEK TOKEN
+  const refreshToken = req.cookies.refreshToken;
+  if (!refreshToken) return res.sendStatus(401);
+  const user = await usersModel.findAll({
+    where: {
+      refresh_token: refreshToken,
+    },
+  });
+  if (!user[0]) return res.sendStatus(403);
+
   try {
     const response = await tkkModel.findOne({
       where: {
@@ -165,6 +216,16 @@ export const getTkkById = async (req, res) => {
 
 // CONTROLLER CREATE SURAT
 export const createPurwa = async (req, res) => {
+  // CEK TOKEN
+  const refreshToken = req.cookies.refreshToken;
+  if (!refreshToken) return res.sendStatus(401);
+  const user = await usersModel.findAll({
+    where: {
+      refresh_token: refreshToken,
+    },
+  });
+  if (!user[0]) return res.sendStatus(403);
+
   // request body
   const { no_sk, id_anggota, id_jenis_tkk, nama_penguji, jabatan_penguji, alamat_penguji } = req.body;
   const purwa = true;
@@ -192,6 +253,16 @@ export const createPurwa = async (req, res) => {
 };
 
 export const createMadya = async (req, res) => {
+  // CEK TOKEN
+  const refreshToken = req.cookies.refreshToken;
+  if (!refreshToken) return res.sendStatus(401);
+  const user = await usersModel.findAll({
+    where: {
+      refresh_token: refreshToken,
+    },
+  });
+  if (!user[0]) return res.sendStatus(403);
+
   // cek if there is data by id
   const dataUpdate = await tkkModel.findOne({
     where: {
@@ -252,6 +323,16 @@ export const createMadya = async (req, res) => {
 };
 
 export const createUtama = async (req, res) => {
+  // CEK TOKEN
+  const refreshToken = req.cookies.refreshToken;
+  if (!refreshToken) return res.sendStatus(401);
+  const user = await usersModel.findAll({
+    where: {
+      refresh_token: refreshToken,
+    },
+  });
+  if (!user[0]) return res.sendStatus(403);
+
   // cek if there is data by id
   const dataUpdate = await tkkModel.findOne({
     where: {
@@ -313,6 +394,16 @@ export const createUtama = async (req, res) => {
 
 // CONTROLLER UPDATdataK SURAT
 export const updateTkk = async (req, res) => {
+  // CEK TOKEN
+  const refreshToken = req.cookies.refreshToken;
+  if (!refreshToken) return res.sendStatus(401);
+  const user = await usersModel.findAll({
+    where: {
+      refresh_token: refreshToken,
+    },
+  });
+  if (!user[0]) return res.sendStatus(403);
+
   // cek if there is data by id
   const dataUpdate = await tkkModel.findOne({
     where: {
@@ -355,6 +446,16 @@ export const updateTkk = async (req, res) => {
 
 // CONTROLLER DELETE SURAT
 export const deletePurwa = async (req, res) => {
+  // CEK TOKEN
+  const refreshToken = req.cookies.refreshToken;
+  if (!refreshToken) return res.sendStatus(401);
+  const user = await usersModel.findAll({
+    where: {
+      refresh_token: refreshToken,
+    },
+  });
+  if (!user[0]) return res.sendStatus(403);
+
   const dataDelete = await tkkModel.findOne({
     where: {
       id: req.params.id,
@@ -381,6 +482,16 @@ export const deletePurwa = async (req, res) => {
 };
 
 export const deleteMadya = async (req, res) => {
+  // CEK TOKEN
+  const refreshToken = req.cookies.refreshToken;
+  if (!refreshToken) return res.sendStatus(401);
+  const user = await usersModel.findAll({
+    where: {
+      refresh_token: refreshToken,
+    },
+  });
+  if (!user[0]) return res.sendStatus(403);
+
   // cek if there is data by id
   const dataUpdate = await tkkModel.findOne({
     where: {
@@ -418,6 +529,16 @@ export const deleteMadya = async (req, res) => {
 };
 
 export const deleteUtama = async (req, res) => {
+  // CEK TOKEN
+  const refreshToken = req.cookies.refreshToken;
+  if (!refreshToken) return res.sendStatus(401);
+  const user = await usersModel.findAll({
+    where: {
+      refresh_token: refreshToken,
+    },
+  });
+  if (!user[0]) return res.sendStatus(403);
+
   // cek if there is data by id
   const dataUpdate = await tkkModel.findOne({
     where: {
