@@ -1,35 +1,50 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import DashboardLayout from "./components/Layouts/DashboardLayout";
+import HomePage from "./pages/HomePage";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import LembagaPage from "./pages/LembagaPage";
+import AdminPage from "./pages/AdminPage";
+import AnggotaPage from "./pages/AnggotaPage";
+import RekapPage from "./pages/RekapPage";
+import RamuPage from "./pages/RamuPage";
+import RakitPage from "./pages/RakitPage";
+import TerapPage from "./pages/TerapPage";
+import PurwaPage from "./pages/PurwaPage";
+import MadyaPage from "./pages/MadyaPage";
+import UtamaPage from "./pages/UtamaPage";
+import { ToastContainer } from "react-toastify";
+import PrivateRoute from "./PrivateRoute";
+import LoginPage from "./pages/LoginPage";
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <BrowserRouter>
+        <ToastContainer autoClose={3000} />
+        <Routes>
+          <Route path="/" element={<LoginPage />} />
+          <Route
+            element={
+              <PrivateRoute>
+                <DashboardLayout />
+              </PrivateRoute>
+            }
+          >
+            <Route path="/dashboard" element={<HomePage />} />
+            <Route path="/lembaga" element={<LembagaPage />} />
+            <Route path="/admin" element={<AdminPage />} />
+            <Route path="/anggota" element={<AnggotaPage />} />
+            <Route path="/ramu" element={<RamuPage />} />
+            <Route path="/rakit" element={<RakitPage />} />
+            <Route path="/terap" element={<TerapPage />} />
+            <Route path="/purwa" element={<PurwaPage />} />
+            <Route path="/madya" element={<MadyaPage />} />
+            <Route path="/utama" element={<UtamaPage />} />
+            <Route path="/rekap" element={<RekapPage />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
