@@ -141,8 +141,6 @@ export const updateAdmin = async (req, res) => {
     },
   });
 
-  console.log('USERRRRRR', dataUser);
-
   if (!dataUpdate || !dataUser)
     return res.status(404).json({
       message: 'No Data Found',

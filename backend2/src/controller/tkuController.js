@@ -202,18 +202,25 @@ export const createTku = async (req, res) => {
   });
   if (!user[0]) return res.sendStatus(403);
 
+  // AUTO INCREMENT NO SK
+  const lastRecord = await tkuModel.findOne({
+    order: [['no_sk', 'DESC']],
+  });
+  const nextId = lastRecord ? parseInt(lastRecord.no_sk, 10) + 1 : 1;
+  const autoIncrementedValue = nextId.toString().padStart(3, '0').slice(-3); // Ambil 3 digit terakhir
+
   // request body
-  const { no_sk, id_anggota } = req.body;
+  const { id_anggota } = req.body;
   const ramu = true;
   const tgl_ramu = moment();
 
   try {
     // Save data to database without file processing
     await tkuModel.create({
-      no_sk,
       id_anggota,
       ramu,
       tgl_ramu,
+      no_sk: autoIncrementedValue,
     });
     res.status(201).json({ message: 'creating tku success' });
   } catch (error) {
@@ -244,17 +251,16 @@ export const updateTku = async (req, res) => {
   });
   if (!dataUpdate)
     return res.status(404).json({
-      message: 'No Data Found',
+      message: 'Data not found',
     });
 
   // request new update
-  const { no_sk, id_anggota } = req.body;
+  const { id_anggota } = req.body;
 
   // save update to database
   try {
     await tkuModel.update(
       {
-        no_sk,
         id_anggota,
       },
       {
@@ -311,7 +317,7 @@ export const updateRakit = async (req, res) => {
     });
 
   // request new update
-  const { no_sk, id_anggota } = req.body;
+  const { id_anggota } = req.body;
   const rakit = true;
   const tgl_rakit = dateNow;
 
@@ -319,7 +325,6 @@ export const updateRakit = async (req, res) => {
   try {
     await tkuModel.update(
       {
-        no_sk,
         id_anggota,
         rakit,
         tgl_rakit,
@@ -378,7 +383,7 @@ export const updateTerap = async (req, res) => {
     });
 
   // request new update
-  const { no_sk, id_anggota } = req.body;
+  const { id_anggota } = req.body;
   const terap = true;
   const tgl_terap = dateNow;
 
@@ -386,7 +391,6 @@ export const updateTerap = async (req, res) => {
   try {
     await tkuModel.update(
       {
-        no_sk,
         id_anggota,
         terap,
         tgl_terap,
