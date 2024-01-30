@@ -3,10 +3,19 @@ import moment from 'moment';
 import tkkModel from '../models/tkkModel.js';
 import anggotaModel from '../models/anggotaModel.js';
 import jenisTkkModel from '../models/jenisTkkModel.js';
-import lembagaModel from '../models/lembagaModel.js';
 
 // CONTROLLER GET ALL SURAT
 export const getTkk = async (req, res) => {
+  // CEK TOKEN
+  const refreshToken = req.cookies.refreshToken;
+  if (!refreshToken) return res.sendStatus(401);
+  const user = await usersModel.findAll({
+    where: {
+      refresh_token: refreshToken,
+    },
+  });
+  if (!user[0]) return res.sendStatus(403);
+
   try {
     const response = await tkkModel.findAll({
       include: [
@@ -14,13 +23,6 @@ export const getTkk = async (req, res) => {
           model: anggotaModel,
           as: 'anggota',
           attributes: ['nama'],
-          include: [
-            {
-              model: lembagaModel,
-              as: 'lembaga',
-              attributes: ['nama_lembaga'],
-            },
-          ],
         },
         {
           model: jenisTkkModel,
@@ -37,6 +39,16 @@ export const getTkk = async (req, res) => {
 };
 
 export const getPurwa = async (req, res) => {
+  // CEK TOKEN
+  const refreshToken = req.cookies.refreshToken;
+  if (!refreshToken) return res.sendStatus(401);
+  const user = await usersModel.findAll({
+    where: {
+      refresh_token: refreshToken,
+    },
+  });
+  if (!user[0]) return res.sendStatus(403);
+
   try {
     const response = await tkkModel.findAll({
       where: {
@@ -47,13 +59,6 @@ export const getPurwa = async (req, res) => {
           model: anggotaModel,
           as: 'anggota',
           attributes: ['nama'],
-          include: [
-            {
-              model: lembagaModel,
-              as: 'lembaga',
-              attributes: ['nama_lembaga'],
-            },
-          ],
         },
         {
           model: jenisTkkModel,
@@ -70,6 +75,16 @@ export const getPurwa = async (req, res) => {
 };
 
 export const getMadya = async (req, res) => {
+  // CEK TOKEN
+  const refreshToken = req.cookies.refreshToken;
+  if (!refreshToken) return res.sendStatus(401);
+  const user = await usersModel.findAll({
+    where: {
+      refresh_token: refreshToken,
+    },
+  });
+  if (!user[0]) return res.sendStatus(403);
+
   try {
     const response = await tkkModel.findAll({
       where: {
@@ -80,13 +95,6 @@ export const getMadya = async (req, res) => {
           model: anggotaModel,
           as: 'anggota',
           attributes: ['nama'],
-          include: [
-            {
-              model: lembagaModel,
-              as: 'lembaga',
-              attributes: ['nama_lembaga'],
-            },
-          ],
         },
         {
           model: jenisTkkModel,
@@ -102,6 +110,16 @@ export const getMadya = async (req, res) => {
   }
 };
 export const getUtama = async (req, res) => {
+  // CEK TOKEN
+  const refreshToken = req.cookies.refreshToken;
+  if (!refreshToken) return res.sendStatus(401);
+  const user = await usersModel.findAll({
+    where: {
+      refresh_token: refreshToken,
+    },
+  });
+  if (!user[0]) return res.sendStatus(403);
+
   try {
     const response = await tkkModel.findAll({
       where: {
@@ -112,13 +130,6 @@ export const getUtama = async (req, res) => {
           model: anggotaModel,
           as: 'anggota',
           attributes: ['nama'],
-          include: [
-            {
-              model: lembagaModel,
-              as: 'lembaga',
-              attributes: ['nama_lembaga'],
-            },
-          ],
         },
         {
           model: jenisTkkModel,
@@ -136,6 +147,16 @@ export const getUtama = async (req, res) => {
 
 // CONTROLLER GET SURAT BY ID
 export const getTkkById = async (req, res) => {
+  // CEK TOKEN
+  const refreshToken = req.cookies.refreshToken;
+  if (!refreshToken) return res.sendStatus(401);
+  const user = await usersModel.findAll({
+    where: {
+      refresh_token: refreshToken,
+    },
+  });
+  if (!user[0]) return res.sendStatus(403);
+
   try {
     const response = await tkkModel.findOne({
       where: {
@@ -146,13 +167,6 @@ export const getTkkById = async (req, res) => {
           model: anggotaModel,
           as: 'anggota',
           attributes: ['nama'],
-          include: [
-            {
-              model: lembagaModel,
-              as: 'lembaga',
-              attributes: ['nama_lembaga'],
-            },
-          ],
         },
         {
           model: jenisTkkModel,
@@ -170,13 +184,6 @@ export const getTkkById = async (req, res) => {
 
 // CONTROLLER CREATE SURAT
 export const createPurwa = async (req, res) => {
-  // AUTO INCREMENT NO SK
-  const lastRecord = await tkkModel.findOne({
-    order: [['no_sk', 'DESC']],
-  });
-  const nextId = lastRecord ? parseInt(lastRecord.no_sk, 10) + 1 : 1;
-  const autoIncrementedValue = nextId.toString().padStart(3, '0').slice(-3); // Ambil 3 digit terakhir
-
   // request body
   const { id_anggota, id_jenis_tkk, nama_penguji, jabatan_penguji, alamat_penguji } = req.body;
   const purwa = true;
@@ -204,6 +211,16 @@ export const createPurwa = async (req, res) => {
 };
 
 export const createMadya = async (req, res) => {
+  // CEK TOKEN
+  const refreshToken = req.cookies.refreshToken;
+  if (!refreshToken) return res.sendStatus(401);
+  const user = await usersModel.findAll({
+    where: {
+      refresh_token: refreshToken,
+    },
+  });
+  if (!user[0]) return res.sendStatus(403);
+
   // cek if there is data by id
   const dataUpdate = await tkkModel.findOne({
     where: {
@@ -212,7 +229,7 @@ export const createMadya = async (req, res) => {
   });
   if (!dataUpdate)
     return res.status(404).json({
-      message: 'No Data Found',
+      message: 'Data not found',
     });
 
   // Cek apakah sudah purwa
@@ -263,6 +280,16 @@ export const createMadya = async (req, res) => {
 };
 
 export const createUtama = async (req, res) => {
+  // CEK TOKEN
+  const refreshToken = req.cookies.refreshToken;
+  if (!refreshToken) return res.sendStatus(401);
+  const user = await usersModel.findAll({
+    where: {
+      refresh_token: refreshToken,
+    },
+  });
+  if (!user[0]) return res.sendStatus(403);
+
   // cek if there is data by id
   const dataUpdate = await tkkModel.findOne({
     where: {
@@ -323,6 +350,16 @@ export const createUtama = async (req, res) => {
 
 // CONTROLLER UPDATdataK SURAT
 export const updateTkk = async (req, res) => {
+  // CEK TOKEN
+  const refreshToken = req.cookies.refreshToken;
+  if (!refreshToken) return res.sendStatus(401);
+  const user = await usersModel.findAll({
+    where: {
+      refresh_token: refreshToken,
+    },
+  });
+  if (!user[0]) return res.sendStatus(403);
+
   // cek if there is data by id
   const dataUpdate = await tkkModel.findOne({
     where: {
@@ -364,6 +401,16 @@ export const updateTkk = async (req, res) => {
 
 // CONTROLLER DELETE SURAT
 export const deletePurwa = async (req, res) => {
+  // CEK TOKEN
+  const refreshToken = req.cookies.refreshToken;
+  if (!refreshToken) return res.sendStatus(401);
+  const user = await usersModel.findAll({
+    where: {
+      refresh_token: refreshToken,
+    },
+  });
+  if (!user[0]) return res.sendStatus(403);
+
   const dataDelete = await tkkModel.findOne({
     where: {
       id: req.params.id,
@@ -390,6 +437,16 @@ export const deletePurwa = async (req, res) => {
 };
 
 export const deleteMadya = async (req, res) => {
+  // CEK TOKEN
+  const refreshToken = req.cookies.refreshToken;
+  if (!refreshToken) return res.sendStatus(401);
+  const user = await usersModel.findAll({
+    where: {
+      refresh_token: refreshToken,
+    },
+  });
+  if (!user[0]) return res.sendStatus(403);
+
   // cek if there is data by id
   const dataUpdate = await tkkModel.findOne({
     where: {
@@ -427,6 +484,16 @@ export const deleteMadya = async (req, res) => {
 };
 
 export const deleteUtama = async (req, res) => {
+  // CEK TOKEN
+  const refreshToken = req.cookies.refreshToken;
+  if (!refreshToken) return res.sendStatus(401);
+  const user = await usersModel.findAll({
+    where: {
+      refresh_token: refreshToken,
+    },
+  });
+  if (!user[0]) return res.sendStatus(403);
+
   // cek if there is data by id
   const dataUpdate = await tkkModel.findOne({
     where: {

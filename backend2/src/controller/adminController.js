@@ -1,10 +1,22 @@
 import { response } from 'express';
 import adminModel from '../models/adminModel.js';
 import lembagaModel from '../models/lembagaModel.js';
+import usersModel from '../models/usersModel.js';
+import bcrypt from 'bcrypt';
 
 // CONTROLLER GET ALL SURAT
 
 export const getAdmin = async (req, res) => {
+  // CEK TOKEN
+  const refreshToken = req.cookies.refreshToken;
+  if (!refreshToken) return res.sendStatus(401);
+  const user = await usersModel.findAll({
+    where: {
+      refresh_token: refreshToken,
+    },
+  });
+  if (!user[0]) return res.sendStatus(403);
+
   try {
     const response = await adminModel.findAll({
       include: [
@@ -23,6 +35,16 @@ export const getAdmin = async (req, res) => {
 
 // CONTROLLER GET SURAT BY ID
 export const getAdminById = async (req, res) => {
+  // CEK TOKEN
+  const refreshToken = req.cookies.refreshToken;
+  if (!refreshToken) return res.sendStatus(401);
+  const user = await usersModel.findAll({
+    where: {
+      refresh_token: refreshToken,
+    },
+  });
+  if (!user[0]) return res.sendStatus(403);
+
   try {
     const response = await adminModel.findOne({
       where: {
@@ -43,8 +65,18 @@ export const getAdminById = async (req, res) => {
 
 // CONTROLLER CREATE SURAT
 export const createAdmin = async (req, res) => {
+  // CEK TOKEN
+  const refreshToken = req.cookies.refreshToken;
+  if (!refreshToken) return res.sendStatus(401);
+  const user = await usersModel.findAll({
+    where: {
+      refresh_token: refreshToken,
+    },
+  });
+  if (!user[0]) return res.sendStatus(403);
+
   // request body
-  const { nama, id_lembaga, nta, tmpt_lahir, tgl_lahir, alamat, agama, jabatan } = req.body;
+  const { nama, id_lembaga, nta, tmpt_lahir, tgl_lahir, alamat, agama, jabatan, email } = req.body;
 
   try {
     // Save data to database without file processing
@@ -56,7 +88,19 @@ export const createAdmin = async (req, res) => {
       tgl_lahir,
       alamat,
       agama,
+      jabatan,
+      email,
     });
+
+    // CREATE NEW USER
+    const salt = await bcrypt.genSalt();
+    const hashPassword = await bcrypt.hash(email, salt);
+    await usersModel.create({
+      name: nama,
+      email: email,
+      password: hashPassword,
+    });
+
     res.status(201).json({ message: 'creating admin success' });
   } catch (error) {
     res.status(500).json({
@@ -68,19 +112,42 @@ export const createAdmin = async (req, res) => {
 
 // CONTROLLER UPDATdataK SURAT
 export const updateAdmin = async (req, res) => {
+  // CEK TOKEN
+  const refreshToken = req.cookies.refreshToken;
+  if (!refreshToken) return res.sendStatus(401);
+  const user = await usersModel.findAll({
+    where: {
+      refresh_token: refreshToken,
+    },
+  });
+  if (!user[0]) return res.sendStatus(403);
+
   // cek if there is data by id
   const dataUpdate = await adminModel.findOne({
     where: {
       id: req.params.id,
     },
   });
-  if (!dataUpdate)
+
+  // CEK EMAIL USER
+  let dataEmail = '';
+  if (dataUpdate?.email) {
+    dataEmail = dataUpdate.email;
+  }
+
+  const dataUser = await usersModel.findOne({
+    where: {
+      email: dataEmail,
+    },
+  });
+
+  if (!dataUpdate || !dataUser)
     return res.status(404).json({
       message: 'No Data Found',
     });
 
   // request new update
-  const { nama, id_lembaga, nta, tmpt_lahir, tgl_lahir, alamat, agama, jabatan } = req.body;
+  const { nama, id_lembaga, nta, tmpt_lahir, tgl_lahir, alamat, agama, jabatan, email } = req.body;
 
   // save update to database
   try {
@@ -93,6 +160,8 @@ export const updateAdmin = async (req, res) => {
         tgl_lahir,
         alamat,
         agama,
+        jabatan,
+        email,
       },
       {
         where: {
@@ -100,6 +169,20 @@ export const updateAdmin = async (req, res) => {
         },
       }
     );
+
+    // UPDATE USER
+    await usersModel.update(
+      {
+        name: nama,
+        email,
+      },
+      {
+        where: {
+          email: dataEmail,
+        },
+      }
+    );
+
     res.status(200).json({ message: 'updated admin successfully' });
   } catch (error) {
     res.json({
@@ -111,6 +194,16 @@ export const updateAdmin = async (req, res) => {
 
 // CONTROLLER DELETE SURAT
 export const deleteAdmin = async (req, res) => {
+  // CEK TOKEN
+  const refreshToken = req.cookies.refreshToken;
+  if (!refreshToken) return res.sendStatus(401);
+  const user = await usersModel.findAll({
+    where: {
+      refresh_token: refreshToken,
+    },
+  });
+  if (!user[0]) return res.sendStatus(403);
+
   const dataDelete = await adminModel.findOne({
     where: {
       id: req.params.id,

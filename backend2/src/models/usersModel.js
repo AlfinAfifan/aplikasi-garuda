@@ -1,13 +1,13 @@
-import { Sequelize } from "sequelize";
-import db from "../config/database.js";
+import { Sequelize } from 'sequelize';
+import db from '../config/database.js';
 
 const { DataTypes } = Sequelize;
 
 const usersModel = db.define(
-  "users",
+  'users',
   {
     name: DataTypes.STRING,
-    email: DataTypes.STRING,
+    email: { type: DataTypes.STRING, unique: true },
     password: DataTypes.STRING,
     refresh_token: DataTypes.TEXT,
   },

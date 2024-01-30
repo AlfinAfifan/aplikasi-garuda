@@ -1,7 +1,9 @@
 import express from 'express';
 import { createAnggota, deleteAnggota, getAnggota, getAnggotaById, updateAnggota } from '../controller/anggotaController.js';
+import { verifyToken } from '../middleware/verifyToken.js';
 
 const router = express.Router();
+// router.use(verifyToken);
 
 // ROUTE GET ALL SURAT
 router.get('/anggota', getAnggota);

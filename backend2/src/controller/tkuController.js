@@ -3,21 +3,31 @@ import moment from 'moment';
 import tkuModel from '../models/tkuModel.js';
 import anggotaModel from '../models/anggotaModel.js';
 import lembagaModel from '../models/lembagaModel.js';
+import usersModel from '../models/usersModel.js';
 
 // CONTROLLER GET ALL SURAT
 
 export const getTku = async (req, res) => {
+  // CEK TOKEN
+  const refreshToken = req.cookies.refreshToken;
+  if (!refreshToken) return res.sendStatus(401);
+  const user = await usersModel.findAll({
+    where: {
+      refresh_token: refreshToken,
+    },
+  });
+  if (!user[0]) return res.sendStatus(403);
+
   try {
     const response = await tkuModel.findAll({
       include: [
         {
           model: anggotaModel,
-          attributes: ['nama'],
           as: 'anggota',
+          attributes: ['nama'],
           include: [
             {
               model: lembagaModel,
-              as: 'lembaga',
               attributes: ['nama_lembaga'],
             },
           ],
@@ -32,6 +42,16 @@ export const getTku = async (req, res) => {
 };
 
 export const getRamu = async (req, res) => {
+  // CEK TOKEN
+  const refreshToken = req.cookies.refreshToken;
+  if (!refreshToken) return res.sendStatus(401);
+  const user = await usersModel.findAll({
+    where: {
+      refresh_token: refreshToken,
+    },
+  });
+  if (!user[0]) return res.sendStatus(403);
+
   try {
     const response = await tkuModel.findAll({
       where: {
@@ -40,12 +60,11 @@ export const getRamu = async (req, res) => {
       include: [
         {
           model: anggotaModel,
-          attributes: ['nama'],
           as: 'anggota',
+          attributes: ['nama'],
           include: [
             {
               model: lembagaModel,
-              as: 'lembaga',
               attributes: ['nama_lembaga'],
             },
           ],
@@ -60,6 +79,16 @@ export const getRamu = async (req, res) => {
 };
 
 export const getRakit = async (req, res) => {
+  // CEK TOKEN
+  const refreshToken = req.cookies.refreshToken;
+  if (!refreshToken) return res.sendStatus(401);
+  const user = await usersModel.findAll({
+    where: {
+      refresh_token: refreshToken,
+    },
+  });
+  if (!user[0]) return res.sendStatus(403);
+
   try {
     const response = await tkuModel.findAll({
       where: {
@@ -68,12 +97,11 @@ export const getRakit = async (req, res) => {
       include: [
         {
           model: anggotaModel,
-          attributes: ['nama'],
           as: 'anggota',
+          attributes: ['nama'],
           include: [
             {
               model: lembagaModel,
-              as: 'lembaga',
               attributes: ['nama_lembaga'],
             },
           ],
@@ -88,6 +116,16 @@ export const getRakit = async (req, res) => {
 };
 
 export const getTerap = async (req, res) => {
+  // CEK TOKEN
+  const refreshToken = req.cookies.refreshToken;
+  if (!refreshToken) return res.sendStatus(401);
+  const user = await usersModel.findAll({
+    where: {
+      refresh_token: refreshToken,
+    },
+  });
+  if (!user[0]) return res.sendStatus(403);
+
   try {
     const response = await tkuModel.findAll({
       where: {
@@ -96,12 +134,11 @@ export const getTerap = async (req, res) => {
       include: [
         {
           model: anggotaModel,
-          attributes: ['nama'],
           as: 'anggota',
+          attributes: ['nama'],
           include: [
             {
               model: lembagaModel,
-              as: 'lembaga',
               attributes: ['nama_lembaga'],
             },
           ],
@@ -117,6 +154,16 @@ export const getTerap = async (req, res) => {
 
 // CONTROLLER GET SURAT BY ID
 export const getTkuById = async (req, res) => {
+  // CEK TOKEN
+  const refreshToken = req.cookies.refreshToken;
+  if (!refreshToken) return res.sendStatus(401);
+  const user = await usersModel.findAll({
+    where: {
+      refresh_token: refreshToken,
+    },
+  });
+  if (!user[0]) return res.sendStatus(403);
+
   try {
     const response = await tkuModel.findOne({
       where: {
@@ -125,12 +172,11 @@ export const getTkuById = async (req, res) => {
       include: [
         {
           model: anggotaModel,
-          attributes: ['nama'],
           as: 'anggota',
+          attributes: ['nama'],
           include: [
             {
               model: lembagaModel,
-              as: 'lembaga',
               attributes: ['nama_lembaga'],
             },
           ],
@@ -161,10 +207,10 @@ export const createTku = async (req, res) => {
   try {
     // Save data to database without file processing
     await tkuModel.create({
-      no_sk: autoIncrementedValue,
       id_anggota,
       ramu,
       tgl_ramu,
+      no_sk: autoIncrementedValue,
     });
     res.status(201).json({ message: 'creating tku success' });
   } catch (error) {
@@ -177,6 +223,16 @@ export const createTku = async (req, res) => {
 
 // CONTROLLER UPDATdataK SURAT
 export const updateTku = async (req, res) => {
+  // CEK TOKEN
+  const refreshToken = req.cookies.refreshToken;
+  if (!refreshToken) return res.sendStatus(401);
+  const user = await usersModel.findAll({
+    where: {
+      refresh_token: refreshToken,
+    },
+  });
+  if (!user[0]) return res.sendStatus(403);
+
   // cek if there is data by id
   const dataUpdate = await tkuModel.findOne({
     where: {
@@ -185,7 +241,7 @@ export const updateTku = async (req, res) => {
   });
   if (!dataUpdate)
     return res.status(404).json({
-      message: 'No Data Found',
+      message: 'Data not found',
     });
 
   // request new update
@@ -213,6 +269,16 @@ export const updateTku = async (req, res) => {
 };
 
 export const updateRakit = async (req, res) => {
+  // CEK TOKEN
+  const refreshToken = req.cookies.refreshToken;
+  if (!refreshToken) return res.sendStatus(401);
+  const user = await usersModel.findAll({
+    where: {
+      refresh_token: refreshToken,
+    },
+  });
+  if (!user[0]) return res.sendStatus(403);
+
   // cek if there is data by id
   const dataUpdate = await tkuModel.findOne({
     where: {
@@ -269,6 +335,16 @@ export const updateRakit = async (req, res) => {
 };
 
 export const updateTerap = async (req, res) => {
+  // CEK TOKEN
+  const refreshToken = req.cookies.refreshToken;
+  if (!refreshToken) return res.sendStatus(401);
+  const user = await usersModel.findAll({
+    where: {
+      refresh_token: refreshToken,
+    },
+  });
+  if (!user[0]) return res.sendStatus(403);
+
   // cek if there is data by id
   const dataUpdate = await tkuModel.findOne({
     where: {
@@ -326,6 +402,16 @@ export const updateTerap = async (req, res) => {
 
 // CONTROLLER DELETE SURAT
 export const deleteRamu = async (req, res) => {
+  // CEK TOKEN
+  const refreshToken = req.cookies.refreshToken;
+  if (!refreshToken) return res.sendStatus(401);
+  const user = await usersModel.findAll({
+    where: {
+      refresh_token: refreshToken,
+    },
+  });
+  if (!user[0]) return res.sendStatus(403);
+
   const dataDelete = await tkuModel.findOne({
     where: {
       id: req.params.id,
@@ -352,6 +438,16 @@ export const deleteRamu = async (req, res) => {
 };
 
 export const deleteRakit = async (req, res) => {
+  // CEK TOKEN
+  const refreshToken = req.cookies.refreshToken;
+  if (!refreshToken) return res.sendStatus(401);
+  const user = await usersModel.findAll({
+    where: {
+      refresh_token: refreshToken,
+    },
+  });
+  if (!user[0]) return res.sendStatus(403);
+
   // cek if there is data by id
   const dataUpdate = await tkuModel.findOne({
     where: {
@@ -390,6 +486,16 @@ export const deleteRakit = async (req, res) => {
 };
 
 export const deleteTerap = async (req, res) => {
+  // CEK TOKEN
+  const refreshToken = req.cookies.refreshToken;
+  if (!refreshToken) return res.sendStatus(401);
+  const user = await usersModel.findAll({
+    where: {
+      refresh_token: refreshToken,
+    },
+  });
+  if (!user[0]) return res.sendStatus(403);
+
   // cek if there is data by id
   const dataUpdate = await tkuModel.findOne({
     where: {
