@@ -3,8 +3,6 @@ import moment from 'moment';
 import tkkModel from '../models/tkkModel.js';
 import anggotaModel from '../models/anggotaModel.js';
 import jenisTkkModel from '../models/jenisTkkModel.js';
-import lembagaModel from '../models/lembagaModel.js';
-import usersModel from '../models/usersModel.js';
 
 // CONTROLLER GET ALL SURAT
 export const getTkk = async (req, res) => {
@@ -25,12 +23,6 @@ export const getTkk = async (req, res) => {
           model: anggotaModel,
           as: 'anggota',
           attributes: ['nama'],
-          include: [
-            {
-              model: lembagaModel,
-              attributes: ['nama_lembaga'],
-            },
-          ],
         },
         {
           model: jenisTkkModel,
@@ -67,12 +59,6 @@ export const getPurwa = async (req, res) => {
           model: anggotaModel,
           as: 'anggota',
           attributes: ['nama'],
-          include: [
-            {
-              model: lembagaModel,
-              attributes: ['nama_lembaga'],
-            },
-          ],
         },
         {
           model: jenisTkkModel,
@@ -109,12 +95,6 @@ export const getMadya = async (req, res) => {
           model: anggotaModel,
           as: 'anggota',
           attributes: ['nama'],
-          include: [
-            {
-              model: lembagaModel,
-              attributes: ['nama_lembaga'],
-            },
-          ],
         },
         {
           model: jenisTkkModel,
@@ -150,12 +130,6 @@ export const getUtama = async (req, res) => {
           model: anggotaModel,
           as: 'anggota',
           attributes: ['nama'],
-          include: [
-            {
-              model: lembagaModel,
-              attributes: ['nama_lembaga'],
-            },
-          ],
         },
         {
           model: jenisTkkModel,
@@ -193,12 +167,6 @@ export const getTkkById = async (req, res) => {
           model: anggotaModel,
           as: 'anggota',
           attributes: ['nama'],
-          include: [
-            {
-              model: lembagaModel,
-              attributes: ['nama_lembaga'],
-            },
-          ],
         },
         {
           model: jenisTkkModel,

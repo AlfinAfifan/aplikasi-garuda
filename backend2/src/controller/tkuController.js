@@ -192,16 +192,6 @@ export const getTkuById = async (req, res) => {
 
 // CONTROLLER CREATE SURAT
 export const createTku = async (req, res) => {
-  // CEK TOKEN
-  const refreshToken = req.cookies.refreshToken;
-  if (!refreshToken) return res.sendStatus(401);
-  const user = await usersModel.findAll({
-    where: {
-      refresh_token: refreshToken,
-    },
-  });
-  if (!user[0]) return res.sendStatus(403);
-
   // AUTO INCREMENT NO SK
   const lastRecord = await tkuModel.findOne({
     order: [['no_sk', 'DESC']],
