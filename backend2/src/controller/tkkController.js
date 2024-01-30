@@ -278,7 +278,7 @@ export const createMadya = async (req, res) => {
   });
   if (!dataUpdate)
     return res.status(404).json({
-      message: 'No Data Found',
+      message: 'Data not found',
     });
 
   // Cek apakah sudah purwa

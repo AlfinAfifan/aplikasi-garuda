@@ -251,7 +251,7 @@ export const updateTku = async (req, res) => {
   });
   if (!dataUpdate)
     return res.status(404).json({
-      message: 'No Data Found',
+      message: 'Data not found',
     });
 
   // request new update
