@@ -3,7 +3,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-// import { toast } from "react-toastify";
+import { toast } from "react-toastify";
 import { jwtDecode } from "jwt-decode";
 import Image from "../assets/images/not-found.jpg";
 
@@ -33,9 +33,11 @@ const LoginPage = () => {
         sessionStorage.setItem("access_token", token);
         sessionStorage.setItem("email", user.email);
         sessionStorage.setItem("name", user.name);
-        navigate("/anggota");
+
+        toast.success("Login Berhasil");
+        navigate("/dashboard");
       } else {
-        // toast.error("Gagal Login !");
+        toast.error("Gagal Login !");
       }
     } catch (error) {
       setIsLoginError(true);
