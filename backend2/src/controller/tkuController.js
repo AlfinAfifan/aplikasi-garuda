@@ -2,6 +2,7 @@ import { response } from 'express';
 import moment from 'moment';
 import tkuModel from '../models/tkuModel.js';
 import anggotaModel from '../models/anggotaModel.js';
+import lembagaModel from '../models/lembagaModel.js';
 
 // CONTROLLER GET ALL SURAT
 
@@ -12,6 +13,14 @@ export const getTku = async (req, res) => {
         {
           model: anggotaModel,
           attributes: ['nama'],
+          as: 'anggota',
+          include: [
+            {
+              model: lembagaModel,
+              as: 'lembaga',
+              attributes: ['nama_lembaga'],
+            },
+          ],
         },
       ],
     });
@@ -32,6 +41,14 @@ export const getRamu = async (req, res) => {
         {
           model: anggotaModel,
           attributes: ['nama'],
+          as: 'anggota',
+          include: [
+            {
+              model: lembagaModel,
+              as: 'lembaga',
+              attributes: ['nama_lembaga'],
+            },
+          ],
         },
       ],
     });
@@ -52,6 +69,14 @@ export const getRakit = async (req, res) => {
         {
           model: anggotaModel,
           attributes: ['nama'],
+          as: 'anggota',
+          include: [
+            {
+              model: lembagaModel,
+              as: 'lembaga',
+              attributes: ['nama_lembaga'],
+            },
+          ],
         },
       ],
     });
@@ -72,6 +97,14 @@ export const getTerap = async (req, res) => {
         {
           model: anggotaModel,
           attributes: ['nama'],
+          as: 'anggota',
+          include: [
+            {
+              model: lembagaModel,
+              as: 'lembaga',
+              attributes: ['nama_lembaga'],
+            },
+          ],
         },
       ],
     });
@@ -93,6 +126,14 @@ export const getTkuById = async (req, res) => {
         {
           model: anggotaModel,
           attributes: ['nama'],
+          as: 'anggota',
+          include: [
+            {
+              model: lembagaModel,
+              as: 'lembaga',
+              attributes: ['nama_lembaga'],
+            },
+          ],
         },
       ],
     });
@@ -105,15 +146,22 @@ export const getTkuById = async (req, res) => {
 
 // CONTROLLER CREATE SURAT
 export const createTku = async (req, res) => {
+  // AUTO INCREMENT NO SK
+  const lastRecord = await tkuModel.findOne({
+    order: [['no_sk', 'DESC']],
+  });
+  const nextId = lastRecord ? parseInt(lastRecord.no_sk, 10) + 1 : 1;
+  const autoIncrementedValue = nextId.toString().padStart(3, '0').slice(-3); // Ambil 3 digit terakhir
+
   // request body
-  const { no_sk, id_anggota } = req.body;
+  const { id_anggota } = req.body;
   const ramu = true;
   const tgl_ramu = moment();
 
   try {
     // Save data to database without file processing
     await tkuModel.create({
-      no_sk,
+      no_sk: autoIncrementedValue,
       id_anggota,
       ramu,
       tgl_ramu,
@@ -141,13 +189,12 @@ export const updateTku = async (req, res) => {
     });
 
   // request new update
-  const { no_sk, id_anggota } = req.body;
+  const { id_anggota } = req.body;
 
   // save update to database
   try {
     await tkuModel.update(
       {
-        no_sk,
         id_anggota,
       },
       {
@@ -194,7 +241,7 @@ export const updateRakit = async (req, res) => {
     });
 
   // request new update
-  const { no_sk, id_anggota } = req.body;
+  const { id_anggota } = req.body;
   const rakit = true;
   const tgl_rakit = dateNow;
 
@@ -202,7 +249,6 @@ export const updateRakit = async (req, res) => {
   try {
     await tkuModel.update(
       {
-        no_sk,
         id_anggota,
         rakit,
         tgl_rakit,
@@ -251,7 +297,7 @@ export const updateTerap = async (req, res) => {
     });
 
   // request new update
-  const { no_sk, id_anggota } = req.body;
+  const { id_anggota } = req.body;
   const terap = true;
   const tgl_terap = dateNow;
 
@@ -259,7 +305,6 @@ export const updateTerap = async (req, res) => {
   try {
     await tkuModel.update(
       {
-        no_sk,
         id_anggota,
         terap,
         tgl_terap,
