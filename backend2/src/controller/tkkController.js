@@ -231,7 +231,7 @@ export const createPurwa = async (req, res) => {
     order: [['no_sk', 'DESC']],
   });
   const nextId = lastRecord ? parseInt(lastRecord.no_sk, 10) + 1 : 1;
-  const autoIncrementedValue = nextId.toString().padStart(3, '0').slice(-3); // Ambil 3 digit terakhir
+  const autoIncrementedValue = nextId.toString().padStart(3, '0').slice(-3); // Ambil 3 digit terakhir.
 
   // request body
   const { id_anggota, id_jenis_tkk, nama_penguji, jabatan_penguji, alamat_penguji } = req.body;
