@@ -226,15 +226,21 @@ export const createPurwa = async (req, res) => {
   });
   if (!user[0]) return res.sendStatus(403);
 
+  // AUTO INCREMENT NO SK
+  const lastRecord = await tkkModel.findOne({
+    order: [['no_sk', 'DESC']],
+  });
+  const nextId = lastRecord ? parseInt(lastRecord.no_sk, 10) + 1 : 1;
+  const autoIncrementedValue = nextId.toString().padStart(3, '0').slice(-3); // Ambil 3 digit terakhir
+
   // request body
-  const { no_sk, id_anggota, id_jenis_tkk, nama_penguji, jabatan_penguji, alamat_penguji } = req.body;
+  const { id_anggota, id_jenis_tkk, nama_penguji, jabatan_penguji, alamat_penguji } = req.body;
   const purwa = true;
   const tgl_purwa = moment();
 
   try {
     // Save data to database without file processing
     await tkkModel.create({
-      no_sk,
       id_anggota,
       id_jenis_tkk,
       purwa,
@@ -242,6 +248,7 @@ export const createPurwa = async (req, res) => {
       nama_penguji,
       jabatan_penguji,
       alamat_penguji,
+      no_sk: autoIncrementedValue,
     });
     res.status(201).json({ message: 'creating tkk purwa success' });
   } catch (error) {
@@ -291,7 +298,7 @@ export const createMadya = async (req, res) => {
     });
 
   // request new update
-  const { no_sk, id_anggota, nama_penguji, jabatan_penguji, alamat_penguji } = req.body;
+  const { id_anggota, nama_penguji, jabatan_penguji, alamat_penguji } = req.body;
   const madya = true;
   const tgl_madya = moment();
 
@@ -299,7 +306,6 @@ export const createMadya = async (req, res) => {
   try {
     await tkkModel.update(
       {
-        no_sk,
         id_anggota,
         madya,
         tgl_madya,
@@ -361,7 +367,7 @@ export const createUtama = async (req, res) => {
     });
 
   // request new update
-  const { no_sk, id_anggota, nama_penguji, jabatan_penguji, alamat_penguji } = req.body;
+  const { id_anggota, nama_penguji, jabatan_penguji, alamat_penguji } = req.body;
   const utama = true;
   const tgl_utama = moment();
 
@@ -369,7 +375,6 @@ export const createUtama = async (req, res) => {
   try {
     await tkkModel.update(
       {
-        no_sk,
         id_anggota,
         utama,
         tgl_utama,
@@ -416,13 +421,12 @@ export const updateTkk = async (req, res) => {
     });
 
   // request new update
-  const { no_sk, id_anggota, id_jenis_tkk, nama_penguji, jabatan_penguji, alamat_penguji } = req.body;
+  const { id_anggota, id_jenis_tkk, nama_penguji, jabatan_penguji, alamat_penguji } = req.body;
 
   // save update to database
   try {
     await tkkModel.update(
       {
-        no_sk,
         id_anggota,
         id_jenis_tkk,
         nama_penguji,
