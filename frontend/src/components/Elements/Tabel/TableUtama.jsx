@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import ShowDataLayout from "../../Layouts/ShowDataLayout";
 import { TBody, THead } from "../../Layouts/TableLayout";
 import {
@@ -9,6 +9,10 @@ import {
 import Modal from "../Modal/ModalInput";
 import Input from "../Form/Input";
 import Button from "../Form/Button";
+import { useDispatch, useSelector } from "react-redux";
+import { getUtama } from "../../../redux/actions/utama/utamaThunk";
+import { formatSK } from "../DataFormat/FormatSK";
+import { dateFormat } from "../DataFormat/DateFormat";
 
 const TableUtama = () => {
   // HANDLE MODAL
@@ -30,6 +34,14 @@ const TableUtama = () => {
     console.log("Option");
   };
 
+  // GET DATA
+  const dispatch = useDispatch();
+  const dataUtama = useSelector((i) => i.utama.data);
+
+  useEffect(() => {
+    dispatch(getUtama());
+  }, []);
+
   return (
     <>
       <ShowDataLayout
@@ -44,24 +56,24 @@ const TableUtama = () => {
             <td>Asal Lembaga</td>
             <td>Jenis TKK</td>
             <td>Tanggal Dilantik</td>
-            <td>Nama Penguji</td>
             <td className="w-5">Action</td>
           </tr>
         </THead>
         <TBody>
-          <tr className="capitalize">
-            <td className="font-bold">1</td>
-            <td>Aman</td>
-            <td>Aman</td>
-            <td>Aman</td>
-            <td>Aman</td>
-            <td>Aman</td>
-            <td className="flex gap-2">
-              <TrashIcon className="hover w-6 cursor-pointer text-red-600 hover:text-red-700" />
-              <PencilSquareIcon className="w-6 cursor-pointer text-third hover:text-first" />
-              <DocumentTextIcon className="w-6 cursor-pointer text-amber-500 hover:text-amber-600" />
-            </td>
-          </tr>
+          {dataUtama?.map((data, idx) => (
+            <tr className="capitalize" key={idx}>
+              <td className="font-bold">{formatSK(idx)}</td>
+              <td>{data.anggota.nama}</td>
+              <td>{data.anggota.lembaga.nama_lembaga}</td>
+              <td>{data.jenis_tkk.nama}</td>
+              <td>{dateFormat(data.tgl_utama)}</td>
+              <td className="flex gap-2">
+                <TrashIcon className="hover w-6 cursor-pointer text-red-600 hover:text-red-700" />
+                <PencilSquareIcon className="w-6 cursor-pointer text-third hover:text-first" />
+                <DocumentTextIcon className="w-6 cursor-pointer text-amber-500 hover:text-amber-600" />
+              </td>
+            </tr>
+          ))}
         </TBody>
       </ShowDataLayout>
 
@@ -83,6 +95,7 @@ const TableUtama = () => {
             type="text"
             onchange={(e) => console.log(e.target.value)}
           />
+          <Input label="Asal Lembaga" name="Lembaga" type="text" />
           <Input label="Alamat Lembaga" name="alamat" type="text" />
           <Input label="Nomor Gudep Putra" name="gudepL" type="text" />
           <Input label="Nomor Gudep Putri" name="gudepP" type="text" />
