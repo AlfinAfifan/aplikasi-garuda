@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import ShowDataLayout from "../../Layouts/ShowDataLayout";
 import { TBody, THead } from "../../Layouts/TableLayout";
 import { PencilSquareIcon, TrashIcon } from "@heroicons/react/24/solid";
@@ -6,6 +6,9 @@ import Modal from "../Modal/ModalInput";
 import Input from "../Form/Input";
 import Button from "../Form/Button";
 import SelectOpt from "../Form/SelectOpt";
+import { useDispatch, useSelector } from "react-redux";
+import { getAdmin } from "../../../redux/actions/admin/adminThunk";
+import { dateFormat } from "../DataFormat/DateFormat";
 
 const TableAdmin = () => {
   // HANDLE MODAL
@@ -13,7 +16,7 @@ const TableAdmin = () => {
 
   const openModal = () => {
     setModalOpen(true);
-    document.body.style.overflow = "hidden"; // Menghilangkan scroll pada body
+    document.body.style.overflow = "hidden";
   };
 
   const formRef = useRef(null);
@@ -26,6 +29,14 @@ const TableAdmin = () => {
   const handleOption = () => {
     console.log("Option");
   };
+
+  // GET DATA
+  const dispatch = useDispatch();
+  const dataAdmin = useSelector((i) => i.admin.data);
+
+  useEffect(() => {
+    dispatch(getAdmin());
+  }, []);
 
   return (
     <>
@@ -43,25 +54,27 @@ const TableAdmin = () => {
             <td>Tempat/Tanggal Lahir</td>
             <td>Alamat</td>
             <td>Agama</td>
-            <td className="w-5">Jabatan</td>
+            <td>Jabatan</td>
             <td className="w-5">Action</td>
           </tr>
         </THead>
         <TBody>
-          <tr className="capitalize">
-            <td className="font-bold">1</td>
-            <td>Aku</td>
-            <td>Laki</td>
-            <td>Aman</td>
-            <td>Aman</td>
-            <td>Aman</td>
-            <td>Aman</td>
-            <td>Aman</td>
-            <td className="flex gap-2">
-              <TrashIcon className="hover w-6 cursor-pointer text-red-600 hover:text-red-700" />
-              <PencilSquareIcon className="w-6 cursor-pointer text-third hover:text-first" />
-            </td>
-          </tr>
+          {dataAdmin?.map((data, idx) => (
+            <tr className="capitalize" key={idx}>
+              <td className="font-bold">{idx + 1}</td>
+              <td>{data.nama}</td>
+              <td>{data.lembaga.nama_lembaga}</td>
+              <td>{data.nta}</td>
+              <td>{`${data.tmpt_lahir}, ${dateFormat(data.tgl_lahir)}`}</td>
+              <td>{data.alamat}</td>
+              <td>{data.agama}</td>
+              <td>{data.jabatan}</td>
+              <td className="flex gap-2">
+                <TrashIcon className="hover w-6 cursor-pointer text-red-600 hover:text-red-700" />
+                <PencilSquareIcon className="w-6 cursor-pointer text-third hover:text-first" />
+              </td>
+            </tr>
+          ))}
         </TBody>
       </ShowDataLayout>
 

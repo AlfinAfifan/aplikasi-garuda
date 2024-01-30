@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import ShowDataLayout from "../../Layouts/ShowDataLayout";
 import { TBody, THead } from "../../Layouts/TableLayout";
 import {
@@ -10,6 +10,10 @@ import Modal from "../Modal/ModalInput";
 import Input from "../Form/Input";
 import Button from "../Form/Button";
 import SelectOpt from "../Form/SelectOpt";
+import { useDispatch, useSelector } from "react-redux";
+import { getPurwa } from "../../../redux/actions/purwa/purwaThunk";
+import { dateFormat } from "../DataFormat/DateFormat";
+import { formatSK } from "../DataFormat/FormatSK";
 
 const TablePurwa = () => {
   // HANDLE MODAL
@@ -31,6 +35,14 @@ const TablePurwa = () => {
     console.log("Option");
   };
 
+  // GET DATA
+  const dispatch = useDispatch();
+  const dataPurwa = useSelector((i) => i.purwa.data);
+
+  useEffect(() => {
+    dispatch(getPurwa());
+  }, []);
+
   return (
     <>
       <ShowDataLayout
@@ -45,24 +57,24 @@ const TablePurwa = () => {
             <td>Asal Lembaga</td>
             <td>Jenis TKK</td>
             <td>Tanggal Dilantik</td>
-            <td>Nama Penguji</td>
             <td className="w-5">Action</td>
           </tr>
         </THead>
         <TBody>
-          <tr className="capitalize">
-            <td className="font-bold">1</td>
-            <td>Aman</td>
-            <td>Aman</td>
-            <td>Aman</td>
-            <td>Aman</td>
-            <td>Aman</td>
-            <td className="flex gap-2">
-              <TrashIcon className="hover w-6 cursor-pointer text-red-600 hover:text-red-700" />
-              <PencilSquareIcon className="w-6 cursor-pointer text-third hover:text-first" />
-              <DocumentTextIcon className="w-6 cursor-pointer text-amber-500 hover:text-amber-600" />
-            </td>
-          </tr>
+          {dataPurwa?.map((data, idx) => (
+            <tr className="capitalize" key={idx}>
+              <td className="font-bold">{formatSK(idx)}</td>
+              <td>{data.anggota.nama}</td>
+              <td>{data.anggota.lembaga.nama_lembaga}</td>
+              <td>{data.jenis_tkk.nama}</td>
+              <td>{dateFormat(data.tgl_purwa)}</td>
+              <td className="flex gap-2">
+                <TrashIcon className="hover w-6 cursor-pointer text-red-600 hover:text-red-700" />
+                <PencilSquareIcon className="w-6 cursor-pointer text-third hover:text-first" />
+                <DocumentTextIcon className="w-6 cursor-pointer text-amber-500 hover:text-amber-600" />
+              </td>
+            </tr>
+          ))}
         </TBody>
       </ShowDataLayout>
 
@@ -84,6 +96,7 @@ const TablePurwa = () => {
             type="text"
             onchange={(e) => console.log(e.target.value)}
           />
+          <Input label="Asal Lembaga" name="Lembaga" type="text" />
           <SelectOpt name="jenis" label="Jenis TKK">
             <option value="pilih" disabled hidden>
               Pilih jenis tkk

@@ -12,6 +12,7 @@ import Button from "../Form/Button";
 import SelectOpt from "../Form/SelectOpt";
 import { useDispatch, useSelector } from "react-redux";
 import { getAnggota } from "../../../redux/actions/anggota/anggotaThunk";
+import { dateFormat } from "../DataFormat/DateFormat";
 
 const TableAnggota = () => {
   // HANDLE MODAL
@@ -60,7 +61,6 @@ const TableAnggota = () => {
             <td>NTA</td>
             <td>Jenis Kelamin</td>
             <td>Tempat/Tanggal Lahir</td>
-            <td>Agama</td>
             <td>No Telp</td>
             <td className="w-5">Action</td>
           </tr>
@@ -74,8 +74,7 @@ const TableAnggota = () => {
               <td>{data.no_induk}</td>
               <td>{data.nta}</td>
               <td>{data.gender}</td>
-              <td>{`${data.tmpt_lahir}, ${data.tgl_lahir}`}</td>
-              <td>{data.agama}</td>
+              <td>{`${data.tmpt_lahir}, ${dateFormat(data.tgl_lahir)}`}</td>
               <td>{data.no_telp}</td>
               <td className="flex gap-2">
                 <TrashIcon
