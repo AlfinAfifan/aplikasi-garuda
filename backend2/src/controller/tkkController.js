@@ -184,6 +184,23 @@ export const getTkkById = async (req, res) => {
 
 // CONTROLLER CREATE SURAT
 export const createPurwa = async (req, res) => {
+  // CEK TOKEN
+  const refreshToken = req.cookies.refreshToken;
+  if (!refreshToken) return res.sendStatus(401);
+  const user = await usersModel.findAll({
+    where: {
+      refresh_token: refreshToken,
+    },
+  });
+  if (!user[0]) return res.sendStatus(403);
+
+  // AUTO INCREMENT NO SK
+  const lastRecord = await tkkModel.findOne({
+    order: [['no_sk', 'DESC']],
+  });
+  const nextId = lastRecord ? parseInt(lastRecord.no_sk, 10) + 1 : 1;
+  const autoIncrementedValue = nextId.toString().padStart(3, '0').slice(-3); // Ambil 3 digit terakhir.
+
   // request body
   const { id_anggota, id_jenis_tkk, nama_penguji, jabatan_penguji, alamat_penguji } = req.body;
   const purwa = true;

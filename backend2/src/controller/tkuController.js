@@ -197,7 +197,7 @@ export const createTku = async (req, res) => {
     order: [['no_sk', 'DESC']],
   });
   const nextId = lastRecord ? parseInt(lastRecord.no_sk, 10) + 1 : 1;
-  const autoIncrementedValue = nextId.toString().padStart(3, '0').slice(-3); // Ambil 3 digit terakhir
+  const autoIncrementedValue = nextId.toString().padStart(3, '0').slice(-3); // Ambil 3 digit terakhir.
 
   // request body
   const { id_anggota } = req.body;
