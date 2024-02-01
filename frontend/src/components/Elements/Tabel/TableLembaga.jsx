@@ -12,6 +12,7 @@ import {
 } from "../../../redux/actions/lembaga/lembagaThunk";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
+import { toast } from "react-toastify";
 
 const TableLembaga = () => {
   // HANDLE MODAL
@@ -64,7 +65,7 @@ const TableLembaga = () => {
 
   const onSubmit = (values, { resetForm }) => {
     dispatch(createLembaga(values));
-    closeModal(); // Optional: close the modal after submitting
+    closeModal();
   };
 
   const handleOption = () => {

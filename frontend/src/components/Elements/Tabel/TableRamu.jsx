@@ -1,20 +1,17 @@
 import React, { useEffect, useRef, useState } from "react";
 import ShowDataLayout from "../../Layouts/ShowDataLayout";
 import { TBody, THead } from "../../Layouts/TableLayout";
-import { PencilSquareIcon, TrashIcon } from "@heroicons/react/24/solid";
+import { TrashIcon } from "@heroicons/react/24/solid";
 import Modal from "../Modal/ModalInput";
-import Input from "../Form/Input";
 import Button from "../Form/Button";
-import SelectOpt from "../Form/SelectOpt";
 import { useDispatch, useSelector } from "react-redux";
 import { createRamu, getRamu } from "../../../redux/actions/ramu/ramuThunk";
 import { dateFormat } from "../DataFormat/DateFormat";
 import { formatSK } from "../DataFormat/FormatSK";
-import { Form, Formik } from "formik";
-import * as Yup from "yup";
 import { getAnggota } from "../../../redux/actions/anggota/anggotaThunk";
 import SelectSearch from "../Form/SelectSearch";
 import InputDisabled from "../Form/InputDisabled";
+import { toast } from "react-toastify";
 
 const TableRamu = () => {
   // HANDLE MODAL
@@ -29,13 +26,10 @@ const TableRamu = () => {
   const closeModal = () => {
     setModalOpen(false);
     setLembagaSelected("");
-    setSelected("");
+    setSelected(null);
+    setSearchResult(null);
     formRef.current.reset();
     document.body.style.overflow = "auto";
-  };
-
-  const handleOption = () => {
-    console.log("Option");
   };
 
   // GET DATA
@@ -58,12 +52,12 @@ const TableRamu = () => {
   const dataAnggota = useSelector((i) => i.anggota.data);
   const [searchResult, setSearchResult] = useState(null);
   const [errorSearch, setErrorSearch] = useState(false);
-  const [selected, setSelected] = useState("");
+  const [selected, setSelected] = useState(null);
   const [lembagaSelected, setLembagaSelected] = useState("");
 
   const optionAnggota = dataAnggota.map((data) => ({
     id: data.id,
-    key: data.nama,
+    key: data.id,
     value: data.nama,
     lembaga: data.lembaga.nama_lembaga,
   }));
@@ -71,7 +65,7 @@ const TableRamu = () => {
   const onSearch = (record) => {
     setSearchResult(record.item.id);
     setLembagaSelected(record.item.lembaga);
-    setSelected(record.item.key);
+    setSelected(record.item.value);
   };
 
   // HANDLE FORM & VALIDASI
@@ -87,11 +81,7 @@ const TableRamu = () => {
 
   return (
     <>
-      <ShowDataLayout
-        title="Tabel Data Ramu"
-        clickAdd={openModal}
-        clickOption={handleOption}
-      >
+      <ShowDataLayout title="Tabel Data Ramu" clickAdd={openModal}>
         <THead>
           <tr>
             <td>No SK</td>

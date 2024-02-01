@@ -13,6 +13,7 @@ import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import { getLembaga } from "../../../redux/actions/lembaga/lembagaThunk";
 import SelectSearch from "../Form/SelectSearch";
+import { toast } from "react-toastify";
 
 const TableAdmin = () => {
   // HANDLE MODAL
@@ -27,12 +28,9 @@ const TableAdmin = () => {
   const closeModal = () => {
     setModalOpen(false);
     setSelected("");
+    setSearchResult(null);
     formRef.current.reset();
     document.body.style.overflow = "auto";
-  };
-
-  const handleOption = () => {
-    console.log("Option");
   };
 
   // GET DATA
@@ -59,12 +57,12 @@ const TableAdmin = () => {
 
   const optionLembaga = dataLembaga.map((data) => ({
     id: data.id,
-    key: data.nama_lembaga,
+    key: data.id,
     value: data.nama_lembaga,
   }));
   const onSearch = (record) => {
     setSearchResult(record.item.id);
-    setSelected(record.item.key);
+    setSelected(record.item.value);
   };
 
   // HANDLE FORM & VALIDASI
@@ -117,8 +115,8 @@ const TableAdmin = () => {
     <>
       <ShowDataLayout
         title="Tabel Data Admin"
+        descript="* Gunakan alamat email admin untuk mengisi form email dan password login"
         clickAdd={openModal}
-        clickOption={handleOption}
       >
         <THead>
           <tr>

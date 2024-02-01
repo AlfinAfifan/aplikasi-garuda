@@ -4,6 +4,7 @@ import { createRakit, getRakit } from "./rakitThunk";
 const initialState = {
   data: [],
   loading: false,
+  errorCreate: false,
   error: null,
   type: "",
 };
@@ -53,7 +54,7 @@ const rakitSlice = createSlice({
       .addCase(createRakit.rejected, (state, action) => {
         return {
           ...state,
-          error: action.payload,
+          errorCreate: true,
           type: action.type,
         };
       });

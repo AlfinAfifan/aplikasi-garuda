@@ -36,12 +36,10 @@ const TablePurwa = () => {
     setLembagaSelected("");
     setSelected("");
     setSelected2("");
+    setSearchResult(null);
+    setSearchResult2(null);
     formRef.current.reset();
     document.body.style.overflow = "auto";
-  };
-
-  const handleOption = () => {
-    console.log("Option");
   };
 
   // GET DATA
@@ -74,19 +72,19 @@ const TablePurwa = () => {
 
   const optionAnggota = dataAnggota.map((data) => ({
     id: data.id_anggota,
-    key: data.anggota.nama,
+    key: data.id,
     value: data.anggota.nama,
     lembaga: data.anggota.lembaga.nama_lembaga,
   }));
   const optionJenis = dataJenis.map((data) => ({
     id: data.id,
-    key: data.nama,
+    key: data.id,
     value: data.nama,
   }));
 
   const onSearch = (record) => {
     setSearchResult(record.item.id);
-    setSelected(record.item.key);
+    setSelected(record.item.value);
     setLembagaSelected(record.item.lembaga);
   };
 
@@ -131,11 +129,7 @@ const TablePurwa = () => {
 
   return (
     <>
-      <ShowDataLayout
-        title="Tabel Data Purwa"
-        clickAdd={openModal}
-        clickOption={handleOption}
-      >
+      <ShowDataLayout title="Tabel Data Purwa" clickAdd={openModal}>
         <THead>
           <tr>
             <td>No SK</td>
@@ -157,7 +151,6 @@ const TablePurwa = () => {
                 <td>{dateFormat(data.tgl_purwa)}</td>
                 <td className="flex gap-2">
                   <TrashIcon className="hover w-6 cursor-pointer text-red-600 hover:text-red-700" />
-                  <PencilSquareIcon className="w-6 cursor-pointer text-third hover:text-first" />
                   <DocumentTextIcon className="w-6 cursor-pointer text-amber-500 hover:text-amber-600" />
                 </td>
               </tr>
