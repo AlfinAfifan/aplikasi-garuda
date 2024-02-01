@@ -10,11 +10,14 @@ import Modal from "../Modal/ModalInput";
 import Input from "../Form/Input";
 import Button from "../Form/Button";
 import { useDispatch, useSelector } from "react-redux";
-import { getMadya } from "../../../redux/actions/madya/madyaThunk";
+import { createMadya, getMadya } from "../../../redux/actions/madya/madyaThunk";
 import { formatSK } from "../DataFormat/FormatSK";
 import { dateFormat } from "../DataFormat/DateFormat";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
+import InputDisabled from "../Form/InputDisabled";
+import { getPurwa } from "../../../redux/actions/purwa/purwaThunk";
+import SelectSearch from "../Form/SelectSearch";
 
 const TableMadya = () => {
   // HANDLE MODAL
@@ -39,10 +42,68 @@ const TableMadya = () => {
   // GET DATA
   const dispatch = useDispatch();
   const dataMadya = useSelector((i) => i.madya.data);
+  const typeAction = useSelector((i) => i.madya.type);
 
   useEffect(() => {
     dispatch(getMadya());
+    dispatch(getPurwa());
   }, []);
+
+  useEffect(() => {
+    if (typeAction === "createPurwa/fulfilled") {
+      dispatch(getPurwa());
+    }
+  }, [typeAction]);
+
+  // HANDLE SELECT SEARCH
+  const dataAnggota = useSelector((i) => i.purwa.data);
+  const [searchResult, setSearchResult] = useState(null);
+  const [errorSearch, setErrorSearch] = useState(false);
+  const [selected, setSelected] = useState(false);
+
+  const [jenisSelected, setJenisSelected] = useState("");
+
+  const optionAnggota = dataAnggota.map((data) => ({
+    id: data.id_anggota,
+    key: data.anggota.nama,
+    value: `${data.anggota.nama} - ${data.jenis_tkk.nama}`,
+    jenis: data.jenis_tkk.nama,
+  }));
+
+  const onSearch = (record) => {
+    setSearchResult(record.item.id);
+    setSelected(record.item.key);
+    setJenisSelected(record.item.jenis);
+  };
+
+  console.log(searchResult);
+
+  // HANDLE FORM & VALIDASI
+  const initialValues = {
+    nama_penguji: "",
+    jabatan_penguji: "",
+    alamat_penguji: "",
+  };
+
+  const validationSchema = Yup.object().shape({
+    nama_penguji: Yup.string().required("Nama harus diisi"),
+    jabatan_penguji: Yup.string().required("Jabatan harus diisi"),
+    alamat_penguji: Yup.string().required("Alamat harus diisi"),
+  });
+
+  const onSubmit = (values, { resetForm }) => {
+    const dataCreate = {
+      ...values,
+      id_anggota: searchResult,
+    };
+
+    if (searchResult) {
+      dispatch(createMadya(dataCreate));
+      closeModal();
+    } else {
+      setErrorSearch(!searchResult);
+    }
+  };
 
   return (
     <>
@@ -86,26 +147,38 @@ const TableMadya = () => {
         setModalOpen={setModalOpen}
         onClick={closeModal}
       >
-        <form
-          action="#"
-          ref={formRef}
-          className="mt-8 grid grid-cols-2 gap-x-10 gap-y-6 pb-10"
+        <Formik
+          initialValues={initialValues}
+          validationSchema={validationSchema}
+          onSubmit={onSubmit}
         >
-          <Input
-            label="Nama Lembaga"
-            name="nama"
-            type="text"
-            onchange={(e) => console.log(e.target.value)}
-          />
-          <Input label="Asal Lembaga" name="Lembaga" type="text" />
-          <Input label="Alamat Lembaga" name="alamat" type="text" />
-          <Input label="Nomor Gudep Putra" name="gudepL" type="text" />
-          <Input label="Nomor Gudep Putri" name="gudepP" type="text" />
-          <Input label="Kepala Sekolah" name="kepsek" type="text" />
-          <Input label="NIP Kepala Sekolah" name="nipKepsek" type="text" />
+          {(form) => (
+            <Form
+              action="#"
+              ref={formRef}
+              className="mt-8 grid grid-cols-2 gap-x-10 gap-y-6 pb-10"
+            >
+              <SelectSearch
+                name="id_anggota"
+                label="Nama"
+                placeholder={selected ? selected : "Cari Nama Anggota"}
+                data={optionAnggota}
+                onselect={onSearch}
+                error={errorSearch}
+              />
+              <InputDisabled label="Jenis TKK" value={jenisSelected} />
+              <Input label="Nama Penguji" name="nama_penguji" type="text" />
+              <Input
+                label="Jabatan Penguji"
+                name="jabatan_penguji"
+                type="text"
+              />
+              <Input label="Alamat Penguji" name="alamat_penguji" type="text" />
 
-          <Button>Simpan</Button>
-        </form>
+              <Button>Simpan</Button>
+            </Form>
+          )}
+        </Formik>
       </Modal>
     </>
   );
