@@ -10,11 +10,14 @@ import Modal from "../Modal/ModalInput";
 import Input from "../Form/Input";
 import Button from "../Form/Button";
 import { useDispatch, useSelector } from "react-redux";
-import { getUtama } from "../../../redux/actions/utama/utamaThunk";
+import { createUtama, getUtama } from "../../../redux/actions/utama/utamaThunk";
 import { formatSK } from "../DataFormat/FormatSK";
 import { dateFormat } from "../DataFormat/DateFormat";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
+import SelectSearch from "../Form/SelectSearch";
+import InputDisabled from "../Form/InputDisabled";
+import { getMadya } from "../../../redux/actions/madya/madyaThunk";
 
 const TableUtama = () => {
   // HANDLE MODAL
@@ -28,6 +31,9 @@ const TableUtama = () => {
   const formRef = useRef(null);
   const closeModal = () => {
     setModalOpen(false);
+    setSelected("");
+    setJenisSelected("");
+    setSearchResult(null);
     formRef.current.reset();
     document.body.style.overflow = "auto";
   };
@@ -39,10 +45,65 @@ const TableUtama = () => {
   // GET DATA
   const dispatch = useDispatch();
   const dataUtama = useSelector((i) => i.utama.data);
+  const typeAction = useSelector((i) => i.utama.type);
 
   useEffect(() => {
     dispatch(getUtama());
+    dispatch(getMadya());
   }, []);
+
+  useEffect(() => {
+    if (typeAction === "createUtama/fulfilled") {
+      dispatch(getUtama());
+    }
+  }, [typeAction]);
+
+  // HANDLE SELECT SEARCH
+  const dataAnggota = useSelector((i) => i.madya.data);
+  const [searchResult, setSearchResult] = useState(null);
+  const [errorSearch, setErrorSearch] = useState(false);
+  const [selected, setSelected] = useState(false);
+  const [jenisSelected, setJenisSelected] = useState("");
+
+  const optionAnggota = dataAnggota.map((data) => ({
+    id: data.id,
+    key: data.id,
+    value: `${data.anggota.nama} - ${data.jenis_tkk.nama}`,
+    jenis: data.jenis_tkk.nama,
+  }));
+
+  const onSearch = (record) => {
+    setSearchResult(record.item.id);
+    setSelected(record.item.value);
+    setJenisSelected(record.item.jenis);
+  };
+
+  // HANDLE FORM & VALIDASI
+  const initialValues = {
+    nama_penguji: "",
+    jabatan_penguji: "",
+    alamat_penguji: "",
+  };
+
+  const validationSchema = Yup.object().shape({
+    nama_penguji: Yup.string().required("Nama harus diisi"),
+    jabatan_penguji: Yup.string().required("Jabatan harus diisi"),
+    alamat_penguji: Yup.string().required("Alamat harus diisi"),
+  });
+
+  const onSubmit = (values, { resetForm }) => {
+    const dataCreate = {
+      ...values,
+      id: searchResult,
+    };
+
+    if (searchResult) {
+      dispatch(createUtama(dataCreate));
+      closeModal();
+    } else {
+      setErrorSearch(!searchResult);
+    }
+  };
 
   return (
     <>
@@ -62,20 +123,25 @@ const TableUtama = () => {
           </tr>
         </THead>
         <TBody>
-          {dataUtama?.map((data, idx) => (
-            <tr className="capitalize" key={idx}>
-              <td className="font-bold">{formatSK(idx)}</td>
-              <td>{data.anggota.nama}</td>
-              <td>{data.anggota.lembaga.nama_lembaga}</td>
-              <td>{data.jenis_tkk.nama}</td>
-              <td>{dateFormat(data.tgl_utama)}</td>
-              <td className="flex gap-2">
-                <TrashIcon className="hover w-6 cursor-pointer text-red-600 hover:text-red-700" />
-                <PencilSquareIcon className="w-6 cursor-pointer text-third hover:text-first" />
-                <DocumentTextIcon className="w-6 cursor-pointer text-amber-500 hover:text-amber-600" />
-              </td>
+          {Array.isArray(dataUtama) ? (
+            dataUtama.map((data, idx) => (
+              <tr className="capitalize" key={idx}>
+                <td className="font-bold">{formatSK(idx)}</td>
+                <td>{data.anggota.nama}</td>
+                <td>{data.anggota.lembaga.nama_lembaga}</td>
+                <td>{data.jenis_tkk.nama}</td>
+                <td>{dateFormat(data.tgl_utama)}</td>
+                <td className="flex gap-2">
+                  <TrashIcon className="hover w-6 cursor-pointer text-red-600 hover:text-red-700" />
+                  <DocumentTextIcon className="w-6 cursor-pointer text-amber-500 hover:text-amber-600" />
+                </td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td>Terjadi Error</td>
             </tr>
-          ))}
+          )}
         </TBody>
       </ShowDataLayout>
 
@@ -86,26 +152,38 @@ const TableUtama = () => {
         setModalOpen={setModalOpen}
         onClick={closeModal}
       >
-        <form
-          action="#"
-          ref={formRef}
-          className="mt-8 grid grid-cols-2 gap-x-10 gap-y-6 pb-10"
+        <Formik
+          initialValues={initialValues}
+          validationSchema={validationSchema}
+          onSubmit={onSubmit}
         >
-          <Input
-            label="Nama Lembaga"
-            name="nama"
-            type="text"
-            onchange={(e) => console.log(e.target.value)}
-          />
-          <Input label="Asal Lembaga" name="Lembaga" type="text" />
-          <Input label="Alamat Lembaga" name="alamat" type="text" />
-          <Input label="Nomor Gudep Putra" name="gudepL" type="text" />
-          <Input label="Nomor Gudep Putri" name="gudepP" type="text" />
-          <Input label="Kepala Sekolah" name="kepsek" type="text" />
-          <Input label="NIP Kepala Sekolah" name="nipKepsek" type="text" />
+          {(form) => (
+            <Form
+              action="#"
+              ref={formRef}
+              className="mt-8 grid grid-cols-2 gap-x-10 gap-y-6 pb-10"
+            >
+              <SelectSearch
+                name="id_anggota"
+                label="Nama"
+                placeholder={selected ? selected : "Cari Nama Anggota"}
+                data={optionAnggota}
+                onselect={onSearch}
+                error={errorSearch}
+              />
+              <InputDisabled label="Jenis TKK" value={jenisSelected} />
+              <Input label="Nama Penguji" name="nama_penguji" type="text" />
+              <Input
+                label="Jabatan Penguji"
+                name="jabatan_penguji"
+                type="text"
+              />
+              <Input label="Alamat Penguji" name="alamat_penguji" type="text" />
 
-          <Button>Simpan</Button>
-        </form>
+              <Button>Simpan</Button>
+            </Form>
+          )}
+        </Formik>
       </Modal>
     </>
   );

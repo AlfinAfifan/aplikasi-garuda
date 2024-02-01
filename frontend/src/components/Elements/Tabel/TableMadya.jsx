@@ -31,6 +31,9 @@ const TableMadya = () => {
   const formRef = useRef(null);
   const closeModal = () => {
     setModalOpen(false);
+    setSelected("");
+    setJenisSelected("");
+    setSearchResult(null);
     formRef.current.reset();
     document.body.style.overflow = "auto";
   };
@@ -50,8 +53,8 @@ const TableMadya = () => {
   }, []);
 
   useEffect(() => {
-    if (typeAction === "createPurwa/fulfilled") {
-      dispatch(getPurwa());
+    if (typeAction === "createMadya/fulfilled") {
+      dispatch(getMadya());
     }
   }, [typeAction]);
 
@@ -64,19 +67,17 @@ const TableMadya = () => {
   const [jenisSelected, setJenisSelected] = useState("");
 
   const optionAnggota = dataAnggota.map((data) => ({
-    id: data.id_anggota,
-    key: data.anggota.nama,
+    id: data.id,
+    key: data.id,
     value: `${data.anggota.nama} - ${data.jenis_tkk.nama}`,
     jenis: data.jenis_tkk.nama,
   }));
 
   const onSearch = (record) => {
     setSearchResult(record.item.id);
-    setSelected(record.item.key);
+    setSelected(record.item.value);
     setJenisSelected(record.item.jenis);
   };
-
-  console.log(searchResult);
 
   // HANDLE FORM & VALIDASI
   const initialValues = {
@@ -94,7 +95,7 @@ const TableMadya = () => {
   const onSubmit = (values, { resetForm }) => {
     const dataCreate = {
       ...values,
-      id_anggota: searchResult,
+      id: searchResult,
     };
 
     if (searchResult) {
@@ -123,20 +124,25 @@ const TableMadya = () => {
           </tr>
         </THead>
         <TBody>
-          {dataMadya?.map((data, idx) => (
-            <tr className="capitalize" key={idx}>
-              <td className="font-bold">{formatSK(idx)}</td>
-              <td>{data.anggota.nama}</td>
-              <td>{data.anggota.lembaga.nama_lembaga}</td>
-              <td>{data.jenis_tkk.nama}</td>
-              <td>{dateFormat(data.tgl_madya)}</td>
-              <td className="flex gap-2">
-                <TrashIcon className="hover w-6 cursor-pointer text-red-600 hover:text-red-700" />
-                <PencilSquareIcon className="w-6 cursor-pointer text-third hover:text-first" />
-                <DocumentTextIcon className="w-6 cursor-pointer text-amber-500 hover:text-amber-600" />
-              </td>
+          {Array.isArray(dataMadya) ? (
+            dataMadya.map((data, idx) => (
+              <tr className="capitalize" key={idx}>
+                <td className="font-bold">{formatSK(idx)}</td>
+                <td>{data.anggota.nama}</td>
+                <td>{data.anggota.lembaga.nama_lembaga}</td>
+                <td>{data.jenis_tkk.nama}</td>
+                <td>{dateFormat(data.tgl_madya)}</td>
+                <td className="flex gap-2">
+                  <TrashIcon className="hover w-6 cursor-pointer text-red-600 hover:text-red-700" />
+                  <DocumentTextIcon className="w-6 cursor-pointer text-amber-500 hover:text-amber-600" />
+                </td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td>Terjadi Error</td>
             </tr>
-          ))}
+          )}
         </TBody>
       </ShowDataLayout>
 

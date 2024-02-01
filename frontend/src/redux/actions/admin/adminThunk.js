@@ -1,5 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 export const getAdmin = createAsyncThunk("getAdmin", async () => {
   const resp = await axios.get("http://localhost:4000/admin", {
@@ -10,9 +11,14 @@ export const getAdmin = createAsyncThunk("getAdmin", async () => {
 });
 
 export const createAdmin = createAsyncThunk("createAdmin", async (data) => {
-  const resp = await axios.post("http://localhost:4000/admin", data, {
-    withCredentials: true,
-  });
+  try {
+    const resp = await axios.post("http://localhost:4000/admin", data, {
+      withCredentials: true,
+    });
 
-  return resp.data;
+    toast.success("Tambah Data Sukses");
+    return resp.data;
+  } catch (error) {
+    toast.error(error.response.data.message);
+  }
 });

@@ -29,10 +29,6 @@ const TableJenisTkk = () => {
     document.body.style.overflow = "auto";
   };
 
-  const handleOption = () => {
-    console.log("Option");
-  };
-
   // GET DATA
   const dispatch = useDispatch();
   const dataJenis = useSelector((i) => i.jenis.data);
@@ -68,11 +64,7 @@ const TableJenisTkk = () => {
 
   return (
     <>
-      <ShowDataLayout
-        title="Tabel Data Admin"
-        clickAdd={openModal}
-        clickOption={handleOption}
-      >
+      <ShowDataLayout title="Tabel Data Admin" clickAdd={openModal}>
         <THead>
           <tr>
             <td>No</td>

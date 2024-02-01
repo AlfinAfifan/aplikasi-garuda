@@ -1,8 +1,7 @@
 import React from "react";
-import { Cog6ToothIcon } from "@heroicons/react/24/solid";
 import { useLocation } from "react-router-dom";
 
-const ShowDataLayout = ({ children, title, clickAdd, clickOption }) => {
+const ShowDataLayout = ({ children, title, clickAdd, descript }) => {
   const location = useLocation();
 
   const isDashboard = location.pathname === "/dashboard";
@@ -15,7 +14,7 @@ const ShowDataLayout = ({ children, title, clickAdd, clickOption }) => {
     <div className="">
       {/* TITLE */}
       <h1 className="flex items-center gap-2 font-montserrat text-xl font-bold text-second">
-        {title}
+        {title} <span className="text-xs font-normal">{descript}</span>
         <select
           name=""
           id=""
@@ -33,10 +32,6 @@ const ShowDataLayout = ({ children, title, clickAdd, clickOption }) => {
         >
           Tambah
         </button>
-        <Cog6ToothIcon
-          className="w-8 cursor-pointer text-second duration-700 hover:rotate-90"
-          onClick={clickOption}
-        />
       </div>
 
       {/* TABEL */}

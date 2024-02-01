@@ -1,5 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 export const getRamu = createAsyncThunk("getRamu", async () => {
   const resp = await axios.get("http://localhost:4000/ramu", {
@@ -10,9 +11,14 @@ export const getRamu = createAsyncThunk("getRamu", async () => {
 });
 
 export const createRamu = createAsyncThunk("createRamu", async (data) => {
-  const resp = await axios.post("http://localhost:4000/tku", data, {
-    withCredentials: true,
-  });
+  try {
+    const resp = await axios.post("http://localhost:4000/tku", data, {
+      withCredentials: true,
+    });
 
-  return resp.data;
+    toast.success("Tambah Data Sukses");
+    return resp.data;
+  } catch (error) {
+    toast.error(error.response.data.message);
+  }
 });

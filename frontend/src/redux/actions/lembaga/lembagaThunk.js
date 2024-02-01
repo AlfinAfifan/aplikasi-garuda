@@ -1,5 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 export const getLembaga = createAsyncThunk("getLembaga", async () => {
   const resp = await axios.get("http://localhost:4000/lembaga", {
@@ -10,9 +11,14 @@ export const getLembaga = createAsyncThunk("getLembaga", async () => {
 });
 
 export const createLembaga = createAsyncThunk("createLembaga", async (data) => {
-  const resp = await axios.post("http://localhost:4000/lembaga", data, {
-    withCredentials: true,
-  });
+  try {
+    const resp = await axios.post("http://localhost:4000/lembaga", data, {
+      withCredentials: true,
+    });
 
-  return resp.data;
+    toast.success("Tambah Data Sukses");
+    return resp.data;
+  } catch (error) {
+    toast.error(error.response.data.message);
+  }
 });

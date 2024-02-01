@@ -33,12 +33,9 @@ const TableAnggota = () => {
   const closeModal = () => {
     setModalOpen(false);
     setSelected("");
+    setSearchResult(null);
     formRef.current.reset();
     document.body.style.overflow = "auto";
-  };
-
-  const handleOption = () => {
-    console.log("Option");
   };
 
   // GET DATA
@@ -65,12 +62,12 @@ const TableAnggota = () => {
 
   const optionLembaga = dataLembaga.map((data) => ({
     id: data.id,
-    key: data.nama_lembaga,
+    key: data.id,
     value: data.nama_lembaga,
   }));
   const onSearch = (record) => {
     setSearchResult(record.item.id);
-    setSelected(record.item.key);
+    setSelected(record.item.value);
   };
 
   // HANDLE FORM & VALIDASI
@@ -170,11 +167,7 @@ const TableAnggota = () => {
 
   return (
     <>
-      <ShowDataLayout
-        title="Tabel Data Anggota"
-        clickAdd={openModal}
-        clickOption={handleOption}
-      >
+      <ShowDataLayout title="Tabel Data Anggota" clickAdd={openModal}>
         <THead>
           <tr>
             <td className="w-5">No</td>

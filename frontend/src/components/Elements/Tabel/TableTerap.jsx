@@ -30,12 +30,9 @@ const TableTerap = () => {
     setModalOpen(false);
     setSelected("");
     setLembagaSelected("");
+    setSearchResult(null);
     formRef.current.reset();
     document.body.style.overflow = "auto";
-  };
-
-  const handleOption = () => {
-    console.log("Option");
   };
 
   // GET DATA
@@ -63,7 +60,7 @@ const TableTerap = () => {
 
   const optionAnggota = dataAnggota.map((data) => ({
     id: data.id,
-    key: data.anggota.nama,
+    key: data.id,
     value: data.anggota.nama,
     lembaga: data.anggota.lembaga.nama_lembaga,
   }));
@@ -71,7 +68,7 @@ const TableTerap = () => {
   const onSearch = (record) => {
     setSearchResult(record.item.id);
     setLembagaSelected(record.item.lembaga);
-    setSelected(record.item.key);
+    setSelected(record.item.value);
   };
 
   // HANDLE FORM & VALIDASI
@@ -87,11 +84,7 @@ const TableTerap = () => {
 
   return (
     <>
-      <ShowDataLayout
-        title="Tabel Data Terap"
-        clickAdd={openModal}
-        clickOption={handleOption}
-      >
+      <ShowDataLayout title="Tabel Data Terap" clickAdd={openModal}>
         <THead>
           <tr>
             <td>No SK</td>
