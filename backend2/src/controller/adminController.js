@@ -101,10 +101,10 @@ export const createAdmin = async (req, res) => {
       password: hashPassword,
     });
 
-    res.status(201).json({ message: 'creating admin success' });
+    res.status(201).json({ message: 'Creating Admin Success' });
   } catch (error) {
     res.status(500).json({
-      message: 'creating admin failed',
+      message: 'Creating Admin Failed',
       error: error,
     });
   }
@@ -143,7 +143,7 @@ export const updateAdmin = async (req, res) => {
 
   if (!dataUpdate || !dataUser)
     return res.status(404).json({
-      message: 'No Data Found',
+      message: 'Data Not Found',
     });
 
   // request new update
@@ -183,10 +183,10 @@ export const updateAdmin = async (req, res) => {
       }
     );
 
-    res.status(200).json({ message: 'updated admin successfully' });
+    res.status(200).json({ message: 'Updated Admin success' });
   } catch (error) {
     res.json({
-      message: 'update admin failed',
+      message: 'Update Admin Failed',
       error: error,
     });
   }
@@ -211,7 +211,7 @@ export const deleteAdmin = async (req, res) => {
   });
 
   // cek if there is no data
-  if (!dataDelete) return res.status(404).json({ message: 'No Data Found' });
+  if (!dataDelete) return res.status(404).json({ message: 'Data Not Found' });
 
   // if there is data
   try {
@@ -220,10 +220,10 @@ export const deleteAdmin = async (req, res) => {
         id: req.params.id,
       },
     });
-    res.status(200).json({ message: 'deleted admin success' });
+    res.status(200).json({ message: 'Deleted Admin Success' });
   } catch (error) {
     res.json({
-      message: 'delete admin failed',
+      message: 'Delete Admin Failed',
       Error: error,
     });
   }

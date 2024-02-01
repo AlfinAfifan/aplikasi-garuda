@@ -33,11 +33,11 @@ export const createUsers = async (req, res) => {
       password: hashPassword,
     });
     res.json({
-      message: 'create users success',
+      message: 'Create Users Success',
     });
   } catch (error) {
     res.json({
-      message: 'create users failed',
+      message: 'Create Users Failed',
     });
   }
 };
@@ -73,7 +73,7 @@ export const loginUsers = async (req, res) => {
     res.json({ accessToken });
   } catch (error) {
     res.status(404).json({
-      message: "email doesn't found!",
+      message: "Email Doesn't Found!",
     });
   }
 };

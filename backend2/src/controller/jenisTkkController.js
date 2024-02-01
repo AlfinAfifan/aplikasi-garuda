@@ -70,10 +70,10 @@ export const createJenisTkk = async (req, res) => {
       bidang,
       warna,
     });
-    res.status(201).json({ message: 'creating jenis tkk success' });
+    res.status(201).json({ message: 'Creating Jenis TKK Success' });
   } catch (error) {
     res.status(500).json({
-      message: 'creating jenis tkk failed',
+      message: 'Creating Jenis TKK Failed',
       error: error,
     });
   }
@@ -99,7 +99,7 @@ export const updateJenisTkk = async (req, res) => {
   });
   if (!dataUpdate)
     return res.status(404).json({
-      message: 'No Data Found',
+      message: 'Data Not Found',
     });
 
   // request new update
@@ -119,10 +119,10 @@ export const updateJenisTkk = async (req, res) => {
         },
       }
     );
-    res.status(200).json({ message: 'updated jenis tkk successfully' });
+    res.status(200).json({ message: 'Updated Jenis TKK Success' });
   } catch (error) {
     res.json({
-      message: 'updated jenis tkk failed',
+      message: 'Updated Jenis TKK Failed',
       error: error,
     });
   }
@@ -147,7 +147,7 @@ export const deleteJenisTkk = async (req, res) => {
   });
 
   // cek if there is no data
-  if (!dataDelete) return res.status(404).json({ message: 'No Data Found' });
+  if (!dataDelete) return res.status(404).json({ message: 'Data Not Found' });
 
   // if there is data
   try {
@@ -156,10 +156,10 @@ export const deleteJenisTkk = async (req, res) => {
         id: req.params.id,
       },
     });
-    res.status(200).json({ message: 'deleted jenis tkk success' });
+    res.status(200).json({ message: 'Delete Jenis TKK Success' });
   } catch (error) {
     res.json({
-      message: 'delete jenis tkk failed',
+      message: 'Delete Jenis TKK Failed',
       Error: error,
     });
   }
