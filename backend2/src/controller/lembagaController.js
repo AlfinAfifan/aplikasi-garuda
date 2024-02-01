@@ -73,10 +73,10 @@ export const createLembaga = async (req, res) => {
       kepsek,
       nip_kepsek,
     });
-    res.status(201).json({ message: 'creating lembaga success' });
+    res.status(201).json({ message: 'Creating Lembaga Success' });
   } catch (error) {
     res.status(500).json({
-      message: 'creating lembaga failed',
+      message: 'Creating Lembaga Failed',
       error: error,
     });
   }
@@ -102,7 +102,7 @@ export const updateLembaga = async (req, res) => {
   });
   if (!dataUpdate)
     return res.status(404).json({
-      message: 'No Data Found',
+      message: 'Data Not Found',
     });
 
   // request new update
@@ -125,10 +125,10 @@ export const updateLembaga = async (req, res) => {
         },
       }
     );
-    res.status(200).json({ message: 'lembaga updated successfully' });
+    res.status(200).json({ message: 'Update Lembaga Success' });
   } catch (error) {
     res.json({
-      message: 'update lembaga failed',
+      message: 'Update Lembaga Failed',
       error: error,
     });
   }
@@ -153,7 +153,7 @@ export const deleteLembaga = async (req, res) => {
   });
 
   // cek if there is no data
-  if (!dataDelete) return res.status(404).json({ message: 'No Data Found' });
+  if (!dataDelete) return res.status(404).json({ message: 'Data Not Found' });
 
   // if there is data
   try {
@@ -162,10 +162,10 @@ export const deleteLembaga = async (req, res) => {
         id: req.params.id,
       },
     });
-    res.status(200).json({ message: 'lembaga deleted success' });
+    res.status(200).json({ message: 'Delete Lembaga Success' });
   } catch (error) {
     res.json({
-      message: 'delete lembaga failed',
+      message: 'Delete Lembaga Failed',
       Error: error,
     });
   }

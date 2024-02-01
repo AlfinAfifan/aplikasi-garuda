@@ -142,10 +142,10 @@ export const createAnggota = async (req, res) => {
       tgl_keluar_pangkalan,
       alasan_keluar,
     });
-    res.status(201).json({ message: 'creating anggota success' });
+    res.status(201).json({ message: 'Creating Anggota Success' });
   } catch (error) {
     res.status(500).json({
-      message: 'creating anggota failed',
+      message: 'Creating Anggota Failed',
       error: error,
     });
   }
@@ -171,7 +171,7 @@ export const updateAnggota = async (req, res) => {
   });
   if (!dataUpdate)
     return res.status(404).json({
-      message: 'No Data Found',
+      message: 'Data Not Found',
     });
 
   // request new update
@@ -249,10 +249,10 @@ export const updateAnggota = async (req, res) => {
         },
       }
     );
-    res.status(200).json({ message: 'updated anggota successfully' });
+    res.status(200).json({ message: 'Update Anggota Successfully' });
   } catch (error) {
     res.json({
-      message: 'updated anggota failed',
+      message: 'Update Anggota Failed',
       error: error,
     });
   }
@@ -277,7 +277,7 @@ export const deleteAnggota = async (req, res) => {
   });
 
   // cek if there is no data
-  if (!dataDelete) return res.status(404).json({ message: 'No Data Found' });
+  if (!dataDelete) return res.status(404).json({ message: 'Data Not Found' });
 
   // if there is data
   try {
@@ -286,10 +286,10 @@ export const deleteAnggota = async (req, res) => {
         id: req.params.id,
       },
     });
-    res.status(200).json({ message: 'deleted anggota success' });
+    res.status(200).json({ message: 'Deleted Anggota Success' });
   } catch (error) {
     res.json({
-      message: 'delete anggota failed',
+      message: 'Delete Anggota Failed',
       Error: error,
     });
   }

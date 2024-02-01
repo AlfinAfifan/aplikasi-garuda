@@ -222,10 +222,10 @@ export const createTku = async (req, res) => {
       tgl_ramu,
       no_sk: autoIncrementedValue,
     });
-    res.status(201).json({ message: 'creating tku success' });
+    res.status(201).json({ message: 'Create TKU Success' });
   } catch (error) {
     res.status(500).json({
-      message: 'creating tku failed',
+      message: 'Create TKU Failed',
       error: error,
     });
   }
@@ -269,10 +269,10 @@ export const updateTku = async (req, res) => {
         },
       }
     );
-    res.status(200).json({ message: 'updated tku successfully' });
+    res.status(200).json({ message: 'Update TKU Success' });
   } catch (error) {
     res.json({
-      message: 'update tku failed',
+      message: 'Update TKU Failed',
       error: error,
     });
   }
@@ -297,13 +297,13 @@ export const updateRakit = async (req, res) => {
   });
   if (!dataUpdate)
     return res.status(404).json({
-      message: 'No Data Found',
+      message: 'Data Not Found',
     });
 
   // Cek apakah sudah rakit
   if (dataUpdate.ramu === false)
     return res.status(400).json({
-      message: 'belum selesai ramu',
+      message: 'Belum Selesai Ramu',
     });
 
   // Cek jarak update
@@ -313,7 +313,7 @@ export const updateRakit = async (req, res) => {
 
   if (cek <= 100)
     return res.status(400).json({
-      message: 'jarak minimal 100 hari',
+      message: 'Jarak Minimal 100 Hari',
     });
 
   // request new update
@@ -335,10 +335,10 @@ export const updateRakit = async (req, res) => {
         },
       }
     );
-    res.status(200).json({ message: 'updated rakit successfully' });
+    res.status(200).json({ message: 'Update Rakit Success' });
   } catch (error) {
     res.json({
-      message: 'update rakit failed',
+      message: 'Update Rakit Failed',
       error: error,
     });
   }
@@ -363,13 +363,13 @@ export const updateTerap = async (req, res) => {
   });
   if (!dataUpdate)
     return res.status(404).json({
-      message: 'No Data Found',
+      message: 'Data Not Found',
     });
 
   // Cek apakah sudah rakit
   if (dataUpdate.rakit !== true)
     return res.status(400).json({
-      message: 'belum selesai rakit',
+      message: 'Belum Selesai Rakit',
     });
 
   // Cek jarak update
@@ -379,7 +379,7 @@ export const updateTerap = async (req, res) => {
 
   if (cek <= 100)
     return res.status(400).json({
-      message: 'jarak minimal 100 hari',
+      message: 'Jarak Minimal 100 Hari',
     });
 
   // request new update
@@ -401,10 +401,10 @@ export const updateTerap = async (req, res) => {
         },
       }
     );
-    res.status(200).json({ message: 'updated terap successfully' });
+    res.status(200).json({ message: 'Update Terap Success' });
   } catch (error) {
     res.json({
-      message: 'update terap failed',
+      message: 'Update Terap Failed',
       error: error,
     });
   }
@@ -429,7 +429,7 @@ export const deleteRamu = async (req, res) => {
   });
 
   // cek if there is no data
-  if (!dataDelete) return res.status(404).json({ message: 'No Data Found' });
+  if (!dataDelete) return res.status(404).json({ message: 'Data Not Found' });
 
   // if there is data
   try {
@@ -438,10 +438,10 @@ export const deleteRamu = async (req, res) => {
         id: req.params.id,
       },
     });
-    res.status(200).json({ message: 'deleted data ramu success' });
+    res.status(200).json({ message: 'Delete Data Ramu Success' });
   } catch (error) {
     res.json({
-      message: 'delete data ramu failed',
+      message: 'Delete Data Ramu Failed',
       Error: error,
     });
   }
@@ -466,7 +466,7 @@ export const deleteRakit = async (req, res) => {
   });
   if (!dataUpdate)
     return res.status(404).json({
-      message: 'No Data Found',
+      message: 'Data Not Found',
     });
 
   // request new update
@@ -486,10 +486,10 @@ export const deleteRakit = async (req, res) => {
         },
       }
     );
-    res.status(200).json({ message: 'delete rakit successfully' });
+    res.status(200).json({ message: 'Delete Rakit Success' });
   } catch (error) {
     res.json({
-      message: 'delete rakit failed',
+      message: 'Delete Rakit Failed',
       error: error,
     });
   }
@@ -514,7 +514,7 @@ export const deleteTerap = async (req, res) => {
   });
   if (!dataUpdate)
     return res.status(404).json({
-      message: 'No Data Found',
+      message: 'Data Not Found',
     });
 
   // request new update
@@ -534,10 +534,10 @@ export const deleteTerap = async (req, res) => {
         },
       }
     );
-    res.status(200).json({ message: 'delete terap successfully' });
+    res.status(200).json({ message: 'Delete Terap Success' });
   } catch (error) {
     res.json({
-      message: 'delete terap failed',
+      message: 'Delete Terap Failed',
       error: error,
     });
   }

@@ -250,10 +250,10 @@ export const createPurwa = async (req, res) => {
       alamat_penguji,
       no_sk: autoIncrementedValue,
     });
-    res.status(201).json({ message: 'creating tkk purwa success' });
+    res.status(201).json({ message: 'Create TKK Purwa Success' });
   } catch (error) {
     res.status(500).json({
-      message: 'creating tkk purwa failed',
+      message: 'Create TKK Purwa Failed',
       error: error,
     });
   }
@@ -284,7 +284,7 @@ export const createMadya = async (req, res) => {
   // Cek apakah sudah purwa
   if (dataUpdate.purwa !== true)
     return res.status(400).json({
-      message: 'belum selesai purwa',
+      message: 'Belum Selesai Purwa',
     });
 
   // Cek jarak update
@@ -294,7 +294,7 @@ export const createMadya = async (req, res) => {
 
   if (cek <= 100)
     return res.status(400).json({
-      message: 'jarak minimal 100 hari',
+      message: 'Jarak Minimal 100 Hari',
     });
 
   // request new update
@@ -319,10 +319,10 @@ export const createMadya = async (req, res) => {
         },
       }
     );
-    res.status(200).json({ message: 'create tkk madya successfully' });
+    res.status(200).json({ message: 'Create TKK Madya Success' });
   } catch (error) {
     res.json({
-      message: 'create tkk madya failed',
+      message: 'Create TKK Madya Failed',
       error: error,
     });
   }
@@ -347,13 +347,13 @@ export const createUtama = async (req, res) => {
   });
   if (!dataUpdate)
     return res.status(404).json({
-      message: 'No Data Found',
+      message: 'Data Not Found',
     });
 
   // Cek apakah sudah rakit
   if (dataUpdate.madya !== true)
     return res.status(400).json({
-      message: 'belum selesai madya',
+      message: 'Belum Selesai Madya',
     });
 
   // Cek jarak update
@@ -363,7 +363,7 @@ export const createUtama = async (req, res) => {
 
   if (cek <= 100)
     return res.status(400).json({
-      message: 'jarak minimal 100 hari',
+      message: 'Jarak Minimal 100 Hari',
     });
 
   // request new update
@@ -388,10 +388,10 @@ export const createUtama = async (req, res) => {
         },
       }
     );
-    res.status(200).json({ message: 'create tkk utama successfully' });
+    res.status(200).json({ message: 'Create TKK Utama Success' });
   } catch (error) {
     res.json({
-      message: 'create tkk utama failed',
+      message: 'Create TKK Utama Failed',
       error: error,
     });
   }
@@ -417,7 +417,7 @@ export const updateTkk = async (req, res) => {
   });
   if (!dataUpdate)
     return res.status(404).json({
-      message: 'No Data Found',
+      message: 'Data Not Found',
     });
 
   // request new update
@@ -439,10 +439,10 @@ export const updateTkk = async (req, res) => {
         },
       }
     );
-    res.status(200).json({ message: 'updated tkk successfully' });
+    res.status(200).json({ message: 'Update TKK Success' });
   } catch (error) {
     res.json({
-      message: 'updated tkk failed',
+      message: 'Update TKK Failed',
       error: error,
     });
   }
@@ -467,7 +467,7 @@ export const deletePurwa = async (req, res) => {
   });
 
   // cek if there is no data
-  if (!dataDelete) return res.status(404).json({ message: 'No Data Found' });
+  if (!dataDelete) return res.status(404).json({ message: 'Data Not Found' });
 
   // if there is data
   try {
@@ -476,10 +476,10 @@ export const deletePurwa = async (req, res) => {
         id: req.params.id,
       },
     });
-    res.status(200).json({ message: 'deleted tkk purwa success' });
+    res.status(200).json({ message: 'Delete TKK Purwa Success' });
   } catch (error) {
     res.json({
-      message: 'delete tkk purwa failed',
+      message: 'Delete TKK Purwa Failed',
       Error: error,
     });
   }
@@ -504,7 +504,7 @@ export const deleteMadya = async (req, res) => {
   });
   if (!dataUpdate)
     return res.status(404).json({
-      message: 'No Data Found',
+      message: 'Data Not Found',
     });
 
   const madya = false;
@@ -523,10 +523,10 @@ export const deleteMadya = async (req, res) => {
         },
       }
     );
-    res.status(200).json({ message: 'delete tkk madya successfully' });
+    res.status(200).json({ message: 'Delete TKK Madya Success' });
   } catch (error) {
     res.json({
-      message: 'delete tkk madya failed',
+      message: 'Delete TKK Madya Failed',
       error: error,
     });
   }
@@ -551,7 +551,7 @@ export const deleteUtama = async (req, res) => {
   });
   if (!dataUpdate)
     return res.status(404).json({
-      message: 'No Data Found',
+      message: 'Data Not Found',
     });
 
   const utama = false;
@@ -570,10 +570,10 @@ export const deleteUtama = async (req, res) => {
         },
       }
     );
-    res.status(200).json({ message: 'delete tkk utama successfully' });
+    res.status(200).json({ message: 'Delete TKK Utama Success' });
   } catch (error) {
     res.json({
-      message: 'delete tkk utama failed',
+      message: 'Delete TKK Utama Failed',
       error: error,
     });
   }
