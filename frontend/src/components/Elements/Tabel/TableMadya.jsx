@@ -13,6 +13,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { getMadya } from "../../../redux/actions/madya/madyaThunk";
 import { formatSK } from "../DataFormat/FormatSK";
 import { dateFormat } from "../DataFormat/DateFormat";
+import { Form, Formik } from "formik";
+import * as Yup from "yup";
 
 const TableMadya = () => {
   // HANDLE MODAL

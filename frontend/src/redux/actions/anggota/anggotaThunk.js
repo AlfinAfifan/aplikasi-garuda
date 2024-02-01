@@ -8,3 +8,11 @@ export const getAnggota = createAsyncThunk("getAnggota", async () => {
 
   return resp.data;
 });
+
+export const createAnggota = createAsyncThunk("createAnggota", async (data) => {
+  const resp = await axios.post("http://localhost:4000/anggota", data, {
+    withCredentials: true,
+  });
+
+  return resp.data;
+});

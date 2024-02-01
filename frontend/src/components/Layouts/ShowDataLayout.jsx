@@ -9,6 +9,7 @@ const ShowDataLayout = ({ children, title, clickAdd, clickOption }) => {
   const isLembaga = location.pathname === "/lembaga";
   const isAdmin = location.pathname === "/admin";
   const isAnggota = location.pathname === "/anggota";
+  const isJenis = location.pathname === "/jenis";
 
   return (
     <div className="">
@@ -18,7 +19,7 @@ const ShowDataLayout = ({ children, title, clickAdd, clickOption }) => {
         <select
           name=""
           id=""
-          className={`rounded-md border border-black p-1 ${isDashboard || isLembaga || isAdmin || isAnggota ? "hidden" : ""}`}
+          className={`rounded-md border border-black p-1 ${isDashboard || isLembaga || isAdmin || isAnggota || isJenis ? "hidden" : ""}`}
         >
           <option value="">2020</option>
         </select>

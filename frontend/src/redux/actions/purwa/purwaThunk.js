@@ -8,3 +8,11 @@ export const getPurwa = createAsyncThunk("getPurwa", async () => {
 
   return resp.data;
 });
+
+export const createPurwa = createAsyncThunk("createPurwa", async () => {
+  const resp = await axios.post("http://localhost:4000/purwa", {
+    withCredentials: true,
+  });
+
+  return resp.data;
+});

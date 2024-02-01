@@ -9,6 +9,7 @@ import { terapReducer } from "./actions/terap/terapSlice";
 import { purwaReducer } from "./actions/purwa/purwaSlice";
 import { madyaReducer } from "./actions/madya/madyaSlice";
 import { utamaReducer } from "./actions/utama/utamaSlice";
+import { jenisTkkReducer } from "./actions/jenisTkk/jenisTkkSlice";
 // import thunk from "redux-thunk";
 
 const reducer = combineReducers({
@@ -22,6 +23,7 @@ const reducer = combineReducers({
   purwa: purwaReducer,
   madya: madyaReducer,
   utama: utamaReducer,
+  jenis: jenisTkkReducer,
 });
 
 const store = configureStore({

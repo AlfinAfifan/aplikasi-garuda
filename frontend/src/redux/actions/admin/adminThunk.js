@@ -8,3 +8,11 @@ export const getAdmin = createAsyncThunk("getAdmin", async () => {
 
   return resp.data;
 });
+
+export const createAdmin = createAsyncThunk("createAdmin", async (data) => {
+  const resp = await axios.post("http://localhost:4000/admin", data, {
+    withCredentials: true,
+  });
+
+  return resp.data;
+});

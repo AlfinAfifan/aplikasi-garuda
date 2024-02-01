@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { createAnggota, getAnggota } from "./anggotaThunk";
+import { createJenisTkk, getJenisTkk } from "./jenisTkkThunk";
 
 const initialState = {
   data: [],
@@ -8,49 +8,49 @@ const initialState = {
   type: "",
 };
 
-const anggotaSlice = createSlice({
-  name: "anggota",
+const jenisTkkSlice = createSlice({
+  name: "jenisTkk",
   initialState,
   extraReducers: (builder) => {
     builder
-      .addCase(getAnggota.pending, (state, action) => {
+      .addCase(getJenisTkk.pending, (state, action) => {
         return {
           ...state,
           loading: true,
           type: action.type,
         };
       })
-      .addCase(getAnggota.fulfilled, (state, action) => {
+      .addCase(getJenisTkk.fulfilled, (state, action) => {
         return {
           ...state,
           loading: false,
-          type: action.type,
           data: action.payload,
+          type: action.type,
         };
       })
-      .addCase(getAnggota.rejected, (state, action) => {
+      .addCase(getJenisTkk.rejected, (state, action) => {
         return {
           ...state,
           error: action.payload,
           type: action.type,
         };
       })
-      .addCase(createAnggota.pending, (state, action) => {
+      .addCase(createJenisTkk.pending, (state, action) => {
         return {
           ...state,
           loading: true,
           type: action.type,
         };
       })
-      .addCase(createAnggota.fulfilled, (state, action) => {
+      .addCase(createJenisTkk.fulfilled, (state, action) => {
         return {
           ...state,
           loading: false,
-          type: action.type,
           data: action.payload,
+          type: action.type,
         };
       })
-      .addCase(createAnggota.rejected, (state, action) => {
+      .addCase(createJenisTkk.rejected, (state, action) => {
         return {
           ...state,
           error: action.payload,
@@ -60,6 +60,6 @@ const anggotaSlice = createSlice({
   },
 });
 
-const { actions: anggotaActions, reducer: anggotaReducer } = anggotaSlice;
-export { anggotaActions, anggotaReducer };
-export default anggotaSlice;
+const { actions: jenisTkkActions, reducer: jenisTkkReducer } = jenisTkkSlice;
+export { jenisTkkActions, jenisTkkReducer };
+export default jenisTkkSlice;

@@ -7,6 +7,7 @@ import {
   PlayIcon,
   PresentationChartBarIcon,
   PresentationChartLineIcon,
+  QueueListIcon,
   TableCellsIcon,
   UsersIcon,
 } from "@heroicons/react/24/solid";
@@ -26,6 +27,7 @@ const Sidebar = () => {
   const isPurwa = location.pathname === "/purwa";
   const isMadya = location.pathname === "/madya";
   const isUtama = location.pathname === "/utama";
+  const isJenis = location.pathname === "/jenis";
   const isRekap = location.pathname === "/rekap";
 
   // DROPDOWN
@@ -222,14 +224,14 @@ const Sidebar = () => {
         </div>
       </NavLink>
 
-      <NavLink to="/rekap" className="flex items-center">
+      <NavLink to="/jenis" className="flex items-center">
         <div
-          className={`h-11 w-1 bg-orange-600 ${isRekap ? "opacity-100" : "opacity-0"}`}
+          className={`h-11 w-1 bg-orange-600 ${isJenis ? "opacity-100" : "opacity-0"}`}
         ></div>
         <div
-          className={`ml-5 flex items-center gap-4 hover:opacity-100 ${isRekap ? "opacity-100" : "opacity-40"}`}
+          className={`ml-5 flex items-center gap-4 hover:opacity-100 ${isJenis ? "opacity-100" : "opacity-40"}`}
         >
-          <TableCellsIcon className={`${isOpen ? "h-5" : "ml-1.5 h-6"}`} />
+          <QueueListIcon className={`${isOpen ? "h-5" : "ml-1.5 h-6"}`} />
           <h1 className={`${isOpen ? "" : "hidden"}`}>Jenis TKK</h1>
         </div>
       </NavLink>

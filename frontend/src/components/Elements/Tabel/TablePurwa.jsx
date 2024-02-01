@@ -14,6 +14,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { getPurwa } from "../../../redux/actions/purwa/purwaThunk";
 import { dateFormat } from "../DataFormat/DateFormat";
 import { formatSK } from "../DataFormat/FormatSK";
+import { Form, Formik } from "formik";
+import * as Yup from "yup";
+import SelectSearch from "../Form/SelectSearch";
+import { getRakit } from "../../../redux/actions/rakit/rakitThunk";
+import InputDisabled from "../Form/InputDisabled";
 
 const TablePurwa = () => {
   // HANDLE MODAL
@@ -27,6 +32,8 @@ const TablePurwa = () => {
   const formRef = useRef(null);
   const closeModal = () => {
     setModalOpen(false);
+    setLembagaSelected("");
+    setSelected("");
     formRef.current.reset();
     document.body.style.overflow = "auto";
   };
@@ -41,7 +48,54 @@ const TablePurwa = () => {
 
   useEffect(() => {
     dispatch(getPurwa());
+    dispatch(getRakit());
   }, []);
+
+  // GET ANGGOTA FOR CHOICE
+  const dataAnggota = useSelector((i) => i.rakit.data);
+  const [searchResult, setSearchResult] = useState(null);
+  const [errorSearch, setErrorSearch] = useState(false);
+  const [selected, setSelected] = useState(false);
+
+  const [lembagaSelected, setLembagaSelected] = useState("");
+
+  const optionAnggota = dataAnggota.map((data) => ({
+    id: data.id,
+    key: data.anggota.nama,
+    value: data.anggota.nama,
+  }));
+  const onSearch = (record) => {
+    setSearchResult(record.item.id);
+    setSelected(record.item.key);
+    setLembagaSelected(record.item.lembaga);
+  };
+
+  // HANDLE FORM & VALIDASI
+  const initialValues = {
+    nama_penguji: "",
+    jabatan_penguji: "",
+    alamat_penguji: "",
+  };
+
+  const validationSchema = Yup.object().shape({
+    nama_penguji: Yup.string().required("Nama harus diisi"),
+    jabatan_penguji: Yup.string().required("Jabatan harus diisi"),
+    alamat_penguji: Yup.string().required("Alamat harus diisi"),
+  });
+
+  const onSubmit = (values, { resetForm }) => {
+    const dataCreate = {
+      ...values,
+      id_lembaga: searchResult,
+    };
+
+    if (searchResult) {
+      dispatch(createAdmin(dataCreate));
+      closeModal();
+    } else {
+      setErrorSearch(true);
+    }
+  };
 
   return (
     <>
@@ -85,31 +139,43 @@ const TablePurwa = () => {
         setModalOpen={setModalOpen}
         onClick={closeModal}
       >
-        <form
-          action="#"
-          ref={formRef}
-          className="mt-8 grid grid-cols-2 gap-x-10 gap-y-6 pb-10"
+        <Formik
+          initialValues={initialValues}
+          validationSchema={validationSchema}
+          onSubmit={onSubmit}
         >
-          <Input
-            label="Nama"
-            name="nama"
-            type="text"
-            onchange={(e) => console.log(e.target.value)}
-          />
-          <Input label="Asal Lembaga" name="Lembaga" type="text" />
-          <SelectOpt name="jenis" label="Jenis TKK">
-            <option value="pilih" disabled hidden>
-              Pilih jenis tkk
-            </option>
-            <option value="">Memasak</option>
-          </SelectOpt>
-          <Input label="Bidang" name="bidang" type="text" />
-          <Input label="Nama Penguji" name="penguji" type="text" />
-          <Input label="Jabatan Penguji" name="jabatan" type="text" />
-          <Input label="Alamat Penguji" name="alamat" type="text" />
+          {(form) => (
+            <Form
+              action="#"
+              ref={formRef}
+              className="mt-8 grid grid-cols-2 gap-x-10 gap-y-6 pb-10"
+            >
+              <SelectSearch
+                name="id_anggota"
+                label="Nama"
+                placeholder={selected ? selected : "Cari Nama Anggota"}
+                data={optionAnggota}
+                onselect={onSearch}
+                error={errorSearch}
+              />
+              <InputDisabled label="Asal Lembaga" value={lembagaSelected} />
+              <SelectSearch
+                name="id_jenis_tkk"
+                label="Jenis TKK"
+                placeholder={selected ? selected : "Cari Jenis TKK"}
+                data={optionAnggota}
+                onselect={onSearch}
+                error={errorSearch}
+              />
+              <Input label="Bidang" name="bidang" type="text" />
+              <Input label="Nama Penguji" name="penguji" type="text" />
+              <Input label="Jabatan Penguji" name="jabatan" type="text" />
+              <Input label="Alamat Penguji" name="alamat" type="text" />
 
-          <Button>Simpan</Button>
-        </form>
+              <Button>Simpan</Button>
+            </Form>
+          )}
+        </Formik>
       </Modal>
     </>
   );

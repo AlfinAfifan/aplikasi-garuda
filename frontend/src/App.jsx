@@ -12,8 +12,11 @@ import PurwaPage from "./pages/PurwaPage";
 import MadyaPage from "./pages/MadyaPage";
 import UtamaPage from "./pages/UtamaPage";
 import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import PrivateRoute from "./PrivateRoute";
 import LoginPage from "./pages/LoginPage";
+import JenisTkkPage from "./pages/JenisTkkPage";
+import NotFoundPage from "./pages/NotFoundPage";
 
 function App() {
   return (
@@ -22,6 +25,8 @@ function App() {
         <ToastContainer autoClose={3000} />
         <Routes>
           <Route path="/" element={<LoginPage />} />
+          <Route path="*" element={<NotFoundPage />} />
+
           <Route
             element={
               <PrivateRoute>
@@ -39,6 +44,7 @@ function App() {
             <Route path="/purwa" element={<PurwaPage />} />
             <Route path="/madya" element={<MadyaPage />} />
             <Route path="/utama" element={<UtamaPage />} />
+            <Route path="/jenis" element={<JenisTkkPage />} />
             <Route path="/rekap" element={<RekapPage />} />
           </Route>
         </Routes>
