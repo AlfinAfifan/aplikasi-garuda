@@ -9,8 +9,8 @@ export const getPurwa = createAsyncThunk("getPurwa", async () => {
   return resp.data;
 });
 
-export const createPurwa = createAsyncThunk("createPurwa", async () => {
-  const resp = await axios.post("http://localhost:4000/purwa", {
+export const createPurwa = createAsyncThunk("createPurwa", async (data) => {
+  const resp = await axios.post("http://localhost:4000/purwa", data, {
     withCredentials: true,
   });
 
