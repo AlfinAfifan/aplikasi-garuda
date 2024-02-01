@@ -5,9 +5,13 @@ import { PencilSquareIcon, TrashIcon } from "@heroicons/react/24/solid";
 import Modal from "../Modal/ModalInput";
 import Input from "../Form/Input";
 import Button from "../Form/Button";
-import SelectOpt from "../Form/SelectOpt";
 import { useDispatch, useSelector } from "react-redux";
-import { getJenisTkk } from "../../../redux/actions/jenisTkk/jenisTkkThunk";
+import {
+  createJenisTkk,
+  getJenisTkk,
+} from "../../../redux/actions/jenisTkk/jenisTkkThunk";
+import { Form, Formik } from "formik";
+import * as Yup from "yup";
 
 const TableJenisTkk = () => {
   // HANDLE MODAL
@@ -32,10 +36,35 @@ const TableJenisTkk = () => {
   // GET DATA
   const dispatch = useDispatch();
   const dataJenis = useSelector((i) => i.jenis.data);
+  const typeAction = useSelector((i) => i.jenis.type);
 
   useEffect(() => {
     dispatch(getJenisTkk());
   }, []);
+
+  useEffect(() => {
+    if (typeAction === "createJenisTkk/fulfilled") {
+      dispatch(getJenisTkk());
+    }
+  }, [typeAction]);
+
+  // HANDLE FORM & VALIDASI
+  const initialValues = {
+    nama: "",
+    bidang: "",
+    warna: "",
+  };
+
+  const validationSchema = Yup.object().shape({
+    nama: Yup.string().required("Nama harus diisi"),
+    bidang: Yup.string().required("Bidang harus diisi"),
+    warna: Yup.string().required("Warna harus diisi"),
+  });
+
+  const onSubmit = (values, { resetForm }) => {
+    dispatch(createJenisTkk(values));
+    closeModal();
+  };
 
   return (
     <>
@@ -54,19 +83,25 @@ const TableJenisTkk = () => {
           </tr>
         </THead>
         <TBody>
-          {dataJenis?.map((data, idx) => (
-            <tr className="capitalize" key={idx}>
-              <td className="font-bold">{idx + 1}</td>
-              <td>{data.nama}</td>
-              <td>{data.bidang}</td>
-              <td>{data.warna}</td>
+          {Array.isArray(dataJenis) ? (
+            dataJenis.map((data, idx) => (
+              <tr className="capitalize" key={idx}>
+                <td className="font-bold">{idx + 1}</td>
+                <td>{data.nama}</td>
+                <td>{data.bidang}</td>
+                <td>{data.warna}</td>
 
-              <td className="flex gap-2">
-                <TrashIcon className="hover w-6 cursor-pointer text-red-600 hover:text-red-700" />
-                <PencilSquareIcon className="w-6 cursor-pointer text-third hover:text-first" />
-              </td>
+                <td className="flex gap-2">
+                  <TrashIcon className="hover w-6 cursor-pointer text-red-600 hover:text-red-700" />
+                  <PencilSquareIcon className="w-6 cursor-pointer text-third hover:text-first" />
+                </td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td>Terjadi Error</td>
             </tr>
-          ))}
+          )}
         </TBody>
       </ShowDataLayout>
 
@@ -77,40 +112,25 @@ const TableJenisTkk = () => {
         setModalOpen={setModalOpen}
         onClick={closeModal}
       >
-        <form
-          action="#"
-          ref={formRef}
-          className="mt-8 grid grid-cols-2 gap-x-10 gap-y-6 pb-10"
+        <Formik
+          initialValues={initialValues}
+          validationSchema={validationSchema}
+          onSubmit={onSubmit}
         >
-          <Input
-            label="Nama"
-            name="nama"
-            type="text"
-            onchange={(e) => console.log(e.target.value)}
-          />
-          <Input label="Email" name="email" type="email" />
-          <Input label="Asal Lembaga" name="lembaga" type="text" />
-          <Input label="NTA" name="nta" type="text" />
-          <Input label="Tempat Lahir" name="tmptLahir" type="text" />
-          <Input label="Tanggal Lahir" name="tglLahir" type="date" />
-          <Input label="Alamat" name="alamat" type="text" />
-          <SelectOpt label="Agama" name="agama">
-            <option value="pilih" disabled hidden>
-              Pilih agama
-            </option>
-            <option value="">Islam</option>
-            <option value="">Katholik</option>
-          </SelectOpt>
-          <SelectOpt label="Jabatan" name="jabatan">
-            <option value="pilih" disabled hidden>
-              Pilih jabatan
-            </option>
-            <option value="">Guru</option>
-            <option value="">Pembina</option>
-          </SelectOpt>
+          {(form) => (
+            <Form
+              action="#"
+              ref={formRef}
+              className="mt-8 grid grid-cols-2 gap-x-10 gap-y-6 pb-10"
+            >
+              <Input label="Nama" name="nama" type="text" />
+              <Input label="Bidang" name="bidang" type="text" />
+              <Input label="Warna" name="warna" type="text" />
 
-          <Button>Simpan</Button>
-        </form>
+              <Button>Simpan</Button>
+            </Form>
+          )}
+        </Formik>
       </Modal>
     </>
   );

@@ -8,3 +8,15 @@ export const getRakit = createAsyncThunk("getRakit", async () => {
 
   return resp.data;
 });
+
+export const createRakit = createAsyncThunk("createRakit", async (data) => {
+  const resp = await axios.patch(
+    `http://localhost:4000/rakit/${data.id}`,
+    data.data,
+    {
+      withCredentials: true,
+    },
+  );
+
+  return resp.data;
+});

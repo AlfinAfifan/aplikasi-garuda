@@ -8,3 +8,11 @@ export const getRamu = createAsyncThunk("getRamu", async () => {
 
   return resp.data;
 });
+
+export const createRamu = createAsyncThunk("createRamu", async (data) => {
+  const resp = await axios.post("http://localhost:4000/tku", data, {
+    withCredentials: true,
+  });
+
+  return resp.data;
+});

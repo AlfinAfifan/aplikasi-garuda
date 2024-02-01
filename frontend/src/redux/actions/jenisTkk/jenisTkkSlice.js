@@ -1,10 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getJenisTkk } from "./jenisTkkThunk";
+import { createJenisTkk, getJenisTkk } from "./jenisTkkThunk";
 
 const initialState = {
   data: [],
   loading: false,
   error: null,
+  type: "",
 };
 
 const jenisTkkSlice = createSlice({
@@ -16,6 +17,7 @@ const jenisTkkSlice = createSlice({
         return {
           ...state,
           loading: true,
+          type: action.type,
         };
       })
       .addCase(getJenisTkk.fulfilled, (state, action) => {
@@ -23,12 +25,36 @@ const jenisTkkSlice = createSlice({
           ...state,
           loading: false,
           data: action.payload,
+          type: action.type,
         };
       })
       .addCase(getJenisTkk.rejected, (state, action) => {
         return {
           ...state,
           error: action.payload,
+          type: action.type,
+        };
+      })
+      .addCase(createJenisTkk.pending, (state, action) => {
+        return {
+          ...state,
+          loading: true,
+          type: action.type,
+        };
+      })
+      .addCase(createJenisTkk.fulfilled, (state, action) => {
+        return {
+          ...state,
+          loading: false,
+          data: action.payload,
+          type: action.type,
+        };
+      })
+      .addCase(createJenisTkk.rejected, (state, action) => {
+        return {
+          ...state,
+          error: action.payload,
+          type: action.type,
         };
       });
   },

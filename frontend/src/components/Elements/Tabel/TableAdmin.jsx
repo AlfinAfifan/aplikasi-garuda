@@ -7,8 +7,12 @@ import Input from "../Form/Input";
 import Button from "../Form/Button";
 import SelectOpt from "../Form/SelectOpt";
 import { useDispatch, useSelector } from "react-redux";
-import { getAdmin } from "../../../redux/actions/admin/adminThunk";
+import { createAdmin, getAdmin } from "../../../redux/actions/admin/adminThunk";
 import { dateFormat } from "../DataFormat/DateFormat";
+import { Form, Formik } from "formik";
+import * as Yup from "yup";
+import { getLembaga } from "../../../redux/actions/lembaga/lembagaThunk";
+import SelectSearch from "../Form/SelectSearch";
 
 const TableAdmin = () => {
   // HANDLE MODAL
@@ -22,6 +26,7 @@ const TableAdmin = () => {
   const formRef = useRef(null);
   const closeModal = () => {
     setModalOpen(false);
+    setSelected("");
     formRef.current.reset();
     document.body.style.overflow = "auto";
   };
@@ -33,10 +38,80 @@ const TableAdmin = () => {
   // GET DATA
   const dispatch = useDispatch();
   const dataAdmin = useSelector((i) => i.admin.data);
+  const typeAction = useSelector((i) => i.admin.type);
 
   useEffect(() => {
     dispatch(getAdmin());
+    dispatch(getLembaga());
   }, []);
+
+  useEffect(() => {
+    if (typeAction === "createAdmin/fulfilled") {
+      dispatch(getAdmin());
+    }
+  }, [typeAction]);
+
+  // GET LEMBAGA FOR CHOICE
+  const dataLembaga = useSelector((i) => i.lembaga.data);
+  const [searchResult, setSearchResult] = useState(null);
+  const [errorSearch, setErrorSearch] = useState(false);
+  const [selected, setSelected] = useState(false);
+
+  const optionLembaga = dataLembaga.map((data) => ({
+    id: data.id,
+    key: data.nama_lembaga,
+    value: data.nama_lembaga,
+  }));
+  const onSearch = (record) => {
+    setSearchResult(record.item.id);
+    setSelected(record.item.key);
+  };
+
+  // HANDLE FORM & VALIDASI
+  const optionAgama = [
+    { key: "Islam", value: "islam" },
+    { key: "Kristen", value: "kristen" },
+  ];
+  const optionJabatan = [
+    { key: "Pembina", value: "pembina" },
+    { key: "Guru", value: "guru" },
+  ];
+
+  const initialValues = {
+    nama: "",
+    alamat: "",
+    email: "",
+    nta: "",
+    tmpt_lahir: "",
+    tgl_lahir: "",
+    jabatan: "",
+    agama: "",
+  };
+
+  const validationSchema = Yup.object().shape({
+    nama: Yup.string().required("Nama harus diisi"),
+    alamat: Yup.string().required("Alamat harus diisi"),
+    email: Yup.string().email().required("Email harus diisi"),
+    nta: Yup.string().required("NTA harus diisi"),
+    tmpt_lahir: Yup.string().required("Tempat lahir harus diisi"),
+    tgl_lahir: Yup.string().required("Tanggal lahir harus diisi"),
+    jabatan: Yup.string().required("Jabatan harus diisi"),
+    agama: Yup.string().required("Agama harus diisi"),
+  });
+
+  const onSubmit = (values, { resetForm }) => {
+    const dataCreate = {
+      ...values,
+      id_lembaga: searchResult,
+    };
+
+    if (searchResult) {
+      dispatch(createAdmin(dataCreate));
+      closeModal();
+    } else {
+      setErrorSearch(true);
+    }
+  };
 
   return (
     <>
@@ -59,22 +134,28 @@ const TableAdmin = () => {
           </tr>
         </THead>
         <TBody>
-          {dataAdmin?.map((data, idx) => (
-            <tr className="capitalize" key={idx}>
-              <td className="font-bold">{idx + 1}</td>
-              <td>{data.nama}</td>
-              <td>{data.lembaga.nama_lembaga}</td>
-              <td>{data.nta}</td>
-              <td>{`${data.tmpt_lahir}, ${dateFormat(data.tgl_lahir)}`}</td>
-              <td>{data.alamat}</td>
-              <td>{data.agama}</td>
-              <td>{data.jabatan}</td>
-              <td className="flex gap-2">
-                <TrashIcon className="hover w-6 cursor-pointer text-red-600 hover:text-red-700" />
-                <PencilSquareIcon className="w-6 cursor-pointer text-third hover:text-first" />
-              </td>
+          {Array.isArray(dataAdmin) ? (
+            dataAdmin.map((data, idx) => (
+              <tr className="capitalize" key={idx}>
+                <td className="font-bold">{idx + 1}</td>
+                <td>{data.nama}</td>
+                <td>{data.lembaga?.nama_lembaga}</td>
+                <td>{data.nta}</td>
+                <td>{`${data.tmpt_lahir}, ${dateFormat(data.tgl_lahir)}`}</td>
+                <td>{data.alamat}</td>
+                <td>{data.agama}</td>
+                <td>{data.jabatan}</td>
+                <td className="flex gap-2">
+                  <TrashIcon className="hover w-6 cursor-pointer text-red-600 hover:text-red-700" />
+                  <PencilSquareIcon className="w-6 cursor-pointer text-third hover:text-first" />
+                </td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td>Terjadi Error</td>
             </tr>
-          ))}
+          )}
         </TBody>
       </ShowDataLayout>
 
@@ -85,40 +166,48 @@ const TableAdmin = () => {
         setModalOpen={setModalOpen}
         onClick={closeModal}
       >
-        <form
-          action="#"
-          ref={formRef}
-          className="mt-8 grid grid-cols-2 gap-x-10 gap-y-6 pb-10"
+        <Formik
+          initialValues={initialValues}
+          validationSchema={validationSchema}
+          onSubmit={onSubmit}
         >
-          <Input
-            label="Nama"
-            name="nama"
-            type="text"
-            onchange={(e) => console.log(e.target.value)}
-          />
-          <Input label="Email" name="email" type="email" />
-          <Input label="Asal Lembaga" name="lembaga" type="text" />
-          <Input label="NTA" name="nta" type="text" />
-          <Input label="Tempat Lahir" name="tmptLahir" type="text" />
-          <Input label="Tanggal Lahir" name="tglLahir" type="date" />
-          <Input label="Alamat" name="alamat" type="text" />
-          <SelectOpt label="Agama" name="agama">
-            <option value="pilih" disabled hidden>
-              Pilih agama
-            </option>
-            <option value="">Islam</option>
-            <option value="">Katholik</option>
-          </SelectOpt>
-          <SelectOpt label="Jabatan" name="jabatan">
-            <option value="pilih" disabled hidden>
-              Pilih jabatan
-            </option>
-            <option value="">Guru</option>
-            <option value="">Pembina</option>
-          </SelectOpt>
+          {(form) => (
+            <Form
+              action="#"
+              ref={formRef}
+              className="mt-8 grid grid-cols-2 gap-x-10 gap-y-4 pb-10"
+            >
+              <Input label="Nama" name="nama" type="text" />
+              <Input label="Email" name="email" type="email" />
+              <SelectSearch
+                name="lembaga"
+                label="Asal Lembaga"
+                placeholder={selected ? selected : "Cari Nama Lembaga"}
+                data={optionLembaga}
+                onselect={onSearch}
+                error={errorSearch}
+              />
+              <Input label="NTA" name="nta" type="text" />
+              <Input label="Tempat Lahir" name="tmpt_lahir" type="text" />
+              <Input label="Tanggal Lahir" name="tgl_lahir" type="date" />
+              <Input label="Alamat" name="alamat" type="text" />
+              <SelectOpt
+                label="Agama"
+                name="agama"
+                placeholder="Silahkan pilih agama"
+                options={optionAgama}
+              />
+              <SelectOpt
+                label="Jabatan"
+                name="jabatan"
+                placeholder="Silahkan pilih jabatan"
+                options={optionJabatan}
+              />
 
-          <Button>Simpan</Button>
-        </form>
+              <Button>Simpan</Button>
+            </Form>
+          )}
+        </Formik>
       </Modal>
     </>
   );

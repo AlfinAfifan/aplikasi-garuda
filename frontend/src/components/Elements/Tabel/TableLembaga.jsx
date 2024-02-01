@@ -6,7 +6,12 @@ import Modal from "../Modal/ModalInput";
 import Input from "../Form/Input";
 import Button from "../Form/Button";
 import { useDispatch, useSelector } from "react-redux";
-import { getLembaga } from "../../../redux/actions/lembaga/lembagaThunk";
+import {
+  createLembaga,
+  getLembaga,
+} from "../../../redux/actions/lembaga/lembagaThunk";
+import { Form, Formik } from "formik";
+import * as Yup from "yup";
 
 const TableLembaga = () => {
   // HANDLE MODAL
@@ -23,17 +28,48 @@ const TableLembaga = () => {
     document.body.style.overflow = "auto";
   };
 
-  const handleOption = () => {
-    console.log("Option");
-  };
-
   // GET DATA
   const dispatch = useDispatch();
   const dataLembaga = useSelector((i) => i.lembaga.data);
+  const typeAction = useSelector((i) => i.lembaga.type);
 
   useEffect(() => {
     dispatch(getLembaga());
-  }, []);
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (typeAction === "createLembaga/fulfilled") {
+      dispatch(getLembaga());
+    }
+  }, [typeAction]);
+
+  // HANDLE FORM & VALIDASI
+  const initialValues = {
+    nama_lembaga: "",
+    alamat: "",
+    no_gudep_lk: "",
+    no_gudep_pr: "",
+    kepsek: "",
+    nip_kepsek: "",
+  };
+
+  const validationSchema = Yup.object().shape({
+    nama_lembaga: Yup.string().required("Nama Lembaga harus diisi"),
+    alamat: Yup.string().required("Alamat harus diisi"),
+    no_gudep_lk: Yup.string().required("Nomor Gudep Putra harus diisi"),
+    no_gudep_pr: Yup.string().required("Nomor Gudep Putri harus diisi"),
+    kepsek: Yup.string().required("Kepala Sekolah harus diisi"),
+    nip_kepsek: Yup.string().required("NIP Kepala Sekolah harus diisi"),
+  });
+
+  const onSubmit = (values, { resetForm }) => {
+    dispatch(createLembaga(values));
+    closeModal(); // Optional: close the modal after submitting
+  };
+
+  const handleOption = () => {
+    console.log("Option");
+  };
 
   return (
     <>
@@ -55,21 +91,27 @@ const TableLembaga = () => {
           </tr>
         </THead>
         <TBody>
-          {dataLembaga?.map((data, idx) => (
-            <tr className="capitalize" key={idx}>
-              <td className="font-bold">{idx + 1}</td>
-              <td>{data.nama_lembaga}</td>
-              <td>{data.alamat}</td>
-              <td>{data.no_gudep_lk}</td>
-              <td>{data.no_gudep_pr}</td>
-              <td>{data.kepsek}</td>
-              <td>{data.nip_kepsek}</td>
-              <td className="flex gap-2">
-                <TrashIcon className="hover w-6 cursor-pointer text-red-600 hover:text-red-700" />
-                <PencilSquareIcon className="w-6 cursor-pointer text-third hover:text-first" />
-              </td>
+          {Array.isArray(dataLembaga) ? (
+            dataLembaga.map((data, idx) => (
+              <tr className="capitalize" key={idx}>
+                <td className="font-bold">{idx + 1}</td>
+                <td>{data?.nama_lembaga}</td>
+                <td>{data?.alamat}</td>
+                <td>{data?.no_gudep_lk}</td>
+                <td>{data?.no_gudep_pr}</td>
+                <td>{data?.kepsek}</td>
+                <td>{data?.nip_kepsek}</td>
+                <td className="flex gap-2">
+                  <TrashIcon className="hover w-6 cursor-pointer text-red-600 hover:text-red-700" />
+                  <PencilSquareIcon className="w-6 cursor-pointer text-third hover:text-first" />
+                </td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td>Terjadi Error</td>
             </tr>
-          ))}
+          )}
         </TBody>
       </ShowDataLayout>
 
@@ -80,25 +122,27 @@ const TableLembaga = () => {
         setModalOpen={setModalOpen}
         onClick={closeModal}
       >
-        <form
-          action="#"
-          ref={formRef}
-          className="mt-8 grid grid-cols-2 gap-x-10 gap-y-6 pb-10"
+        <Formik
+          initialValues={initialValues}
+          validationSchema={validationSchema}
+          onSubmit={onSubmit}
         >
-          <Input
-            label="Nama Lembaga"
-            name="nama"
-            type="text"
-            onchange={(e) => console.log(e.target.value)}
-          />
-          <Input label="Alamat Lembaga" name="alamat" type="text" />
-          <Input label="Nomor Gudep Putra" name="gudepL" type="text" />
-          <Input label="Nomor Gudep Putri" name="gudepP" type="text" />
-          <Input label="Kepala Sekolah" name="kepsek" type="text" />
-          <Input label="NIP Kepala Sekolah" name="nipKepsek" type="text" />
+          {(formik) => (
+            <Form
+              ref={formRef}
+              className="mt-8 grid grid-cols-2 gap-x-10 gap-y-6 pb-10"
+            >
+              <Input label="Nama Lembaga" name="nama_lembaga" type="text" />
+              <Input label="Alamat Lembaga" name="alamat" type="text" />
+              <Input label="Nomor Gudep Putra" name="no_gudep_lk" type="text" />
+              <Input label="Nomor Gudep Putri" name="no_gudep_pr" type="text" />
+              <Input label="Kepala Sekolah" name="kepsek" type="text" />
+              <Input label="NIP Kepala Sekolah" name="nip_kepsek" type="text" />
 
-          <Button>Simpan</Button>
-        </form>
+              <Button>Simpan</Button>
+            </Form>
+          )}
+        </Formik>
       </Modal>
     </>
   );

@@ -1,10 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getAdmin } from "./adminThunk";
+import { createAdmin, getAdmin } from "./adminThunk";
 
 const initialState = {
   data: [],
   loading: false,
   error: null,
+  type: "",
 };
 
 const adminSlice = createSlice({
@@ -16,6 +17,7 @@ const adminSlice = createSlice({
         return {
           ...state,
           loading: true,
+          type: action.type,
         };
       })
       .addCase(getAdmin.fulfilled, (state, action) => {
@@ -23,12 +25,36 @@ const adminSlice = createSlice({
           ...state,
           loading: false,
           data: action.payload,
+          type: action.type,
         };
       })
       .addCase(getAdmin.rejected, (state, action) => {
         return {
           ...state,
           error: action.payload,
+          type: action.type,
+        };
+      })
+      .addCase(createAdmin.pending, (state, action) => {
+        return {
+          ...state,
+          loading: true,
+          type: action.type,
+        };
+      })
+      .addCase(createAdmin.fulfilled, (state, action) => {
+        return {
+          ...state,
+          loading: false,
+          data: action.payload,
+          type: action.type,
+        };
+      })
+      .addCase(createAdmin.rejected, (state, action) => {
+        return {
+          ...state,
+          error: action.payload,
+          type: action.type,
         };
       });
   },
