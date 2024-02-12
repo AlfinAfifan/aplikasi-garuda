@@ -11,7 +11,11 @@ import Input from "../Form/Input";
 import Button from "../Form/Button";
 import SelectOpt from "../Form/SelectOpt";
 import { useDispatch, useSelector } from "react-redux";
-import { createPurwa, getPurwa } from "../../../redux/actions/purwa/purwaThunk";
+import {
+  createPurwa,
+  getPurwa,
+  getPurwaId,
+} from "../../../redux/actions/purwa/purwaThunk";
 import { dateFormat } from "../DataFormat/DateFormat";
 import { formatSK } from "../DataFormat/FormatSK";
 import { Form, Formik } from "formik";
@@ -20,10 +24,13 @@ import SelectSearch from "../Form/SelectSearch";
 import { getRakit } from "../../../redux/actions/rakit/rakitThunk";
 import InputDisabled from "../Form/InputDisabled";
 import { getJenisTkk } from "../../../redux/actions/jenisTkk/jenisTkkThunk";
+import ModalDetail from "../Modal/ModalDetail";
+import ListDetail from "../Modal/ListDetail";
 
 const TablePurwa = () => {
   // HANDLE MODAL
   const [isModalOpen, setModalOpen] = useState(false);
+  const [isModalDetailOpen, setModalDetailOpen] = useState(false);
 
   const openModal = () => {
     setModalOpen(true);
@@ -33,6 +40,7 @@ const TablePurwa = () => {
   const formRef = useRef(null);
   const closeModal = () => {
     setModalOpen(false);
+    setModalDetailOpen(false);
     setLembagaSelected("");
     setSelected("");
     setSelected2("");
@@ -45,6 +53,7 @@ const TablePurwa = () => {
   // GET DATA
   const dispatch = useDispatch();
   const dataPurwa = useSelector((i) => i.purwa.data);
+  const dataPurwaId = useSelector((i) => i.purwa.dataById);
   const typeAction = useSelector((i) => i.purwa.type);
 
   useEffect(() => {
@@ -55,6 +64,8 @@ const TablePurwa = () => {
 
   useEffect(() => {
     if (typeAction === "createPurwa/fulfilled") {
+      dispatch(getPurwa());
+    } else if (typeAction === "getPurwaId/fulfilled") {
       dispatch(getPurwa());
     }
   }, [typeAction]);
@@ -127,6 +138,14 @@ const TablePurwa = () => {
     }
   };
 
+  // HANDLE DETAIL
+  const [sk, setSk] = useState("");
+  const handleDetail = async (id, sk) => {
+    setSk(sk);
+    setModalDetailOpen(true);
+    dispatch(getPurwaId(id));
+  };
+
   return (
     <>
       <ShowDataLayout title="Tabel Data Purwa" clickAdd={openModal}>
@@ -151,7 +170,10 @@ const TablePurwa = () => {
                 <td>{dateFormat(data.tgl_purwa)}</td>
                 <td className="flex gap-2">
                   <TrashIcon className="hover w-6 cursor-pointer text-red-600 hover:text-red-700" />
-                  <DocumentTextIcon className="w-6 cursor-pointer text-amber-500 hover:text-amber-600" />
+                  <DocumentTextIcon
+                    className="w-6 cursor-pointer text-amber-500 hover:text-amber-600"
+                    onClick={() => handleDetail(data.id, formatSK(idx))}
+                  />
                 </td>
               </tr>
             ))
@@ -211,6 +233,35 @@ const TablePurwa = () => {
           )}
         </Formik>
       </Modal>
+
+      {/* MODAL DETAIL */}
+      <ModalDetail
+        title="Detail Anggota"
+        isModalOpen={isModalDetailOpen}
+        onClick={closeModal}
+      >
+        <ListDetail title="No SK" value={sk} />
+        <ListDetail title="Nama Anggota" value={dataPurwaId?.anggota?.nama} />
+        <ListDetail
+          title="Asal Lembaga"
+          value={dataPurwaId?.anggota?.lembaga?.nama_lembaga}
+        />
+        <ListDetail title="Jenis tkk" value={dataPurwaId?.jenis_tkk?.nama} />
+        <ListDetail
+          title="Tanggal dilantik"
+          value={dateFormat(dataPurwaId?.tgl_purwa)}
+        />
+        <ListDetail title="Nama Penguji" value={dataPurwaId?.nama_penguji} />
+        <ListDetail
+          title="Jabatan Penguji"
+          value={dataPurwaId?.jabatan_penguji}
+        />
+        <ListDetail
+          title="Alamat Penguji"
+          value={dataPurwaId?.alamat_penguji}
+          style=""
+        />
+      </ModalDetail>
     </>
   );
 };

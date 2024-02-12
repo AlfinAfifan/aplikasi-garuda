@@ -3,7 +3,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 
 export const getLembaga = createAsyncThunk("getLembaga", async () => {
-  const resp = await axios.get("http://localhost:4000/lembaga", {
+  const resp = await axios.get(`${import.meta.env.VITE_APP_DOMAIN}/lembaga`, {
     withCredentials: true,
   });
 
@@ -12,9 +12,13 @@ export const getLembaga = createAsyncThunk("getLembaga", async () => {
 
 export const createLembaga = createAsyncThunk("createLembaga", async (data) => {
   try {
-    const resp = await axios.post("http://localhost:4000/lembaga", data, {
-      withCredentials: true,
-    });
+    const resp = await axios.post(
+      `${import.meta.env.VITE_APP_DOMAIN}/lembaga`,
+      data,
+      {
+        withCredentials: true,
+      },
+    );
 
     toast.success("Tambah Data Sukses");
     return resp.data;

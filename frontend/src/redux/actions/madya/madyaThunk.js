@@ -3,7 +3,15 @@ import axios from "axios";
 import { toast } from "react-toastify";
 
 export const getMadya = createAsyncThunk("getMadya", async () => {
-  const resp = await axios.get("http://localhost:4000/madya", {
+  const resp = await axios.get(`${import.meta.env.VITE_APP_DOMAIN}/madya`, {
+    withCredentials: true,
+  });
+
+  return resp.data;
+});
+
+export const getMadyaId = createAsyncThunk("getMadyaId", async (id) => {
+  const resp = await axios.get(`${import.meta.env.VITE_APP_DOMAIN}/tkk/${id}`, {
     withCredentials: true,
   });
 
@@ -13,7 +21,7 @@ export const getMadya = createAsyncThunk("getMadya", async () => {
 export const createMadya = createAsyncThunk("createMadya", async (data) => {
   try {
     const resp = await axios.patch(
-      `http://localhost:4000/madya/${data.id}`,
+      `${import.meta.env.VITE_APP_DOMAIN}/madya/${data.id}`,
       data,
       {
         withCredentials: true,

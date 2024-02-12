@@ -32,6 +32,7 @@ const rakitSlice = createSlice({
       .addCase(getRakit.rejected, (state, action) => {
         return {
           ...state,
+          loading: false,
           error: action.payload,
           type: action.type,
         };
@@ -54,6 +55,7 @@ const rakitSlice = createSlice({
       .addCase(createRakit.rejected, (state, action) => {
         return {
           ...state,
+          loading: false,
           errorCreate: true,
           type: action.type,
         };

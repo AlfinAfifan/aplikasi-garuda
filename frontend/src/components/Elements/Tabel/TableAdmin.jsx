@@ -115,7 +115,7 @@ const TableAdmin = () => {
     <>
       <ShowDataLayout
         title="Tabel Data Admin"
-        descript="* Gunakan alamat email admin untuk mengisi form email dan password login"
+        descript="*Gunakan alamat email admin untuk mengisi form email dan password login"
         clickAdd={openModal}
       >
         <THead>

@@ -1,7 +1,7 @@
 import { XMarkIcon } from "@heroicons/react/24/solid";
 import React from "react";
 
-const Modal = ({ children, isModalOpen, title, onClick }) => {
+const ModalDetail = ({ children, isModalOpen, title, onClick }) => {
   return (
     <>
       <div
@@ -27,11 +27,13 @@ const Modal = ({ children, isModalOpen, title, onClick }) => {
             <h1 className="opacity-0">kunci</h1>
           </div>
 
-          {children}
+          <div className="mt-8 grid grid-cols-2 gap-x-10 gap-y-4 pb-16">
+            {children}
+          </div>
         </div>
       </div>
     </>
   );
 };
 
-export default Modal;
+export default ModalDetail;

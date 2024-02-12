@@ -31,6 +31,7 @@ const ramuSlice = createSlice({
       .addCase(getRamu.rejected, (state, action) => {
         return {
           ...state,
+          loading: false,
           error: action.payload,
           type: action.type,
         };
@@ -53,6 +54,7 @@ const ramuSlice = createSlice({
       .addCase(createRamu.rejected, (state, action) => {
         return {
           ...state,
+          loading: false,
           error: action.payload,
           type: action.type,
         };

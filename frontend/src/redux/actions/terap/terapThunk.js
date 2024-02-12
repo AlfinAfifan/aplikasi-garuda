@@ -3,9 +3,20 @@ import axios from "axios";
 import { toast } from "react-toastify";
 
 export const getTerap = createAsyncThunk("getTerap", async () => {
-  const resp = await axios.get("http://localhost:4000/terap", {
+  const resp = await axios.get(`${import.meta.env.VITE_APP_DOMAIN}/terap`, {
     withCredentials: true,
   });
+
+  return resp.data;
+});
+
+export const getTerapId = createAsyncThunk("getTerapId", async (id) => {
+  const resp = await axios.get(
+    `${import.meta.env.VITE_APP_DOMAIN}/terap/${id}`,
+    {
+      withCredentials: true,
+    },
+  );
 
   return resp.data;
 });
@@ -13,7 +24,7 @@ export const getTerap = createAsyncThunk("getTerap", async () => {
 export const createTerap = createAsyncThunk("createTerap", async (data) => {
   try {
     const resp = await axios.patch(
-      `http://localhost:4000/terap/${data.id}`,
+      `${import.meta.env.VITE_APP_DOMAIN}/terap/${data.id}`,
       data.data,
       {
         withCredentials: true,

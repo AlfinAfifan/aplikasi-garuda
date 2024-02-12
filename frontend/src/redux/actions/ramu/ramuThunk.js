@@ -3,7 +3,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 
 export const getRamu = createAsyncThunk("getRamu", async () => {
-  const resp = await axios.get("http://localhost:4000/ramu", {
+  const resp = await axios.get(`${import.meta.env.VITE_APP_DOMAIN}/ramu`, {
     withCredentials: true,
   });
 
@@ -12,9 +12,13 @@ export const getRamu = createAsyncThunk("getRamu", async () => {
 
 export const createRamu = createAsyncThunk("createRamu", async (data) => {
   try {
-    const resp = await axios.post("http://localhost:4000/tku", data, {
-      withCredentials: true,
-    });
+    const resp = await axios.post(
+      `${import.meta.env.VITE_APP_DOMAIN}/tku`,
+      data,
+      {
+        withCredentials: true,
+      },
+    );
 
     toast.success("Tambah Data Sukses");
     return resp.data;

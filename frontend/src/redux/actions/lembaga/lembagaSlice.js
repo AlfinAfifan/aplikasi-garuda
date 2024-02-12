@@ -31,6 +31,7 @@ const lembagaSlice = createSlice({
       .addCase(getLembaga.rejected, (state, action) => {
         return {
           ...state,
+          loading: false,
           error: action.payload,
           type: action.type,
         };
@@ -52,6 +53,7 @@ const lembagaSlice = createSlice({
       .addCase(createLembaga.rejected, (state, action) => {
         return {
           ...state,
+          loading: false,
           error: action.payload,
           type: action.type,
         };
