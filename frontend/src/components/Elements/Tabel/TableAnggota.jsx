@@ -14,16 +14,20 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   createAnggota,
   getAnggota,
+  getAnggotaId,
 } from "../../../redux/actions/anggota/anggotaThunk";
 import { dateFormat } from "../DataFormat/DateFormat";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import SelectSearch from "../Form/SelectSearch";
 import { getLembaga } from "../../../redux/actions/lembaga/lembagaThunk";
+import ModalDetail from "../Modal/ModalDetail";
+import ListDetail from "../Modal/ListDetail";
 
 const TableAnggota = () => {
   // HANDLE MODAL
   const [isModalOpen, setModalOpen] = useState(false);
+  const [isModalDetailOpen, setModalDetailOpen] = useState(false);
   const openModal = () => {
     setModalOpen(true);
     document.body.style.overflow = "hidden";
@@ -32,6 +36,7 @@ const TableAnggota = () => {
   const formRef = useRef(null);
   const closeModal = () => {
     setModalOpen(false);
+    setModalDetailOpen(false);
     setSelected("");
     setSearchResult(null);
     formRef.current.reset();
@@ -41,6 +46,7 @@ const TableAnggota = () => {
   // GET DATA
   const dispatch = useDispatch();
   const dataAnggota = useSelector((i) => i.anggota.data);
+  const anggotaById = useSelector((i) => i.anggota.dataById);
   const typeAction = useSelector((i) => i.anggota.type);
 
   useEffect(() => {
@@ -50,6 +56,8 @@ const TableAnggota = () => {
 
   useEffect(() => {
     if (typeAction === "createAnggota/fulfilled") {
+      dispatch(getAnggota());
+    } else if (typeAction === "getAnggotaId/fulfilled") {
       dispatch(getAnggota());
     }
   }, [typeAction]);
@@ -165,6 +173,12 @@ const TableAnggota = () => {
     }
   };
 
+  // HANDLE DETAIL
+  const handleDetail = async (id) => {
+    setModalDetailOpen(true);
+    dispatch(getAnggotaId(id));
+  };
+
   return (
     <>
       <ShowDataLayout title="Tabel Data Anggota" clickAdd={openModal}>
@@ -196,7 +210,10 @@ const TableAnggota = () => {
                 <td className="flex gap-2">
                   <TrashIcon className="hover w-6 cursor-pointer text-red-600 hover:text-red-700" />
                   <PencilSquareIcon className="w-6 cursor-pointer text-third hover:text-first" />
-                  <DocumentTextIcon className="w-6 cursor-pointer text-amber-500 hover:text-amber-600" />
+                  <DocumentTextIcon
+                    className="w-6 cursor-pointer text-amber-500 hover:text-amber-600"
+                    onClick={() => handleDetail(data.id)}
+                  />
                 </td>
               </tr>
             ))
@@ -212,7 +229,6 @@ const TableAnggota = () => {
       <Modal
         title="Tambah Data Anggota"
         isModalOpen={isModalOpen}
-        setModalOpen={setModalOpen}
         onClick={closeModal}
       >
         <Formik
@@ -322,6 +338,72 @@ const TableAnggota = () => {
           )}
         </Formik>
       </Modal>
+
+      {/* MODAL DETAIL */}
+      <ModalDetail
+        title="Detail Anggota"
+        isModalOpen={isModalDetailOpen}
+        onClick={closeModal}
+      >
+        <ListDetail title="Nama Anggota" value={anggotaById?.nama} />
+        <ListDetail
+          title="Asal Lembaga"
+          value={anggotaById?.lembaga?.nama_lembaga}
+        />
+        <ListDetail title="No Induk" value={anggotaById?.no_induk} />
+        <ListDetail title="NTA" value={anggotaById?.nta} />
+        <ListDetail
+          title="TTL"
+          value={`${anggotaById?.tmpt_lahir}, ${dateFormat(anggotaById?.tgl_lahir)}`}
+        />
+        <ListDetail title="Jenis Kelamin" value={anggotaById?.gender} />
+        <ListDetail title="Agama" value={anggotaById?.agama} />
+        <ListDetail title="Bakat / Hobi" value={anggotaById?.bakat_hobi} />
+        <ListDetail title="No Telepon" value={anggotaById?.no_telp} />
+        <ListDetail
+          title="Kewarganegaraan"
+          value={anggotaById?.warga}
+          style="uppercase"
+        />
+        <ListDetail
+          title="Alamat"
+          value={`RT ${anggotaById?.rt}, RW ${anggotaById?.rw}, Desa/Kelurahan ${anggotaById?.ds_kelurahan}, Kecamatan ${anggotaById?.kecamatan}, Kabupaten ${anggotaById?.kab_kota}, Provinsi ${anggotaById?.provinsi}`}
+        />
+
+        {/* IDENTITAS ORTU */}
+        <div className="col-span-2 mt-5 flex flex-col items-center gap-2">
+          <h1 className="text-gray-500">Data Orang Tua</h1>
+          <div className=" h-0.5 w-full rounded-full bg-gray-200"></div>
+        </div>
+        <ListDetail title="Nama Ayah" value={anggotaById?.nama_ayah} />
+        <ListDetail
+          title="TTL Ayah"
+          value={`${anggotaById?.tmpt_lahir_ayah}, ${dateFormat(anggotaById?.tgl_lahir_ayah)}`}
+        />
+        <ListDetail title="Nama Ibu" value={anggotaById?.nama_ibu} />
+        <ListDetail
+          title="TTL Ibu"
+          value={`${anggotaById?.tmpt_lahir_ibu}, ${dateFormat(anggotaById?.tgl_lahir_ibu)}`}
+        />
+        <ListDetail title="Alamat Ortu" value={anggotaById?.alamat_ortu} />
+        <ListDetail title="No Telp Ortu" value={anggotaById?.no_telp_ortu} />
+
+        {/* DETAIL PANGKALAN */}
+        <div className="col-span-2 mt-5 flex flex-col items-center gap-2">
+          <h1 className="text-gray-500">Data Tentang Pangkalan</h1>
+          <div className=" h-0.5 w-full rounded-full bg-gray-200"></div>
+        </div>
+        <ListDetail
+          title="Tgl masuk"
+          value={dateFormat(anggotaById?.tgl_masuk_pangkalan)}
+        />
+        <ListDetail title="Tingkat masuk" value={anggotaById?.tingkat_masuk} />
+        <ListDetail
+          title="Tgl keluar"
+          value={dateFormat(anggotaById?.tgl_keluar_pangkalan)}
+        />
+        <ListDetail title="Alasan keluar" value={anggotaById?.alasan_keluar} />
+      </ModalDetail>
     </>
   );
 };

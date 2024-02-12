@@ -10,7 +10,11 @@ import Modal from "../Modal/ModalInput";
 import Input from "../Form/Input";
 import Button from "../Form/Button";
 import { useDispatch, useSelector } from "react-redux";
-import { createMadya, getMadya } from "../../../redux/actions/madya/madyaThunk";
+import {
+  createMadya,
+  getMadya,
+  getMadyaId,
+} from "../../../redux/actions/madya/madyaThunk";
 import { formatSK } from "../DataFormat/FormatSK";
 import { dateFormat } from "../DataFormat/DateFormat";
 import { Form, Formik } from "formik";
@@ -18,10 +22,13 @@ import * as Yup from "yup";
 import InputDisabled from "../Form/InputDisabled";
 import { getPurwa } from "../../../redux/actions/purwa/purwaThunk";
 import SelectSearch from "../Form/SelectSearch";
+import ModalDetail from "../Modal/ModalDetail";
+import ListDetail from "../Modal/ListDetail";
 
 const TableMadya = () => {
   // HANDLE MODAL
   const [isModalOpen, setModalOpen] = useState(false);
+  const [isModalDetailOpen, setModalDetailOpen] = useState(false);
 
   const openModal = () => {
     setModalOpen(true);
@@ -31,6 +38,7 @@ const TableMadya = () => {
   const formRef = useRef(null);
   const closeModal = () => {
     setModalOpen(false);
+    setModalDetailOpen(false);
     setSelected("");
     setJenisSelected("");
     setSearchResult(null);
@@ -45,6 +53,7 @@ const TableMadya = () => {
   // GET DATA
   const dispatch = useDispatch();
   const dataMadya = useSelector((i) => i.madya.data);
+  const dataMadyaId = useSelector((i) => i.madya.dataById);
   const typeAction = useSelector((i) => i.madya.type);
 
   useEffect(() => {
@@ -54,6 +63,8 @@ const TableMadya = () => {
 
   useEffect(() => {
     if (typeAction === "createMadya/fulfilled") {
+      dispatch(getMadya());
+    } else if (typeAction === "getMadyaId/fulfilled") {
       dispatch(getMadya());
     }
   }, [typeAction]);
@@ -106,6 +117,14 @@ const TableMadya = () => {
     }
   };
 
+  // HANDLE DETAIL
+  const [sk, setSk] = useState("");
+  const handleDetail = async (id, sk) => {
+    setSk(sk);
+    setModalDetailOpen(true);
+    dispatch(getMadyaId(id));
+  };
+
   return (
     <>
       <ShowDataLayout
@@ -134,7 +153,10 @@ const TableMadya = () => {
                 <td>{dateFormat(data.tgl_madya)}</td>
                 <td className="flex gap-2">
                   <TrashIcon className="hover w-6 cursor-pointer text-red-600 hover:text-red-700" />
-                  <DocumentTextIcon className="w-6 cursor-pointer text-amber-500 hover:text-amber-600" />
+                  <DocumentTextIcon
+                    className="w-6 cursor-pointer text-amber-500 hover:text-amber-600"
+                    onClick={() => handleDetail(data.id, formatSK(idx))}
+                  />
                 </td>
               </tr>
             ))
@@ -186,6 +208,35 @@ const TableMadya = () => {
           )}
         </Formik>
       </Modal>
+
+      {/* MODAL DETAIL */}
+      <ModalDetail
+        title="Detail Anggota"
+        isModalOpen={isModalDetailOpen}
+        onClick={closeModal}
+      >
+        <ListDetail title="No SK" value={sk} />
+        <ListDetail title="Nama Anggota" value={dataMadyaId?.anggota?.nama} />
+        <ListDetail
+          title="Asal Lembaga"
+          value={dataMadyaId?.anggota?.lembaga?.nama_lembaga}
+        />
+        <ListDetail title="Jenis tkk" value={dataMadyaId?.jenis_tkk?.nama} />
+        <ListDetail
+          title="Tanggal dilantik"
+          value={dateFormat(dataMadyaId?.tgl_purwa)}
+        />
+        <ListDetail title="Nama Penguji" value={dataMadyaId?.nama_penguji} />
+        <ListDetail
+          title="Jabatan Penguji"
+          value={dataMadyaId?.jabatan_penguji}
+        />
+        <ListDetail
+          title="Alamat Penguji"
+          value={dataMadyaId?.alamat_penguji}
+          style=""
+        />
+      </ModalDetail>
     </>
   );
 };

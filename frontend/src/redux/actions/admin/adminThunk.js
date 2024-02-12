@@ -3,7 +3,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 
 export const getAdmin = createAsyncThunk("getAdmin", async () => {
-  const resp = await axios.get("http://localhost:4000/admin", {
+  const resp = await axios.get(`${import.meta.env.VITE_APP_DOMAIN}/admin`, {
     withCredentials: true,
   });
 
@@ -12,9 +12,13 @@ export const getAdmin = createAsyncThunk("getAdmin", async () => {
 
 export const createAdmin = createAsyncThunk("createAdmin", async (data) => {
   try {
-    const resp = await axios.post("http://localhost:4000/admin", data, {
-      withCredentials: true,
-    });
+    const resp = await axios.post(
+      `${import.meta.env.VITE_APP_DOMAIN}/admin`,
+      data,
+      {
+        withCredentials: true,
+      },
+    );
 
     toast.success("Tambah Data Sukses");
     return resp.data;

@@ -3,7 +3,15 @@ import axios from "axios";
 import { toast } from "react-toastify";
 
 export const getUtama = createAsyncThunk("getUtama", async () => {
-  const resp = await axios.get("http://localhost:4000/utama", {
+  const resp = await axios.get(`${import.meta.env.VITE_APP_DOMAIN}/utama`, {
+    withCredentials: true,
+  });
+
+  return resp.data;
+});
+
+export const getUtamaId = createAsyncThunk("getUtamaId", async (id) => {
+  const resp = await axios.get(`${import.meta.env.VITE_APP_DOMAIN}/tkk/${id}`, {
     withCredentials: true,
   });
 
@@ -13,7 +21,7 @@ export const getUtama = createAsyncThunk("getUtama", async () => {
 export const createUtama = createAsyncThunk("createUtama", async (data) => {
   try {
     const resp = await axios.patch(
-      `http://localhost:4000/utama/${data.id}`,
+      `${import.meta.env.VITE_APP_DOMAIN}utama/${data.id}`,
       data,
       {
         withCredentials: true,

@@ -31,6 +31,7 @@ const jenisTkkSlice = createSlice({
       .addCase(getJenisTkk.rejected, (state, action) => {
         return {
           ...state,
+          loading: false,
           error: action.payload,
           type: action.type,
         };
@@ -53,6 +54,7 @@ const jenisTkkSlice = createSlice({
       .addCase(createJenisTkk.rejected, (state, action) => {
         return {
           ...state,
+          loading: false,
           error: action.payload,
           type: action.type,
         };

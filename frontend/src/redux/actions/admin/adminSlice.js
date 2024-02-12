@@ -31,6 +31,7 @@ const adminSlice = createSlice({
       .addCase(getAdmin.rejected, (state, action) => {
         return {
           ...state,
+          loading: false,
           error: action.payload,
           type: action.type,
         };
@@ -53,6 +54,7 @@ const adminSlice = createSlice({
       .addCase(createAdmin.rejected, (state, action) => {
         return {
           ...state,
+          loading: false,
           error: action.payload,
           type: action.type,
         };

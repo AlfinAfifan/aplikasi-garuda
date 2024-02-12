@@ -10,7 +10,11 @@ import Modal from "../Modal/ModalInput";
 import Input from "../Form/Input";
 import Button from "../Form/Button";
 import { useDispatch, useSelector } from "react-redux";
-import { createUtama, getUtama } from "../../../redux/actions/utama/utamaThunk";
+import {
+  createUtama,
+  getUtama,
+  getUtamaId,
+} from "../../../redux/actions/utama/utamaThunk";
 import { formatSK } from "../DataFormat/FormatSK";
 import { dateFormat } from "../DataFormat/DateFormat";
 import { Form, Formik } from "formik";
@@ -18,10 +22,13 @@ import * as Yup from "yup";
 import SelectSearch from "../Form/SelectSearch";
 import InputDisabled from "../Form/InputDisabled";
 import { getMadya } from "../../../redux/actions/madya/madyaThunk";
+import ModalDetail from "../Modal/ModalDetail";
+import ListDetail from "../Modal/ListDetail";
 
 const TableUtama = () => {
   // HANDLE MODAL
   const [isModalOpen, setModalOpen] = useState(false);
+  const [isModalDetailOpen, setModalDetailOpen] = useState(false);
 
   const openModal = () => {
     setModalOpen(true);
@@ -31,6 +38,7 @@ const TableUtama = () => {
   const formRef = useRef(null);
   const closeModal = () => {
     setModalOpen(false);
+    setModalDetailOpen(false);
     setSelected("");
     setJenisSelected("");
     setSearchResult(null);
@@ -45,6 +53,7 @@ const TableUtama = () => {
   // GET DATA
   const dispatch = useDispatch();
   const dataUtama = useSelector((i) => i.utama.data);
+  const dataUtamaId = useSelector((i) => i.utama.dataById);
   const typeAction = useSelector((i) => i.utama.type);
 
   useEffect(() => {
@@ -55,6 +64,8 @@ const TableUtama = () => {
   useEffect(() => {
     if (typeAction === "createUtama/fulfilled") {
       dispatch(getUtama());
+    } else if (typeAction === "getTerapId/fulfilled") {
+      dispatch(getPurwa());
     }
   }, [typeAction]);
 
@@ -105,6 +116,14 @@ const TableUtama = () => {
     }
   };
 
+  // HANDLE DETAIL
+  const [sk, setSk] = useState("");
+  const handleDetail = async (id, sk) => {
+    setSk(sk);
+    setModalDetailOpen(true);
+    dispatch(getUtamaId(id));
+  };
+
   return (
     <>
       <ShowDataLayout
@@ -133,7 +152,10 @@ const TableUtama = () => {
                 <td>{dateFormat(data.tgl_utama)}</td>
                 <td className="flex gap-2">
                   <TrashIcon className="hover w-6 cursor-pointer text-red-600 hover:text-red-700" />
-                  <DocumentTextIcon className="w-6 cursor-pointer text-amber-500 hover:text-amber-600" />
+                  <DocumentTextIcon
+                    className="w-6 cursor-pointer text-amber-500 hover:text-amber-600"
+                    onClick={() => handleDetail(data.id, formatSK(idx))}
+                  />
                 </td>
               </tr>
             ))
@@ -185,6 +207,35 @@ const TableUtama = () => {
           )}
         </Formik>
       </Modal>
+
+      {/* MODAL DETAIL */}
+      <ModalDetail
+        title="Detail Anggota"
+        isModalOpen={isModalDetailOpen}
+        onClick={closeModal}
+      >
+        <ListDetail title="No SK" value={sk} />
+        <ListDetail title="Nama Anggota" value={dataUtamaId?.anggota?.nama} />
+        <ListDetail
+          title="Asal Lembaga"
+          value={dataUtamaId?.anggota?.lembaga?.nama_lembaga}
+        />
+        <ListDetail title="Jenis tkk" value={dataUtamaId?.jenis_tkk?.nama} />
+        <ListDetail
+          title="Tanggal dilantik"
+          value={dateFormat(dataUtamaId?.tgl_purwa)}
+        />
+        <ListDetail title="Nama Penguji" value={dataUtamaId?.nama_penguji} />
+        <ListDetail
+          title="Jabatan Penguji"
+          value={dataUtamaId?.jabatan_penguji}
+        />
+        <ListDetail
+          title="Alamat Penguji"
+          value={dataUtamaId?.alamat_penguji}
+          style=""
+        />
+      </ModalDetail>
     </>
   );
 };

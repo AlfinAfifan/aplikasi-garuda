@@ -12,7 +12,6 @@ import {
 } from "../../../redux/actions/lembaga/lembagaThunk";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
-import { toast } from "react-toastify";
 
 const TableLembaga = () => {
   // HANDLE MODAL
@@ -68,17 +67,14 @@ const TableLembaga = () => {
     closeModal();
   };
 
-  const handleOption = () => {
-    console.log("Option");
+  // HANDLE EDIT
+  const handleEdit = () => {
+    openModal();
   };
 
   return (
     <>
-      <ShowDataLayout
-        title="Tabel Data Lembaga"
-        clickAdd={openModal}
-        clickOption={handleOption}
-      >
+      <ShowDataLayout title="Tabel Data Lembaga" clickAdd={openModal}>
         <THead>
           <tr>
             <td className="w-5">No</td>
@@ -104,7 +100,10 @@ const TableLembaga = () => {
                 <td>{data?.nip_kepsek}</td>
                 <td className="flex gap-2">
                   <TrashIcon className="hover w-6 cursor-pointer text-red-600 hover:text-red-700" />
-                  <PencilSquareIcon className="w-6 cursor-pointer text-third hover:text-first" />
+                  <PencilSquareIcon
+                    className="w-6 cursor-pointer text-third hover:text-first"
+                    onClick={handleEdit}
+                  />
                 </td>
               </tr>
             ))
@@ -127,6 +126,7 @@ const TableLembaga = () => {
           initialValues={initialValues}
           validationSchema={validationSchema}
           onSubmit={onSubmit}
+          enableReinitialize={true}
         >
           {(formik) => (
             <Form

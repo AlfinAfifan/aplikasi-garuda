@@ -3,7 +3,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 
 export const getRakit = createAsyncThunk("getRakit", async () => {
-  const resp = await axios.get("http://localhost:4000/rakit", {
+  const resp = await axios.get(`${import.meta.env.VITE_APP_DOMAIN}/rakit`, {
     withCredentials: true,
   });
 
@@ -13,7 +13,7 @@ export const getRakit = createAsyncThunk("getRakit", async () => {
 export const createRakit = createAsyncThunk("createRakit", async (data) => {
   try {
     const resp = await axios.patch(
-      `http://localhost:4000/rakit/${data.id}`,
+      `${import.meta.env.VITE_APP_DOMAIN}/rakit/${data.id}`,
       data.data,
       {
         withCredentials: true,

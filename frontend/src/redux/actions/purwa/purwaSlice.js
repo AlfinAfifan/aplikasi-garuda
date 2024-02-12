@@ -1,8 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { createPurwa, getPurwa } from "./purwaThunk";
+import { createPurwa, getPurwa, getPurwaId } from "./purwaThunk";
 
 const initialState = {
   data: [],
+  dataById: [],
   loading: false,
   error: null,
   type: "",
@@ -31,6 +32,30 @@ const purwaSlice = createSlice({
       .addCase(getPurwa.rejected, (state, action) => {
         return {
           ...state,
+          loading: false,
+          error: action.payload,
+          type: action.type,
+        };
+      })
+      .addCase(getPurwaId.pending, (state, action) => {
+        return {
+          ...state,
+          loading: true,
+          type: action.type,
+        };
+      })
+      .addCase(getPurwaId.fulfilled, (state, action) => {
+        return {
+          ...state,
+          loading: false,
+          dataById: action.payload,
+          type: action.type,
+        };
+      })
+      .addCase(getPurwaId.rejected, (state, action) => {
+        return {
+          ...state,
+          loading: false,
           error: action.payload,
           type: action.type,
         };
@@ -53,6 +78,7 @@ const purwaSlice = createSlice({
       .addCase(createPurwa.rejected, (state, action) => {
         return {
           ...state,
+          loading: false,
           error: action.payload,
           type: action.type,
         };

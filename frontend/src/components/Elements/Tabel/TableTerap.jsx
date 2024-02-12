@@ -104,7 +104,6 @@ const TableTerap = () => {
                 <td>{dateFormat(data.tgl_terap)}</td>
                 <td className="flex gap-2">
                   <TrashIcon className="hover w-6 cursor-pointer text-red-600 hover:text-red-700" />
-                  <PencilSquareIcon className="w-6 cursor-pointer text-third hover:text-first" />
                 </td>
               </tr>
             ))
