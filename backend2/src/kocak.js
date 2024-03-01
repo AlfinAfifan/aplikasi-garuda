@@ -1,15 +1,15 @@
-import express from 'express';
-import FileUpload from 'express-fileupload';
-import cors from 'cors';
-import cookieParser from 'cookie-parser';
-import dotenv from 'dotenv';
-import usersRoute from './routes/usersRoute.js';
-import lembagaRoute from './routes/lembagaRoute.js';
-import adminRoute from './routes/adminRoute.js';
-import anggotaRoute from './routes/anggotaRoute.js';
-import tkuRoute from './routes/tkuRoute.js';
-import tkkRoute from './routes/tkkRoute.js';
-import jenisTkkRoute from './routes/jenisTkkRoute.js';
+const express = require('express');
+const FileUpload = require('express-fileupload');
+const cors = require('cors');
+const cookieParser = require('cookie-parser');
+const dotenv = require('dotenv');
+const usersRoute = require('./routes/usersRoute.js');
+const lembagaRoute = require('./routes/lembagaRoute.js');
+const adminRoute = require('./routes/adminRoute.js');
+const anggotaRoute = require('./routes/anggotaRoute.js');
+const tkuRoute = require('./routes/tkuRoute.js');
+const tkkRoute = require('./routes/tkkRoute.js');
+const jenisTkkRoute = require('./routes/jenisTkkRoute.js');
 
 dotenv.config();
 
@@ -17,12 +17,20 @@ const PORT = process.env.PORT || 4000;
 
 const app = express();
 
+// app.use(
+//   cors({
+//     credentials: true,
+//     origin: ['http://localhost:5174', 'http://localhost:5173'],
+//   })
+// );
+
 app.use(
   cors({
     credentials: true,
-    origin: ['http://localhost:5174', 'http://localhost:5173'],
+    origin: ['https://manajemenkaranganyar.com'],
   })
 );
+
 app.use(cookieParser());
 app.use(express.json());
 app.use(FileUpload());

@@ -1,5 +1,5 @@
-import express from 'express';
-import { createLembaga, deleteLembaga, getLembaga, getLembagaById, updateLembaga } from '../controller/lembagaController.js';
+const express = require('express');
+const { createLembaga, deleteLembaga, getLembaga, getLembagaById, updateLembaga } = require('../controller/lembagaController.js');
 
 const router = express.Router();
 
@@ -14,4 +14,4 @@ router.patch('/lembaga/:id', updateLembaga);
 // ROUTE DELETE SURAT
 router.delete('/lembaga/:id', deleteLembaga);
 
-export default router;
+module.exports = router;

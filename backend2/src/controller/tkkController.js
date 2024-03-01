@@ -1,13 +1,13 @@
-import { response } from 'express';
-import moment from 'moment';
-import tkkModel from '../models/tkkModel.js';
-import anggotaModel from '../models/anggotaModel.js';
-import jenisTkkModel from '../models/jenisTkkModel.js';
-import usersModel from '../models/usersModel.js';
-import lembagaModel from '../models/lembagaModel.js';
+const { response } = require('express');
+const moment = require('moment');
+const tkkModel = require('../models/tkkModel.js');
+const anggotaModel = require('../models/anggotaModel.js');
+const jenisTkkModel = require('../models/jenisTkkModel.js');
+const usersModel = require('../models/usersModel.js');
+const lembagaModel = require('../models/lembagaModel.js');
 
 // CONTROLLER GET ALL SURAT
-export const getTkk = async (req, res) => {
+exports.getTkk = async (req, res) => {
   // CEK TOKEN
   const refreshToken = req.cookies.refreshToken;
   if (!refreshToken) return res.sendStatus(401);
@@ -46,7 +46,7 @@ export const getTkk = async (req, res) => {
   }
 };
 
-export const getPurwa = async (req, res) => {
+exports.getPurwa = async (req, res) => {
   // CEK TOKEN
   const refreshToken = req.cookies.refreshToken;
   if (!refreshToken) return res.sendStatus(401);
@@ -88,7 +88,7 @@ export const getPurwa = async (req, res) => {
   }
 };
 
-export const getMadya = async (req, res) => {
+exports.getMadya = async (req, res) => {
   // CEK TOKEN
   const refreshToken = req.cookies.refreshToken;
   if (!refreshToken) return res.sendStatus(401);
@@ -129,7 +129,8 @@ export const getMadya = async (req, res) => {
     res.json(error);
   }
 };
-export const getUtama = async (req, res) => {
+
+exports.getUtama = async (req, res) => {
   // CEK TOKEN
   const refreshToken = req.cookies.refreshToken;
   if (!refreshToken) return res.sendStatus(401);
@@ -172,7 +173,7 @@ export const getUtama = async (req, res) => {
 };
 
 // CONTROLLER GET SURAT BY ID
-export const getTkkById = async (req, res) => {
+exports.getTkkById = async (req, res) => {
   // CEK TOKEN
   const refreshToken = req.cookies.refreshToken;
   if (!refreshToken) return res.sendStatus(401);
@@ -215,7 +216,7 @@ export const getTkkById = async (req, res) => {
 };
 
 // CONTROLLER CREATE SURAT
-export const createPurwa = async (req, res) => {
+exports.createPurwa = async (req, res) => {
   // CEK TOKEN
   const refreshToken = req.cookies.refreshToken;
   if (!refreshToken) return res.sendStatus(401);
@@ -259,7 +260,7 @@ export const createPurwa = async (req, res) => {
   }
 };
 
-export const createMadya = async (req, res) => {
+exports.createMadya = async (req, res) => {
   // CEK TOKEN
   const refreshToken = req.cookies.refreshToken;
   if (!refreshToken) return res.sendStatus(401);
@@ -292,7 +293,7 @@ export const createMadya = async (req, res) => {
   const dateNow = moment();
   const cek = dateNow.diff(lastUpdate, 'days');
 
-  if (cek <= 100)
+  if (cek <= 30)
     return res.status(400).json({
       message: 'Jarak Minimal 100 Hari',
     });
@@ -328,7 +329,7 @@ export const createMadya = async (req, res) => {
   }
 };
 
-export const createUtama = async (req, res) => {
+exports.createUtama = async (req, res) => {
   // CEK TOKEN
   const refreshToken = req.cookies.refreshToken;
   if (!refreshToken) return res.sendStatus(401);
@@ -361,7 +362,7 @@ export const createUtama = async (req, res) => {
   const dateNow = moment();
   const cek = dateNow.diff(lastUpdate, 'days');
 
-  if (cek <= 100)
+  if (cek <= 30)
     return res.status(400).json({
       message: 'Jarak Minimal 100 Hari',
     });
@@ -398,7 +399,7 @@ export const createUtama = async (req, res) => {
 };
 
 // CONTROLLER UPDATdataK SURAT
-export const updateTkk = async (req, res) => {
+exports.updateTkk = async (req, res) => {
   // CEK TOKEN
   const refreshToken = req.cookies.refreshToken;
   if (!refreshToken) return res.sendStatus(401);
@@ -449,7 +450,7 @@ export const updateTkk = async (req, res) => {
 };
 
 // CONTROLLER DELETE SURAT
-export const deletePurwa = async (req, res) => {
+exports.deletePurwa = async (req, res) => {
   // CEK TOKEN
   const refreshToken = req.cookies.refreshToken;
   if (!refreshToken) return res.sendStatus(401);
@@ -485,7 +486,7 @@ export const deletePurwa = async (req, res) => {
   }
 };
 
-export const deleteMadya = async (req, res) => {
+exports.deleteMadya = async (req, res) => {
   // CEK TOKEN
   const refreshToken = req.cookies.refreshToken;
   if (!refreshToken) return res.sendStatus(401);
@@ -532,7 +533,7 @@ export const deleteMadya = async (req, res) => {
   }
 };
 
-export const deleteUtama = async (req, res) => {
+exports.deleteUtama = async (req, res) => {
   // CEK TOKEN
   const refreshToken = req.cookies.refreshToken;
   if (!refreshToken) return res.sendStatus(401);

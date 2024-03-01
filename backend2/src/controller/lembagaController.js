@@ -1,10 +1,10 @@
-import { response } from 'express';
-import lembagaModel from '../models/lembagaModel.js';
-import usersModel from '../models/usersModel.js';
+const { response } = require('express');
+const lembagaModel = require('../models/lembagaModel.js');
+const usersModel = require('../models/usersModel.js');
 
 // CONTROLLER GET ALL SURAT
 
-export const getLembaga = async (req, res) => {
+exports.getLembaga = async (req, res) => {
   // CEK TOKEN
   const refreshToken = req.cookies.refreshToken;
   if (!refreshToken) return res.sendStatus(401);
@@ -25,7 +25,7 @@ export const getLembaga = async (req, res) => {
 };
 
 // CONTROLLER GET SURAT BY ID
-export const getLembagaById = async (req, res) => {
+exports.getLembagaById = async (req, res) => {
   // CEK TOKEN
   const refreshToken = req.cookies.refreshToken;
   if (!refreshToken) return res.sendStatus(401);
@@ -49,7 +49,7 @@ export const getLembagaById = async (req, res) => {
 };
 
 // CONTROLLER CREATE SURAT
-export const createLembaga = async (req, res) => {
+exports.createLembaga = async (req, res) => {
   // CEK TOKEN
   const refreshToken = req.cookies.refreshToken;
   if (!refreshToken) return res.sendStatus(401);
@@ -82,8 +82,8 @@ export const createLembaga = async (req, res) => {
   }
 };
 
-// CONTROLLER UPDATdataK SURAT
-export const updateLembaga = async (req, res) => {
+// CONTROLLER UPDATE SURAT
+exports.updateLembaga = async (req, res) => {
   // CEK TOKEN
   const refreshToken = req.cookies.refreshToken;
   if (!refreshToken) return res.sendStatus(401);
@@ -135,7 +135,7 @@ export const updateLembaga = async (req, res) => {
 };
 
 // CONTROLLER DELETE SURAT
-export const deleteLembaga = async (req, res) => {
+exports.deleteLembaga = async (req, res) => {
   // CEK TOKEN
   const refreshToken = req.cookies.refreshToken;
   if (!refreshToken) return res.sendStatus(401);

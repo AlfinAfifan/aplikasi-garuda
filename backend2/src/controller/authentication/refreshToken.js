@@ -1,7 +1,7 @@
-import usersModel from '../../models/usersModel.js';
-import jwt from 'jsonwebtoken';
+const usersModel = require('../../models/usersModel.js');
+const jwt = require('jsonwebtoken');
 
-export const refreshToken = async (req, res) => {
+exports.refreshToken = async (req, res) => {
   try {
     const refreshToken = req.cookies.refreshToken;
     if (!refreshToken) return res.sendStatus(401);

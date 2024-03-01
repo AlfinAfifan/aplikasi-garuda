@@ -1,13 +1,13 @@
-import { response } from 'express';
-import moment from 'moment';
-import tkuModel from '../models/tkuModel.js';
-import anggotaModel from '../models/anggotaModel.js';
-import lembagaModel from '../models/lembagaModel.js';
-import usersModel from '../models/usersModel.js';
+const { response } = require('express');
+const moment = require('moment');
+const tkuModel = require('../models/tkuModel.js');
+const anggotaModel = require('../models/anggotaModel.js');
+const lembagaModel = require('../models/lembagaModel.js');
+const usersModel = require('../models/usersModel.js');
 
 // CONTROLLER GET ALL SURAT
 
-export const getTku = async (req, res) => {
+exports.getTku = async (req, res) => {
   // CEK TOKEN
   const refreshToken = req.cookies.refreshToken;
   if (!refreshToken) return res.sendStatus(401);
@@ -41,7 +41,7 @@ export const getTku = async (req, res) => {
   }
 };
 
-export const getRamu = async (req, res) => {
+exports.getRamu = async (req, res) => {
   // CEK TOKEN
   const refreshToken = req.cookies.refreshToken;
   if (!refreshToken) return res.sendStatus(401);
@@ -78,7 +78,7 @@ export const getRamu = async (req, res) => {
   }
 };
 
-export const getRakit = async (req, res) => {
+exports.getRakit = async (req, res) => {
   // CEK TOKEN
   const refreshToken = req.cookies.refreshToken;
   if (!refreshToken) return res.sendStatus(401);
@@ -115,7 +115,7 @@ export const getRakit = async (req, res) => {
   }
 };
 
-export const getTerap = async (req, res) => {
+exports.getTerap = async (req, res) => {
   // CEK TOKEN
   const refreshToken = req.cookies.refreshToken;
   if (!refreshToken) return res.sendStatus(401);
@@ -153,7 +153,7 @@ export const getTerap = async (req, res) => {
 };
 
 // CONTROLLER GET SURAT BY ID
-export const getTkuById = async (req, res) => {
+exports.getTkuById = async (req, res) => {
   // CEK TOKEN
   const refreshToken = req.cookies.refreshToken;
   if (!refreshToken) return res.sendStatus(401);
@@ -191,7 +191,7 @@ export const getTkuById = async (req, res) => {
 };
 
 // CONTROLLER CREATE SURAT
-export const createTku = async (req, res) => {
+exports.createTku = async (req, res) => {
   // CEK TOKEN
   const refreshToken = req.cookies.refreshToken;
   if (!refreshToken) return res.sendStatus(401);
@@ -232,7 +232,7 @@ export const createTku = async (req, res) => {
 };
 
 // CONTROLLER UPDATdataK SURAT
-export const updateTku = async (req, res) => {
+exports.updateTku = async (req, res) => {
   // CEK TOKEN
   const refreshToken = req.cookies.refreshToken;
   if (!refreshToken) return res.sendStatus(401);
@@ -278,7 +278,7 @@ export const updateTku = async (req, res) => {
   }
 };
 
-export const updateRakit = async (req, res) => {
+exports.updateRakit = async (req, res) => {
   // CEK TOKEN
   const refreshToken = req.cookies.refreshToken;
   if (!refreshToken) return res.sendStatus(401);
@@ -344,7 +344,7 @@ export const updateRakit = async (req, res) => {
   }
 };
 
-export const updateTerap = async (req, res) => {
+exports.updateTerap = async (req, res) => {
   // CEK TOKEN
   const refreshToken = req.cookies.refreshToken;
   if (!refreshToken) return res.sendStatus(401);
@@ -411,7 +411,7 @@ export const updateTerap = async (req, res) => {
 };
 
 // CONTROLLER DELETE SURAT
-export const deleteRamu = async (req, res) => {
+exports.deleteRamu = async (req, res) => {
   // CEK TOKEN
   const refreshToken = req.cookies.refreshToken;
   if (!refreshToken) return res.sendStatus(401);
@@ -447,7 +447,7 @@ export const deleteRamu = async (req, res) => {
   }
 };
 
-export const deleteRakit = async (req, res) => {
+exports.deleteRakit = async (req, res) => {
   // CEK TOKEN
   const refreshToken = req.cookies.refreshToken;
   if (!refreshToken) return res.sendStatus(401);
@@ -495,7 +495,7 @@ export const deleteRakit = async (req, res) => {
   }
 };
 
-export const deleteTerap = async (req, res) => {
+exports.deleteTerap = async (req, res) => {
   // CEK TOKEN
   const refreshToken = req.cookies.refreshToken;
   if (!refreshToken) return res.sendStatus(401);

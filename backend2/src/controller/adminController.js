@@ -1,12 +1,12 @@
-import { response } from 'express';
-import adminModel from '../models/adminModel.js';
-import lembagaModel from '../models/lembagaModel.js';
-import usersModel from '../models/usersModel.js';
-import bcrypt from 'bcrypt';
+const { response } = require('express');
+const adminModel = require('../models/adminModel.js');
+const lembagaModel = require('../models/lembagaModel.js');
+const usersModel = require('../models/usersModel.js');
+const bcrypt = require('bcrypt');
 
 // CONTROLLER GET ALL SURAT
 
-export const getAdmin = async (req, res) => {
+exports.getAdmin = async (req, res) => {
   // CEK TOKEN
   const refreshToken = req.cookies.refreshToken;
   if (!refreshToken) return res.sendStatus(401);
@@ -34,7 +34,7 @@ export const getAdmin = async (req, res) => {
 };
 
 // CONTROLLER GET SURAT BY ID
-export const getAdminById = async (req, res) => {
+exports.getAdminById = async (req, res) => {
   // CEK TOKEN
   const refreshToken = req.cookies.refreshToken;
   if (!refreshToken) return res.sendStatus(401);
@@ -64,7 +64,7 @@ export const getAdminById = async (req, res) => {
 };
 
 // CONTROLLER CREATE SURAT
-export const createAdmin = async (req, res) => {
+exports.createAdmin = async (req, res) => {
   // CEK TOKEN
   const refreshToken = req.cookies.refreshToken;
   if (!refreshToken) return res.sendStatus(401);
@@ -110,8 +110,8 @@ export const createAdmin = async (req, res) => {
   }
 };
 
-// CONTROLLER UPDATdataK SURAT
-export const updateAdmin = async (req, res) => {
+// CONTROLLER UPDATE SURAT
+exports.updateAdmin = async (req, res) => {
   // CEK TOKEN
   const refreshToken = req.cookies.refreshToken;
   if (!refreshToken) return res.sendStatus(401);
@@ -193,7 +193,7 @@ export const updateAdmin = async (req, res) => {
 };
 
 // CONTROLLER DELETE SURAT
-export const deleteAdmin = async (req, res) => {
+exports.deleteAdmin = async (req, res) => {
   // CEK TOKEN
   const refreshToken = req.cookies.refreshToken;
   if (!refreshToken) return res.sendStatus(401);
