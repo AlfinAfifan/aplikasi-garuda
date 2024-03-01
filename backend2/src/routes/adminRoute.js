@@ -1,5 +1,5 @@
-import express from 'express';
-import { createAdmin, deleteAdmin, getAdmin, getAdminById, updateAdmin } from '../controller/adminController.js';
+const express = require('express');
+const { createAdmin, deleteAdmin, getAdmin, getAdminById, updateAdmin } = require('../controller/adminController.js');
 
 const router = express.Router();
 
@@ -14,4 +14,4 @@ router.patch('/admin/:id', updateAdmin);
 // ROUTE DELETE SURAT
 router.delete('/admin/:id', deleteAdmin);
 
-export default router;
+module.exports = router;

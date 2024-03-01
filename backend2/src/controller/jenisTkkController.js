@@ -1,10 +1,10 @@
-import { response } from 'express';
-import jenisTkkModel from '../models/jenisTkkModel.js';
-import usersModel from '../models/usersModel.js';
+const { response } = require('express');
+const jenisTkkModel = require('../models/jenisTkkModel.js');
+const usersModel = require('../models/usersModel.js');
 
 // CONTROLLER GET ALL SURAT
 
-export const getJenisTkk = async (req, res) => {
+exports.getJenisTkk = async (req, res) => {
   // CEK TOKEN
   const refreshToken = req.cookies.refreshToken;
   if (!refreshToken) return res.sendStatus(401);
@@ -25,7 +25,7 @@ export const getJenisTkk = async (req, res) => {
 };
 
 // CONTROLLER GET SURAT BY ID
-export const getJenisTkkById = async (req, res) => {
+exports.getJenisTkkById = async (req, res) => {
   // CEK TOKEN
   const refreshToken = req.cookies.refreshToken;
   if (!refreshToken) return res.sendStatus(401);
@@ -49,7 +49,7 @@ export const getJenisTkkById = async (req, res) => {
 };
 
 // CONTROLLER CREATE SURAT
-export const createJenisTkk = async (req, res) => {
+exports.createJenisTkk = async (req, res) => {
   // CEK TOKEN
   const refreshToken = req.cookies.refreshToken;
   if (!refreshToken) return res.sendStatus(401);
@@ -79,8 +79,8 @@ export const createJenisTkk = async (req, res) => {
   }
 };
 
-// CONTROLLER UPDATdataK SURAT
-export const updateJenisTkk = async (req, res) => {
+// CONTROLLER UPDATE SURAT
+exports.updateJenisTkk = async (req, res) => {
   // CEK TOKEN
   const refreshToken = req.cookies.refreshToken;
   if (!refreshToken) return res.sendStatus(401);
@@ -129,7 +129,7 @@ export const updateJenisTkk = async (req, res) => {
 };
 
 // CONTROLLER DELETE SURAT
-export const deleteJenisTkk = async (req, res) => {
+exports.deleteJenisTkk = async (req, res) => {
   // CEK TOKEN
   const refreshToken = req.cookies.refreshToken;
   if (!refreshToken) return res.sendStatus(401);

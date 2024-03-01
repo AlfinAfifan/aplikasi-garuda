@@ -1,7 +1,7 @@
-import express from 'express';
-import { getUsers, createUsers, loginUsers, logoutUsers } from '../controller/authentication/usersController.js';
-import { verifyToken } from '../middleware/verifyToken.js';
-import { refreshToken } from '../controller/authentication/refreshToken.js';
+const express = require('express');
+const { getUsers, createUsers, loginUsers, logoutUsers } = require('../controller/authentication/usersController.js');
+const { verifyToken } = require('../middleware/verifyToken.js');
+const { refreshToken } = require('../controller/authentication/refreshToken.js');
 
 const router = express.Router();
 
@@ -16,4 +16,4 @@ router.get('/token', refreshToken);
 // ROUTE LOGOUT
 router.delete('/logout', logoutUsers);
 
-export default router;
+module.exports = router;

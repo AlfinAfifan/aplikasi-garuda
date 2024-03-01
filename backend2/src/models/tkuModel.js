@@ -1,8 +1,6 @@
-import { Sequelize } from 'sequelize';
-import db from '../config/database.js';
-import anggotaModel from './anggotaModel.js';
-
-const { DataTypes } = Sequelize;
+const { Sequelize, DataTypes } = require('sequelize');
+const db = require('../config/database.js');
+const anggotaModel = require('./anggotaModel.js');
 
 const tkuModel = db.define(
   'tku',
@@ -27,7 +25,7 @@ const tkuModel = db.define(
 
 tkuModel.belongsTo(anggotaModel, { foreignKey: 'id_anggota', as: 'anggota' });
 
-export default tkuModel;
+module.exports = tkuModel;
 
 (async () => {
   await db.sync();

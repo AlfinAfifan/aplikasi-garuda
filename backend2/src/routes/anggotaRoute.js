@@ -1,6 +1,6 @@
-import express from 'express';
-import { createAnggota, deleteAnggota, getAnggota, getAnggotaById, updateAnggota } from '../controller/anggotaController.js';
-import { verifyToken } from '../middleware/verifyToken.js';
+const express = require('express');
+const { createAnggota, deleteAnggota, getAnggota, getAnggotaById, updateAnggota } = require('../controller/anggotaController.js');
+const { verifyToken } = require('../middleware/verifyToken.js');
 
 const router = express.Router();
 // router.use(verifyToken);
@@ -16,4 +16,4 @@ router.patch('/anggota/:id', updateAnggota);
 // ROUTE DELETE SURAT
 router.delete('/anggota/:id', deleteAnggota);
 
-export default router;
+module.exports = router;

@@ -1,5 +1,5 @@
-import express from 'express';
-import { createJenisTkk, deleteJenisTkk, getJenisTkk, getJenisTkkById, updateJenisTkk } from '../controller/jenisTkkController.js';
+const express = require('express');
+const { createJenisTkk, deleteJenisTkk, getJenisTkk, getJenisTkkById, updateJenisTkk } = require('../controller/jenisTkkController.js');
 
 const router = express.Router();
 
@@ -14,4 +14,4 @@ router.patch('/jenistkk/:id', updateJenisTkk);
 // ROUTE DELETE SURAT
 router.delete('/jenistkk/:id', deleteJenisTkk);
 
-export default router;
+module.exports = router;

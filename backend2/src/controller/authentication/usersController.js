@@ -1,10 +1,10 @@
-import usersModel from '../../models/usersModel.js';
-import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
-import { refreshToken } from './refreshToken.js';
+const usersModel = require('../../models/usersModel.js');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const { refreshToken } = require('./refreshToken.js');
 
 // CONTROLLER GET ALL USERS
-export const getUsers = async (req, res) => {
+exports.getUsers = async (req, res) => {
   try {
     const users = await usersModel.findAll({
       attributes: ['id', 'name', 'email'],
@@ -18,7 +18,7 @@ export const getUsers = async (req, res) => {
 };
 
 // CONTROLLER CREATE USERS
-export const createUsers = async (req, res) => {
+exports.createUsers = async (req, res) => {
   const { name, email, password, confirmPassword } = req.body;
   if (password !== confirmPassword)
     return res.status(400).json({
@@ -43,7 +43,7 @@ export const createUsers = async (req, res) => {
 };
 
 // CONTROLLER LOGIN USERS
-export const loginUsers = async (req, res) => {
+exports.loginUsers = async (req, res) => {
   try {
     const user = await usersModel.findAll({
       where: {
@@ -57,16 +57,16 @@ export const loginUsers = async (req, res) => {
     const email = user[0].email;
 
     const accessToken = jwt.sign({ userid, name, email }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '20s' });
-    const refreshToken = jwt.sign({ userid, name, email }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '1d' });
+    const refreshTokenToken = jwt.sign({ userid, name, email }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '1d' });
     await usersModel.update(
-      { refresh_token: refreshToken },
+      { refresh_token: refreshTokenToken },
       {
         where: {
           id: userid,
         },
       }
     );
-    res.cookie('refreshToken', refreshToken, {
+    res.cookie('refreshToken', refreshTokenToken, {
       httpOnly: true,
       maxAge: 24 * 60 * 60 * 1000,
     });
@@ -79,12 +79,12 @@ export const loginUsers = async (req, res) => {
 };
 
 // CONTROLLER LOGOUT USERS
-export const logoutUsers = async (req, res) => {
-  const refreshToken = req.cookies.refreshToken;
-  if (!refreshToken) return res.sendStatus(204);
+exports.logoutUsers = async (req, res) => {
+  const refreshTokenToken = req.cookies.refreshToken;
+  if (!refreshTokenToken) return res.sendStatus(204);
   const user = await usersModel.findAll({
     where: {
-      refresh_token: refreshToken,
+      refresh_token: refreshTokenToken,
     },
   });
   if (!user[0]) return res.sendStatus(204);

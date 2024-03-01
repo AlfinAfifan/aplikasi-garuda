@@ -1,5 +1,5 @@
-import express from 'express';
-import { createMadya, createPurwa, createUtama, deleteMadya, deletePurwa, deleteUtama, getMadya, getPurwa, getTkk, getTkkById, getUtama, updateTkk } from '../controller/tkkController.js';
+const express = require('express');
+const { createMadya, createPurwa, createUtama, deleteMadya, deletePurwa, deleteUtama, getMadya, getPurwa, getTkk, getTkkById, getUtama, updateTkk } = require('../controller/tkkController.js');
 
 const router = express.Router();
 
@@ -21,4 +21,4 @@ router.delete('/deletepurwa/:id', deletePurwa);
 router.patch('/deletemadya/:id', deleteMadya);
 router.patch('/deleteutama/:id', deleteUtama);
 
-export default router;
+module.exports = router;

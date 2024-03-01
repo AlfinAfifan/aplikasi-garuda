@@ -4,4 +4,4 @@ function pdfType(req, res, next) {
   next();
 }
 
-export default pdfType;
+module.exports = pdfType;

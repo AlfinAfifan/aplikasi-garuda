@@ -1,8 +1,6 @@
-import { Sequelize } from 'sequelize';
-import db from '../config/database.js';
-import anggotaModel from './anggotaModel.js';
-
-const { DataTypes } = Sequelize;
+const { Sequelize, DataTypes } = require('sequelize');
+const db = require('../config/database.js');
+const anggotaModel = require('./anggotaModel.js');
 
 const jenisTkkModel = db.define(
   'jenis_tkk',
@@ -16,7 +14,7 @@ const jenisTkkModel = db.define(
   }
 );
 
-export default jenisTkkModel;
+module.exports = jenisTkkModel;
 
 (async () => {
   await db.sync();

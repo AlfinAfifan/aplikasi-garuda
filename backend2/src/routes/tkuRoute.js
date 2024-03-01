@@ -1,5 +1,5 @@
-import express from 'express';
-import { createTku, deleteRakit, deleteRamu, deleteTerap, getRakit, getRamu, getTerap, getTku, getTkuById, updateRakit, updateTerap, updateTku } from '../controller/tkuController.js';
+const express = require('express');
+const { createTku, deleteRakit, deleteRamu, deleteTerap, getRakit, getRamu, getTerap, getTku, getTkuById, updateRakit, updateTerap, updateTku } = require('../controller/tkuController.js');
 
 const router = express.Router();
 
@@ -21,4 +21,4 @@ router.delete('/deleteramu/:id', deleteRamu);
 router.patch('/deleterakit/:id', deleteRakit);
 router.patch('/deleteterap/:id', deleteTerap);
 
-export default router;
+module.exports = router;

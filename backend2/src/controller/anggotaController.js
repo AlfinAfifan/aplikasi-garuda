@@ -1,11 +1,11 @@
-import { response } from 'express';
-import lembagaModel from '../models/lembagaModel.js';
-import anggotaModel from '../models/anggotaModel.js';
-import usersModel from '../models/usersModel.js';
+const { response } = require('express');
+const lembagaModel = require('../models/lembagaModel.js');
+const anggotaModel = require('../models/anggotaModel.js');
+const usersModel = require('../models/usersModel.js');
 
 // CONTROLLER GET ALL SURAT
 
-export const getAnggota = async (req, res) => {
+exports.getAnggota = async (req, res) => {
   // CEK TOKEN
   const refreshToken = req.cookies.refreshToken;
   if (!refreshToken) return res.sendStatus(401);
@@ -33,7 +33,7 @@ export const getAnggota = async (req, res) => {
 };
 
 // CONTROLLER GET SURAT BY ID
-export const getAnggotaById = async (req, res) => {
+exports.getAnggotaById = async (req, res) => {
   // CEK TOKEN
   const refreshToken = req.cookies.refreshToken;
   if (!refreshToken) return res.sendStatus(401);
@@ -63,7 +63,7 @@ export const getAnggotaById = async (req, res) => {
 };
 
 // CONTROLLER CREATE SURAT
-export const createAnggota = async (req, res) => {
+exports.createAnggota = async (req, res) => {
   // CEK TOKEN
   const refreshToken = req.cookies.refreshToken;
   if (!refreshToken) return res.sendStatus(401);
@@ -151,8 +151,8 @@ export const createAnggota = async (req, res) => {
   }
 };
 
-// CONTROLLER UPDATdataK SURAT
-export const updateAnggota = async (req, res) => {
+// CONTROLLER UPDATE SURAT
+exports.updateAnggota = async (req, res) => {
   // CEK TOKEN
   const refreshToken = req.cookies.refreshToken;
   if (!refreshToken) return res.sendStatus(401);
@@ -259,7 +259,7 @@ export const updateAnggota = async (req, res) => {
 };
 
 // CONTROLLER DELETE SURAT
-export const deleteAnggota = async (req, res) => {
+exports.deleteAnggota = async (req, res) => {
   // CEK TOKEN
   const refreshToken = req.cookies.refreshToken;
   if (!refreshToken) return res.sendStatus(401);
