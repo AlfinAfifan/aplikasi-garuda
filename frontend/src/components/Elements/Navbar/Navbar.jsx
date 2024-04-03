@@ -7,7 +7,7 @@ const Navbar = () => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    axios.delete("http://localhost:4000/logout", {
+    axios.delete(`${import.meta.env.VITE_APP_DOMAIN}/logout`, {
       withCredentials: true,
     });
 
