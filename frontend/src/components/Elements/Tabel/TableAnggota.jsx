@@ -106,7 +106,7 @@ const TableAnggota = () => {
     kecamatan: "",
     kab_kota: "",
     provinsi: "",
-    map: "",
+    // map: "",
     no_telp: "",
     bakat_hobi: "",
     nama_ayah: "",
@@ -138,7 +138,7 @@ const TableAnggota = () => {
     kecamatan: Yup.string().required("Kecamatan harus diisi"),
     kab_kota: Yup.string().required("Kabupaten / Kota harus diisi"),
     provinsi: Yup.string().required("Provinsi harus diisi"),
-    map: Yup.string().required(),
+    // map: Yup.string().required(),
     no_telp: Yup.number().required("Nomor telepon harus diisi"),
     bakat_hobi: Yup.string().required("Bakat / hobi harus diisi"),
     nama_ayah: Yup.string().required("Nama ayah harus diisi"),
@@ -153,10 +153,6 @@ const TableAnggota = () => {
       "Tanggal masuk pangkalan harus diisi",
     ),
     tingkat_masuk: Yup.string().required("Tingkat masuk pangkalan harus diisi"),
-    tgl_keluar_pangkalan: Yup.date().required(
-      "Tanggal keluar pangkalan harus diisi",
-    ),
-    alasan_keluar: Yup.string().required("Alasan keluar pangkalan harus diisi"),
   });
 
   const onSubmit = (values, { resetForm }) => {
@@ -281,7 +277,7 @@ const TableAnggota = () => {
               <Input label="Kecamatan" name="kecamatan" type="text" />
               <Input label="Kabupaten / Kota" name="kab_kota" type="text" />
               <Input label="Provinsi" name="provinsi" type="text" />
-              <Input label="Map" name="map" type="text" />
+              {/* <Input label="Map" name="map" type="text" /> */}
               <Input label="No Telepon" name="no_telp" type="number" />
               <Input label="Bakat / Hobi" name="bakat_hobi" type="text" />
               <Input label="Nama Ayah" name="nama_ayah" type="text" />

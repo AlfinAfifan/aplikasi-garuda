@@ -15,7 +15,7 @@ const LoginPage = () => {
   const handleLogin = async (data) => {
     const { email, password } = data;
     try {
-      const res = await axios.post("http://localhost:4000/login", data, {
+      const res = await axios.post(`${import.meta.env.VITE_APP_DOMAIN}/login`, data, {
         withCredentials: true,
       });
 
@@ -66,7 +66,7 @@ const LoginPage = () => {
       <div className="flex h-screen items-center justify-center bg-gradient-to-r from-slate-200 to-slate-400 p-6">
         <div className="relative flex w-full flex-col items-center overflow-hidden rounded-xl bg-white p-10 shadow-md sm:w-auto">
           <div className="absolute top-0 w-full bg-cyan-600 py-5 text-center text-3xl font-bold text-white">
-            Aplikasi Administrasi Desa Karanganyar
+            Login Page
           </div>
           <div className="mt-28 w-full">
             <div className="mb-5 flex items-center gap-2 whitespace-nowrap text-cyan-600">
