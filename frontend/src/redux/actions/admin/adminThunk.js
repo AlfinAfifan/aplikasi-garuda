@@ -10,6 +10,17 @@ export const getAdmin = createAsyncThunk("getAdmin", async () => {
   return resp.data;
 });
 
+export const getAdminById = createAsyncThunk("getAdminById", async (id) => {
+  const resp = await axios.get(
+    `${import.meta.env.VITE_APP_DOMAIN}/admin/${id}`,
+    {
+      withCredentials: true,
+    },
+  );
+
+  return resp.data;
+});
+
 export const createAdmin = createAsyncThunk("createAdmin", async (data) => {
   try {
     const resp = await axios.post(
@@ -26,3 +37,23 @@ export const createAdmin = createAsyncThunk("createAdmin", async (data) => {
     toast.error(error.response.data.message);
   }
 });
+
+export const updateAdmin = createAsyncThunk(
+  "updateAdmin",
+  async (dataUpdate) => {
+    try {
+      const resp = await axios.patch(
+        `${import.meta.env.VITE_APP_DOMAIN}/admin/${dataUpdate.id}`,
+        dataUpdate.data,
+        {
+          withCredentials: true,
+        },
+      );
+
+      toast.success("Edit Data Sukses");
+      return resp.data;
+    } catch (error) {
+      toast.error(error.response.data.message);
+    }
+  },
+);

@@ -18,7 +18,9 @@ const PrivateRoute = ({ children }) => {
     }
 
     const accessToken = sessionStorage.getItem("access_token");
-    const allowedUserIDs = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
+    const allowedUserIDs = [
+      1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 23,
+    ];
     if (accessToken) {
       try {
         const userData = jwtDecode(accessToken);

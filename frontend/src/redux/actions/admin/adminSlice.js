@@ -1,8 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { createAdmin, getAdmin } from "./adminThunk";
+import { createAdmin, getAdmin, getAdminById, updateAdmin } from "./adminThunk";
 
 const initialState = {
   data: [],
+  dataById: {},
   loading: false,
   error: null,
   type: "",
@@ -36,6 +37,29 @@ const adminSlice = createSlice({
           type: action.type,
         };
       })
+      .addCase(getAdminById.pending, (state, action) => {
+        return {
+          ...state,
+          loading: true,
+          type: action.type,
+        };
+      })
+      .addCase(getAdminById.fulfilled, (state, action) => {
+        return {
+          ...state,
+          loading: false,
+          dataById: action.payload,
+          type: action.type,
+        };
+      })
+      .addCase(getAdminById.rejected, (state, action) => {
+        return {
+          ...state,
+          loading: false,
+          error: action.payload,
+          type: action.type,
+        };
+      })
       .addCase(createAdmin.pending, (state, action) => {
         return {
           ...state,
@@ -52,6 +76,29 @@ const adminSlice = createSlice({
         };
       })
       .addCase(createAdmin.rejected, (state, action) => {
+        return {
+          ...state,
+          loading: false,
+          error: action.payload,
+          type: action.type,
+        };
+      })
+      .addCase(updateAdmin.pending, (state, action) => {
+        return {
+          ...state,
+          loading: true,
+          type: action.type,
+        };
+      })
+      .addCase(updateAdmin.fulfilled, (state, action) => {
+        return {
+          ...state,
+          loading: false,
+          data: action.payload,
+          type: action.type,
+        };
+      })
+      .addCase(updateAdmin.rejected, (state, action) => {
         return {
           ...state,
           loading: false,

@@ -11,31 +11,16 @@ import { formatSK } from "../DataFormat/FormatSK";
 import { getAnggota } from "../../../redux/actions/anggota/anggotaThunk";
 import SelectSearch from "../Form/SelectSearch";
 import InputDisabled from "../Form/InputDisabled";
-import { toast } from "react-toastify";
+import { Form, Formik } from "formik";
+import * as Yup from "yup";
 
 const TableRamu = () => {
-  // HANDLE MODAL
-  const [isModalOpen, setModalOpen] = useState(false);
-
-  const openModal = () => {
-    setModalOpen(true);
-    document.body.style.overflow = "hidden"; // Menghilangkan scroll pada body
-  };
-
-  const formRef = useRef(null);
-  const closeModal = () => {
-    setModalOpen(false);
-    setLembagaSelected("");
-    setSelected(null);
-    setSearchResult(null);
-    formRef.current.reset();
-    document.body.style.overflow = "auto";
-  };
-
   // GET DATA
+  const [lembagaSelected, setLembagaSelected] = useState("");
   const dispatch = useDispatch();
   const dataRamu = useSelector((i) => i.ramu.data);
   const typeAction = useSelector((i) => i.ramu.type);
+  const [initialValues, setInitialValues] = useState({ id_anggota: "" });
 
   useEffect(() => {
     dispatch(getRamu());
@@ -50,33 +35,37 @@ const TableRamu = () => {
 
   // GET ANGGOTA FOR CHOICE
   const dataAnggota = useSelector((i) => i.anggota.data);
-  const [searchResult, setSearchResult] = useState(null);
-  const [errorSearch, setErrorSearch] = useState(false);
-  const [selected, setSelected] = useState(null);
-  const [lembagaSelected, setLembagaSelected] = useState("");
 
   const optionAnggota = dataAnggota.map((data) => ({
-    id: data.id,
-    key: data.id,
-    value: data.nama,
+    value: data.id,
+    label: data.nama,
     lembaga: data.lembaga.nama_lembaga,
   }));
 
-  const onSearch = (record) => {
-    setSearchResult(record.item.id);
-    setLembagaSelected(record.item.lembaga);
-    setSelected(record.item.value);
+  // HANDLE FORM & VALIDASI
+  const validationSchema = Yup.object().shape({
+    id_anggota: Yup.number().required("Anggota harus diisi"),
+  });
+
+  const onSubmit = (values, { resetForm }) => {
+    dispatch(createRamu(values));
+    resetForm();
+    closeModal();
   };
 
-  // HANDLE FORM & VALIDASI
-  const onSubmit = (e) => {
-    e.preventDefault();
-    if (searchResult) {
-      dispatch(createRamu({ id_anggota: searchResult }));
-      closeModal();
-    } else {
-      setErrorSearch(true);
-    }
+  // HANDLE MODAL
+  const [isModalOpen, setModalOpen] = useState(false);
+  const openModal = () => {
+    setModalOpen(true);
+    document.body.style.overflow = "hidden"; // Menghilangkan scroll pada body
+  };
+
+  const formRef = useRef(null);
+  const closeModal = () => {
+    setModalOpen(false);
+    formRef.current.reset();
+    setLembagaSelected("");
+    document.body.style.overflow = "auto";
   };
 
   return (
@@ -119,24 +108,39 @@ const TableRamu = () => {
         setModalOpen={setModalOpen}
         onClick={closeModal}
       >
-        <form
-          action="#"
-          ref={formRef}
-          className="mt-8 grid grid-cols-2 gap-x-10 gap-y-6 pb-40"
+        <Formik
           onSubmit={onSubmit}
+          enableReinitialize={true}
+          initialValues={initialValues}
+          validationSchema={validationSchema}
         >
-          <SelectSearch
-            name="id_anggota"
-            label="Nama"
-            placeholder={selected ? selected : "Cari Nama Anggota"}
-            data={optionAnggota}
-            onselect={onSearch}
-            error={errorSearch}
-          />
-          <InputDisabled label="Asal Lembaga" value={lembagaSelected} />
+          {({ values, setFieldValue }) => (
+            <Form
+              action="#"
+              ref={formRef}
+              className="mt-8 grid grid-cols-2 gap-x-10 gap-y-6 pb-40"
+            >
+              <SelectSearch
+                name="id_anggota"
+                label="Nama"
+                placeholder={"Cari Nama Anggota"}
+                data={optionAnggota}
+                onChange={(selected) => {
+                  setFieldValue("id_anggota", selected?.value);
+                  setLembagaSelected(selected.lembaga);
+                }}
+                value={
+                  optionAnggota.find(
+                    (option) => option.value === values.id_anggota,
+                  ) || ""
+                }
+              />
+              <InputDisabled label="Asal Lembaga" value={lembagaSelected} />
 
-          <Button>Simpan</Button>
-        </form>
+              <Button>Simpan</Button>
+            </Form>
+          )}
+        </Formik>
       </Modal>
     </>
   );

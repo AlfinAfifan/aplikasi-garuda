@@ -10,7 +10,7 @@ export const getAnggota = createAsyncThunk("getAnggota", async () => {
   return resp.data;
 });
 
-export const getAnggotaId = createAsyncThunk("getAnggotaId", async (id) => {
+export const getAnggotaById = createAsyncThunk("getAnggotaById", async (id) => {
   const resp = await axios.get(
     `${import.meta.env.VITE_APP_DOMAIN}/anggota/${id}`,
     {
@@ -38,11 +38,12 @@ export const createAnggota = createAsyncThunk("createAnggota", async (data) => {
   }
 });
 
-export const updateAnggota = createAsyncThunk("updateAnggota", async (data) => {
+export const updateAnggota = createAsyncThunk("updateAnggota", async (dataUpdate) => {
+  console.log(dataUpdate);
   try {
     const resp = await axios.patch(
-      `${import.meta.env.VITE_APP_DOMAIN}/anggota/${data.id}`,
-      data.data,
+      `${import.meta.env.VITE_APP_DOMAIN}/anggota/${dataUpdate.id}`,
+      dataUpdate.data,
       {
         withCredentials: true,
       },

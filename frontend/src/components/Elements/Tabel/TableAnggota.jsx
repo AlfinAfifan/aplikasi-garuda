@@ -14,7 +14,8 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   createAnggota,
   getAnggota,
-  getAnggotaId,
+  getAnggotaById,
+  updateAnggota,
 } from "../../../redux/actions/anggota/anggotaThunk";
 import { dateFormat } from "../DataFormat/DateFormat";
 import { Form, Formik } from "formik";
@@ -25,74 +26,14 @@ import ModalDetail from "../Modal/ModalDetail";
 import ListDetail from "../Modal/ListDetail";
 
 const TableAnggota = () => {
-  // HANDLE MODAL
-  const [isModalOpen, setModalOpen] = useState(false);
-  const [isModalDetailOpen, setModalDetailOpen] = useState(false);
-  const openModal = () => {
-    setModalOpen(true);
-    document.body.style.overflow = "hidden";
-  };
-
-  const formRef = useRef(null);
-  const closeModal = () => {
-    setModalOpen(false);
-    setModalDetailOpen(false);
-    setSelected("");
-    setSearchResult(null);
-    formRef.current.reset();
-    document.body.style.overflow = "auto";
-  };
-
   // GET DATA
   const dispatch = useDispatch();
   const dataAnggota = useSelector((i) => i.anggota.data);
-  const anggotaById = useSelector((i) => i.anggota.dataById);
+  const dataAnggotaById = useSelector((i) => i.anggota.dataById);
   const typeAction = useSelector((i) => i.anggota.type);
-
-  useEffect(() => {
-    dispatch(getAnggota());
-    dispatch(getLembaga());
-  }, []);
-
-  useEffect(() => {
-    if (typeAction === "createAnggota/fulfilled") {
-      dispatch(getAnggota());
-    } else if (typeAction === "getAnggotaId/fulfilled") {
-      dispatch(getAnggota());
-    }
-  }, [typeAction]);
-
-  // GET LEMBAGA FOR CHOICE
-  const dataLembaga = useSelector((i) => i.lembaga.data);
-  const [searchResult, setSearchResult] = useState(null);
-  const [errorSearch, setErrorSearch] = useState(false);
-  const [selected, setSelected] = useState("");
-
-  const optionLembaga = dataLembaga.map((data) => ({
-    id: data.id,
-    key: data.id,
-    value: data.nama_lembaga,
-  }));
-  const onSearch = (record) => {
-    setSearchResult(record.item.id);
-    setSelected(record.item.value);
-  };
-
-  // HANDLE FORM & VALIDASI
-  const optionGender = [
-    { key: "Laki - Laki", value: "laki - laki" },
-    { key: "Perempuan", value: "perempuan" },
-  ];
-  const optionAgama = [
-    { key: "Islam", value: "islam" },
-    { key: "Kristen", value: "kristen" },
-  ];
-  const optionWarga = [
-    { key: "WNI (Warga Negara Indonesia)", value: "wni" },
-    { key: "WNA (Warga Negara Asing)", value: "wna" },
-  ];
-  const initialValues = {
+  const [initialValues, setInitialValues] = useState({
     nama: "",
+    id_lembaga: "",
     nta: "",
     no_induk: "",
     gender: "",
@@ -121,58 +62,181 @@ const TableAnggota = () => {
     tingkat_masuk: "",
     tgl_keluar_pangkalan: "",
     alasan_keluar: "",
-  };
+  });
+
+  useEffect(() => {
+    dispatch(getAnggota());
+    dispatch(getLembaga());
+  }, []);
+
+  useEffect(() => {
+    if (
+      typeAction === "createAnggota/fulfilled" ||
+      typeAction === "updateAnggota/fulfilled"
+    ) {
+      dispatch(getAnggota());
+    }
+    if (typeAction === "getAnggotaById/fulfilled") {
+      setInitialValues({
+        nama: dataAnggotaById.nama || "",
+        id_lembaga: dataAnggotaById.id_lembaga || "",
+        nta: dataAnggotaById.nta || "",
+        no_induk: dataAnggotaById.no_induk || "",
+        gender: dataAnggotaById.gender || "",
+        tmpt_lahir: dataAnggotaById.tmpt_lahir || "",
+        tgl_lahir: dataAnggotaById.tgl_lahir || "",
+        agama: dataAnggotaById.agama || "",
+        warga: dataAnggotaById.warga || "",
+        rt: dataAnggotaById.rt || "",
+        rw: dataAnggotaById.rw || "",
+        ds_kelurahan: dataAnggotaById.ds_kelurahan || "",
+        kecamatan: dataAnggotaById.kecamatan || "",
+        kab_kota: dataAnggotaById.kab_kota || "",
+        provinsi: dataAnggotaById.provinsi || "",
+        // map: dataAnggotaById.map || '',
+        no_telp: dataAnggotaById.no_telp || "",
+        bakat_hobi: dataAnggotaById.bakat_hobi || "",
+        nama_ayah: dataAnggotaById.nama_ayah || "",
+        tmpt_lahir_ayah: dataAnggotaById.tmpt_lahir_ayah || "",
+        tgl_lahir_ayah: dataAnggotaById.tgl_lahir_ayah || "",
+        nama_ibu: dataAnggotaById.nama_ibu || "",
+        tmpt_lahir_ibu: dataAnggotaById.tmpt_lahir_ibu || "",
+        tgl_lahir_ibu: dataAnggotaById.tgl_lahir_ibu || "",
+        alamat_ortu: dataAnggotaById.alamat_ortu || "",
+        no_telp_ortu: dataAnggotaById.no_telp_ortu || "",
+        tgl_masuk_pangkalan: dataAnggotaById.tgl_masuk_pangkalan || "",
+        tingkat_masuk: dataAnggotaById.tingkat_masuk || "",
+        tgl_keluar_pangkalan: dataAnggotaById.tgl_keluar_pangkalan || "",
+        alasan_keluar: dataAnggotaById.alasan_keluar || "",
+      });
+    }
+  }, [typeAction]);
+
+  // GET LEMBAGA FOR CHOICE
+  const dataLembaga = useSelector((i) => i.lembaga.data);
+
+  const optionLembaga = dataLembaga.map((data) => ({
+    value: data.id,
+    label: data.nama_lembaga,
+  }));
+
+  // HANDLE FORM & VALIDASI
+  const optionGender = [
+    { key: "Laki - Laki", value: "laki - laki" },
+    { key: "Perempuan", value: "perempuan" },
+  ];
+  const optionAgama = [
+    { key: "Islam", value: "islam" },
+    { key: "Kristen", value: "kristen" },
+  ];
+  const optionWarga = [
+    { key: "WNI (Warga Negara Indonesia)", value: "wni" },
+    { key: "WNA (Warga Negara Asing)", value: "wna" },
+  ];
 
   const validationSchema = Yup.object().shape({
     nama: Yup.string().required("Nama harus diisi"),
+    id_lembaga: Yup.number().required("Lembaga harus diisi"),
     nta: Yup.number().required("NTA harus diisi"),
     no_induk: Yup.number().required("No induk harus diisi"),
     gender: Yup.string().required("Jenis kelamin harus diisi"),
     tmpt_lahir: Yup.string().required("Tempat lahir harus diisi"),
     tgl_lahir: Yup.date().required("Tanggal lahir harus diisi"),
-    agama: Yup.string().required("Agama harus diisi"),
-    warga: Yup.string().required("Kewarganegaraan harus diisi"),
-    rt: Yup.number().required("RT harus diisi"),
-    rw: Yup.number().required("RW harus diisi"),
-    ds_kelurahan: Yup.string().required("Desa / Kelurahan harus diisi"),
-    kecamatan: Yup.string().required("Kecamatan harus diisi"),
-    kab_kota: Yup.string().required("Kabupaten / Kota harus diisi"),
-    provinsi: Yup.string().required("Provinsi harus diisi"),
+    no_telp: Yup.number().required("Nomor Telepon harus diisi"),
+    agama: Yup.string(),
+    warga: Yup.string(),
+    rt: Yup.number(),
+    rw: Yup.number(),
+    ds_kelurahan: Yup.string(),
+    kecamatan: Yup.string(),
+    kab_kota: Yup.string(),
+    provinsi: Yup.string(),
     // map: Yup.string().required(),
-    no_telp: Yup.number().required("Nomor telepon harus diisi"),
-    bakat_hobi: Yup.string().required("Bakat / hobi harus diisi"),
-    nama_ayah: Yup.string().required("Nama ayah harus diisi"),
-    tmpt_lahir_ayah: Yup.string().required("Tempat lahir ayah harus diisi"),
-    tgl_lahir_ayah: Yup.date().required("Tanggal lahir ayah harus diisi"),
-    nama_ibu: Yup.string().required("Nama ibu harus diisi"),
-    tmpt_lahir_ibu: Yup.string().required("Tempat lahir ibu harus diisi"),
-    tgl_lahir_ibu: Yup.date().required("Tanggal lahir ibu harus diisi"),
-    alamat_ortu: Yup.string().required("Alamat ortu harus diisi"),
-    no_telp_ortu: Yup.number().required("No telepon ortu harus diisi"),
-    tgl_masuk_pangkalan: Yup.date().required(
-      "Tanggal masuk pangkalan harus diisi",
-    ),
-    tingkat_masuk: Yup.string().required("Tingkat masuk pangkalan harus diisi"),
+    bakat_hobi: Yup.string(),
+    nama_ayah: Yup.string(),
+    tmpt_lahir_ayah: Yup.string(),
+    tgl_lahir_ayah: Yup.date(),
+    nama_ibu: Yup.string(),
+    tmpt_lahir_ibu: Yup.string(),
+    tgl_lahir_ibu: Yup.date(),
+    alamat_ortu: Yup.string(),
+    no_telp_ortu: Yup.number(),
+    tgl_masuk_pangkalan: Yup.date(),
+    tingkat_masuk: Yup.string(),
   });
 
-  const onSubmit = (values, { resetForm }) => {
-    const dataCreate = {
-      ...values,
-      id_lembaga: searchResult,
-    };
-
-    if (searchResult) {
-      dispatch(createAnggota(dataCreate));
-      closeModal();
+  const onSubmit = (values) => {
+    Object.keys(values).forEach((key) => {
+      if (values[key] === "") {
+        values[key] = null;
+      }
+    });
+    if (Object.keys(dataAnggotaById).length === 0) {
+      dispatch(createAnggota(values));
     } else {
-      setErrorSearch(true);
+      dispatch(updateAnggota({ id: dataAnggotaById.id, data: values }));
     }
+    closeModal();
   };
 
   // HANDLE DETAIL
   const handleDetail = async (id) => {
     setModalDetailOpen(true);
-    dispatch(getAnggotaId(id));
+    dispatch(getAnggotaById(id));
+  };
+
+  // HANDLE MODAL
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [isModalDetailOpen, setModalDetailOpen] = useState(false);
+  const openModal = () => {
+    setModalOpen(true);
+    document.body.style.overflow = "hidden";
+  };
+
+  const formRef = useRef(null);
+  const closeModal = () => {
+    setModalOpen(false);
+    setModalDetailOpen(false);
+    formRef.current.reset();
+    setInitialValues({
+      nama: "",
+      id_lembaga: "",
+      nta: "",
+      no_induk: "",
+      gender: "",
+      tmpt_lahir: "",
+      tgl_lahir: "",
+      agama: "",
+      warga: "",
+      rt: "",
+      rw: "",
+      ds_kelurahan: "",
+      kecamatan: "",
+      kab_kota: "",
+      provinsi: "",
+      // map: "",
+      no_telp: "",
+      bakat_hobi: "",
+      nama_ayah: "",
+      tmpt_lahir_ayah: "",
+      tgl_lahir_ayah: "",
+      nama_ibu: "",
+      tmpt_lahir_ibu: "",
+      tgl_lahir_ibu: "",
+      alamat_ortu: "",
+      no_telp_ortu: "",
+      tgl_masuk_pangkalan: "",
+      tingkat_masuk: "",
+      tgl_keluar_pangkalan: "",
+      alasan_keluar: "",
+    });
+    document.body.style.overflow = "auto";
+  };
+
+  // HANDLE EDIT
+  const handleEdit = (id) => {
+    dispatch(getAnggotaById(id));
+    openModal();
   };
 
   return (
@@ -205,7 +269,10 @@ const TableAnggota = () => {
                 <td>{data.no_telp}</td>
                 <td className="flex gap-2">
                   <TrashIcon className="hover w-6 cursor-pointer text-red-600 hover:text-red-700" />
-                  <PencilSquareIcon className="w-6 cursor-pointer text-third hover:text-first" />
+                  <PencilSquareIcon
+                    className="w-6 cursor-pointer text-third hover:text-first"
+                    onClick={() => handleEdit(data.id)}
+                  />
                   <DocumentTextIcon
                     className="w-6 cursor-pointer text-amber-500 hover:text-amber-600"
                     onClick={() => handleDetail(data.id)}
@@ -231,8 +298,9 @@ const TableAnggota = () => {
           initialValues={initialValues}
           validationSchema={validationSchema}
           onSubmit={onSubmit}
+          enableReinitialize={true}
         >
-          {(form) => (
+          {({ values, setFieldValue }) => (
             <Form
               action="#"
               ref={formRef}
@@ -240,12 +308,16 @@ const TableAnggota = () => {
             >
               <Input label="Nama" name="nama" type="text" />
               <SelectSearch
-                name="lembaga"
+                name="id_lembaga"
                 label="Asal Lembaga"
-                placeholder={selected ? selected : "Cari Nama Lembaga"}
+                placeholder="Cari Nama Lembaga"
                 data={optionLembaga}
-                onselect={onSearch}
-                error={errorSearch}
+                value={optionLembaga.find(
+                  (option) => option.value === values.id_lembaga,
+                ) || ''}
+                onChange={(selected) => {
+                  setFieldValue("id_lembaga", selected?.value);
+                }}
               />
               <Input label="Nomor Induk" name="no_induk" type="number" />
               <Input label="NTA" name="nta" type="number" />
@@ -257,6 +329,7 @@ const TableAnggota = () => {
                 placeholder="Silahkan pilih kelamin"
                 options={optionGender}
               />
+              <Input label="No Telepon" name="no_telp" type="number" />
               <SelectOpt
                 label="Agama"
                 name="agama"
@@ -278,7 +351,6 @@ const TableAnggota = () => {
               <Input label="Kabupaten / Kota" name="kab_kota" type="text" />
               <Input label="Provinsi" name="provinsi" type="text" />
               {/* <Input label="Map" name="map" type="text" /> */}
-              <Input label="No Telepon" name="no_telp" type="number" />
               <Input label="Bakat / Hobi" name="bakat_hobi" type="text" />
               <Input label="Nama Ayah" name="nama_ayah" type="text" />
               <Input
@@ -341,29 +413,29 @@ const TableAnggota = () => {
         isModalOpen={isModalDetailOpen}
         onClick={closeModal}
       >
-        <ListDetail title="Nama Anggota" value={anggotaById?.nama} />
+        <ListDetail title="Nama Anggota" value={dataAnggotaById?.nama} />
         <ListDetail
           title="Asal Lembaga"
-          value={anggotaById?.lembaga?.nama_lembaga}
+          value={dataAnggotaById?.lembaga?.nama_lembaga}
         />
-        <ListDetail title="No Induk" value={anggotaById?.no_induk} />
-        <ListDetail title="NTA" value={anggotaById?.nta} />
+        <ListDetail title="No Induk" value={dataAnggotaById?.no_induk} />
+        <ListDetail title="NTA" value={dataAnggotaById?.nta} />
         <ListDetail
           title="TTL"
-          value={`${anggotaById?.tmpt_lahir}, ${dateFormat(anggotaById?.tgl_lahir)}`}
+          value={`${dataAnggotaById?.tmpt_lahir}, ${dateFormat(dataAnggotaById?.tgl_lahir)}`}
         />
-        <ListDetail title="Jenis Kelamin" value={anggotaById?.gender} />
-        <ListDetail title="Agama" value={anggotaById?.agama} />
-        <ListDetail title="Bakat / Hobi" value={anggotaById?.bakat_hobi} />
-        <ListDetail title="No Telepon" value={anggotaById?.no_telp} />
+        <ListDetail title="Jenis Kelamin" value={dataAnggotaById?.gender} />
+        <ListDetail title="Agama" value={dataAnggotaById?.agama} />
+        <ListDetail title="Bakat / Hobi" value={dataAnggotaById?.bakat_hobi} />
+        <ListDetail title="No Telepon" value={dataAnggotaById?.no_telp} />
         <ListDetail
           title="Kewarganegaraan"
-          value={anggotaById?.warga}
+          value={dataAnggotaById?.warga}
           style="uppercase"
         />
         <ListDetail
           title="Alamat"
-          value={`RT ${anggotaById?.rt}, RW ${anggotaById?.rw}, Desa/Kelurahan ${anggotaById?.ds_kelurahan}, Kecamatan ${anggotaById?.kecamatan}, Kabupaten ${anggotaById?.kab_kota}, Provinsi ${anggotaById?.provinsi}`}
+          value={`RT ${dataAnggotaById?.rt}, RW ${dataAnggotaById?.rw}, Desa/Kelurahan ${dataAnggotaById?.ds_kelurahan}, Kecamatan ${dataAnggotaById?.kecamatan}, Kabupaten ${dataAnggotaById?.kab_kota}, Provinsi ${dataAnggotaById?.provinsi}`}
         />
 
         {/* IDENTITAS ORTU */}
@@ -371,18 +443,21 @@ const TableAnggota = () => {
           <h1 className="text-gray-500">Data Orang Tua</h1>
           <div className=" h-0.5 w-full rounded-full bg-gray-200"></div>
         </div>
-        <ListDetail title="Nama Ayah" value={anggotaById?.nama_ayah} />
+        <ListDetail title="Nama Ayah" value={dataAnggotaById?.nama_ayah} />
         <ListDetail
           title="TTL Ayah"
-          value={`${anggotaById?.tmpt_lahir_ayah}, ${dateFormat(anggotaById?.tgl_lahir_ayah)}`}
+          value={`${dataAnggotaById?.tmpt_lahir_ayah}, ${dateFormat(dataAnggotaById?.tgl_lahir_ayah)}`}
         />
-        <ListDetail title="Nama Ibu" value={anggotaById?.nama_ibu} />
+        <ListDetail title="Nama Ibu" value={dataAnggotaById?.nama_ibu} />
         <ListDetail
           title="TTL Ibu"
-          value={`${anggotaById?.tmpt_lahir_ibu}, ${dateFormat(anggotaById?.tgl_lahir_ibu)}`}
+          value={`${dataAnggotaById?.tmpt_lahir_ibu}, ${dateFormat(dataAnggotaById?.tgl_lahir_ibu)}`}
         />
-        <ListDetail title="Alamat Ortu" value={anggotaById?.alamat_ortu} />
-        <ListDetail title="No Telp Ortu" value={anggotaById?.no_telp_ortu} />
+        <ListDetail title="Alamat Ortu" value={dataAnggotaById?.alamat_ortu} />
+        <ListDetail
+          title="No Telp Ortu"
+          value={dataAnggotaById?.no_telp_ortu}
+        />
 
         {/* DETAIL PANGKALAN */}
         <div className="col-span-2 mt-5 flex flex-col items-center gap-2">
@@ -391,14 +466,20 @@ const TableAnggota = () => {
         </div>
         <ListDetail
           title="Tgl masuk"
-          value={dateFormat(anggotaById?.tgl_masuk_pangkalan)}
+          value={dateFormat(dataAnggotaById?.tgl_masuk_pangkalan)}
         />
-        <ListDetail title="Tingkat masuk" value={anggotaById?.tingkat_masuk} />
+        <ListDetail
+          title="Tingkat masuk"
+          value={dataAnggotaById?.tingkat_masuk}
+        />
         <ListDetail
           title="Tgl keluar"
-          value={dateFormat(anggotaById?.tgl_keluar_pangkalan)}
+          value={dateFormat(dataAnggotaById?.tgl_keluar_pangkalan)}
         />
-        <ListDetail title="Alasan keluar" value={anggotaById?.alasan_keluar} />
+        <ListDetail
+          title="Alasan keluar"
+          value={dataAnggotaById?.alasan_keluar}
+        />
       </ModalDetail>
     </>
   );

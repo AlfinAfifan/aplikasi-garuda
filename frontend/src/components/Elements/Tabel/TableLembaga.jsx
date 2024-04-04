@@ -9,50 +9,51 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   createLembaga,
   getLembaga,
+  getLembagaById,
+  updateLembaga,
 } from "../../../redux/actions/lembaga/lembagaThunk";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 
 const TableLembaga = () => {
-  // HANDLE MODAL
-  const [isModalOpen, setModalOpen] = useState(false);
-  const openModal = () => {
-    setModalOpen(true);
-    document.body.style.overflow = "hidden"; // Menghilangkan scroll pada body
-  };
-
-  const formRef = useRef(null);
-  const closeModal = () => {
-    setModalOpen(false);
-    formRef.current.reset();
-    document.body.style.overflow = "auto";
-  };
-
   // GET DATA
   const dispatch = useDispatch();
   const dataLembaga = useSelector((i) => i.lembaga.data);
+  const dataLembagaById = useSelector((i) => i.lembaga.dataById);
   const typeAction = useSelector((i) => i.lembaga.type);
-
-  useEffect(() => {
-    dispatch(getLembaga());
-  }, [dispatch]);
-
-  useEffect(() => {
-    if (typeAction === "createLembaga/fulfilled") {
-      dispatch(getLembaga());
-    }
-  }, [typeAction]);
-
-  // HANDLE FORM & VALIDASI
-  const initialValues = {
+  const [initialValues, setInitialValues] = useState({
     nama_lembaga: "",
     alamat: "",
     no_gudep_lk: "",
     no_gudep_pr: "",
     kepsek: "",
     nip_kepsek: "",
-  };
+  });
 
+  useEffect(() => {
+    dispatch(getLembaga());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (
+      typeAction === "createLembaga/fulfilled" ||
+      typeAction === "updateLembaga/fulfilled"
+    ) {
+      dispatch(getLembaga());
+    }
+    if (typeAction === "getLembagaById/fulfilled") {
+      setInitialValues({
+        nama_lembaga: dataLembagaById.nama_lembaga || "",
+        alamat: dataLembagaById.alamat || "",
+        no_gudep_lk: dataLembagaById.no_gudep_lk || "",
+        no_gudep_pr: dataLembagaById.no_gudep_pr || "",
+        kepsek: dataLembagaById.kepsek || "",
+        nip_kepsek: dataLembagaById.nip_kepsek || "",
+      });
+    }
+  }, [typeAction]);
+
+  // HANDLE FORM & VALIDASI
   const validationSchema = Yup.object().shape({
     nama_lembaga: Yup.string().required("Nama Lembaga harus diisi"),
     alamat: Yup.string().required("Alamat harus diisi"),
@@ -62,13 +63,40 @@ const TableLembaga = () => {
     nip_kepsek: Yup.string().required("NIP Kepala Sekolah harus diisi"),
   });
 
-  const onSubmit = (values, { resetForm }) => {
-    dispatch(createLembaga(values));
+  const onSubmit = (values) => {
+    if (Object.keys(dataLembagaById).length === 0) {
+      dispatch(createLembaga(values));
+    } else {
+      dispatch(updateLembaga({ id: dataLembagaById.id, data: values }));
+    }
     closeModal();
   };
 
+  // HANDLE MODAL
+  const [isModalOpen, setModalOpen] = useState(false);
+  const openModal = () => {
+    setModalOpen(true);
+    document.body.style.overflow = "hidden";
+  };
+
+  const formRef = useRef(null);
+  const closeModal = () => {
+    setModalOpen(false);
+    formRef.current.reset();
+    setInitialValues({
+      nama_lembaga: "",
+      alamat: "",
+      no_gudep_lk: "",
+      no_gudep_pr: "",
+      kepsek: "",
+      nip_kepsek: "",
+    });
+    document.body.style.overflow = "auto";
+  };
+
   // HANDLE EDIT
-  const handleEdit = () => {
+  const handleEdit = (id) => {
+    dispatch(getLembagaById(id));
     openModal();
   };
 
@@ -102,7 +130,7 @@ const TableLembaga = () => {
                   <TrashIcon className="hover w-6 cursor-pointer text-red-600 hover:text-red-700" />
                   <PencilSquareIcon
                     className="w-6 cursor-pointer text-third hover:text-first"
-                    onClick={handleEdit}
+                    onClick={() => handleEdit(data?.id)}
                   />
                 </td>
               </tr>
