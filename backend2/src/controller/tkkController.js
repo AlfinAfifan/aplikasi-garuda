@@ -295,11 +295,11 @@ exports.createMadya = async (req, res) => {
 
   if (cek <= 30)
     return res.status(400).json({
-      message: 'Jarak Minimal 100 Hari',
+      message: 'Jarak Minimal 30 Hari',
     });
 
   // request new update
-  const { id_anggota, nama_penguji, jabatan_penguji, alamat_penguji } = req.body;
+  const { nama_penguji, jabatan_penguji, alamat_penguji } = req.body;
   const madya = true;
   const tgl_madya = moment();
 
@@ -307,7 +307,6 @@ exports.createMadya = async (req, res) => {
   try {
     await tkkModel.update(
       {
-        id_anggota,
         madya,
         tgl_madya,
         nama_penguji,
@@ -364,11 +363,11 @@ exports.createUtama = async (req, res) => {
 
   if (cek <= 30)
     return res.status(400).json({
-      message: 'Jarak Minimal 100 Hari',
+      message: 'Jarak Minimal 30 Hari',
     });
 
   // request new update
-  const { id_anggota, nama_penguji, jabatan_penguji, alamat_penguji } = req.body;
+  const { nama_penguji, jabatan_penguji, alamat_penguji } = req.body;
   const utama = true;
   const tgl_utama = moment();
 
@@ -376,7 +375,6 @@ exports.createUtama = async (req, res) => {
   try {
     await tkkModel.update(
       {
-        id_anggota,
         utama,
         tgl_utama,
         nama_penguji,
@@ -422,13 +420,12 @@ exports.updateTkk = async (req, res) => {
     });
 
   // request new update
-  const { id_anggota, id_jenis_tkk, nama_penguji, jabatan_penguji, alamat_penguji } = req.body;
+  const { id_jenis_tkk, nama_penguji, jabatan_penguji, alamat_penguji } = req.body;
 
   // save update to database
   try {
     await tkkModel.update(
       {
-        id_anggota,
         id_jenis_tkk,
         nama_penguji,
         jabatan_penguji,
