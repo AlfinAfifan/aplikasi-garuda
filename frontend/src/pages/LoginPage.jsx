@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
@@ -10,29 +10,32 @@ import Image from "../assets/images/not-found.jpg";
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoginError, setIsLoginError] = useState(false);
+  // const [getToken, setGetToken] = useState(null)
   const navigate = useNavigate();
 
   const handleLogin = async (data) => {
-    const { email, password } = data;
     try {
-      const res = await axios.post(`${import.meta.env.VITE_APP_DOMAIN}/login`, data, {
-        withCredentials: true,
-      });
+      const res = await axios.post(
+        `${import.meta.env.VITE_APP_DOMAIN}/login`,
+        data,
+        {
+          withCredentials: true,
+        },
+      );
 
       const token = res.data.accessToken;
       const user = jwtDecode(token);
       const allowedUserIDs = [
-        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 23,
       ];
 
       if (allowedUserIDs.includes(user.userid)) {
         const loginTime = new Date().getTime();
         sessionStorage.setItem("login_time", loginTime);
-
-        // toast.success("Login Berhasil");
         sessionStorage.setItem("access_token", token);
         sessionStorage.setItem("email", user.email);
         sessionStorage.setItem("name", user.name);
+        localStorage.setItem("access_token", token);
 
         toast.success("Login Berhasil");
         navigate("/dashboard");
@@ -44,6 +47,15 @@ const LoginPage = () => {
       console.log(error);
     }
   };
+
+  const getToken = localStorage.getItem("access_token");
+  console.log(getToken);
+
+  useEffect(() => {
+    if (getToken) {
+      navigate(-1);
+    }
+  }, []);
 
   const formik = useFormik({
     initialValues: {

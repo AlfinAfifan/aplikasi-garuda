@@ -10,6 +10,17 @@ export const getLembaga = createAsyncThunk("getLembaga", async () => {
   return resp.data;
 });
 
+export const getLembagaById = createAsyncThunk("getLembagaById", async (id) => {
+  const resp = await axios.get(
+    `${import.meta.env.VITE_APP_DOMAIN}/lembaga/${id}`,
+    {
+      withCredentials: true,
+    },
+  );
+
+  return resp.data;
+});
+
 export const createLembaga = createAsyncThunk("createLembaga", async (data) => {
   try {
     const resp = await axios.post(
@@ -26,3 +37,23 @@ export const createLembaga = createAsyncThunk("createLembaga", async (data) => {
     toast.error(error.response.data.message);
   }
 });
+
+export const updateLembaga = createAsyncThunk(
+  "updateLembaga",
+  async (dataUpdate) => {
+    try {
+      const resp = await axios.patch(
+        `${import.meta.env.VITE_APP_DOMAIN}/lembaga/${dataUpdate.id}`,
+        dataUpdate.data,
+        {
+          withCredentials: true,
+        },
+      );
+
+      toast.success("Edit Data Sukses");
+      return resp.data;
+    } catch (error) {
+      toast.error(error.response.data.message);
+    }
+  },
+);

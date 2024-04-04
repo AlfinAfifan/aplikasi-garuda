@@ -1,9 +1,14 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { createAnggota, getAnggota, getAnggotaId } from "./anggotaThunk";
+import {
+  createAnggota,
+  getAnggota,
+  getAnggotaById,
+  updateAnggota,
+} from "./anggotaThunk";
 
 const initialState = {
   data: [],
-  dataById: [],
+  dataById: {},
   loading: false,
   error: null,
   type: "",
@@ -37,14 +42,14 @@ const anggotaSlice = createSlice({
           type: action.type,
         };
       })
-      .addCase(getAnggotaId.pending, (state, action) => {
+      .addCase(getAnggotaById.pending, (state, action) => {
         return {
           ...state,
           loading: true,
           type: action.type,
         };
       })
-      .addCase(getAnggotaId.fulfilled, (state, action) => {
+      .addCase(getAnggotaById.fulfilled, (state, action) => {
         return {
           ...state,
           loading: false,
@@ -52,7 +57,7 @@ const anggotaSlice = createSlice({
           dataById: action.payload,
         };
       })
-      .addCase(getAnggotaId.rejected, (state, action) => {
+      .addCase(getAnggotaById.rejected, (state, action) => {
         return {
           ...state,
           loading: false,
@@ -76,6 +81,29 @@ const anggotaSlice = createSlice({
         };
       })
       .addCase(createAnggota.rejected, (state, action) => {
+        return {
+          ...state,
+          loading: false,
+          error: action.payload,
+          type: action.type,
+        };
+      })
+      .addCase(updateAnggota.pending, (state, action) => {
+        return {
+          ...state,
+          loading: true,
+          type: action.type,
+        };
+      })
+      .addCase(updateAnggota.fulfilled, (state, action) => {
+        return {
+          ...state,
+          loading: false,
+          type: action.type,
+          data: action.payload,
+        };
+      })
+      .addCase(updateAnggota.rejected, (state, action) => {
         return {
           ...state,
           loading: false,

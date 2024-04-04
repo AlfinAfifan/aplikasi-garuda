@@ -49,7 +49,7 @@ const Sidebar = () => {
 
       <NavLink to="/dashboard" className="-mt-2.5 flex items-center">
         <div
-          className={`h-11 w-1 bg-orange-600 ${isDashboard ? "opacity-100" : "opacity-0"}`}
+          className={`h-11 w-1.5 bg-orange-600 ${isDashboard ? "opacity-100" : "opacity-0"}`}
         ></div>
         <div
           className={`ml-5 flex items-center gap-4  hover:opacity-100 ${isDashboard ? "opacity-100" : "opacity-40"}`}
@@ -60,7 +60,7 @@ const Sidebar = () => {
       </NavLink>
       <NavLink to="/lembaga" className="flex items-center">
         <div
-          className={`h-11 w-1 bg-orange-600 ${isLembaga ? "opacity-100" : "opacity-0"}`}
+          className={`h-11 w-1.5 bg-orange-600 ${isLembaga ? "opacity-100" : "opacity-0"}`}
         ></div>
         <div
           className={`ml-5 flex items-center gap-4 hover:opacity-100 ${isLembaga ? "opacity-100" : "opacity-40"}`}
@@ -73,7 +73,7 @@ const Sidebar = () => {
       </NavLink>
       <NavLink to="/admin" className="flex items-center">
         <div
-          className={`h-11 w-1 bg-orange-600 ${isAdmin ? "opacity-100" : "opacity-0"}`}
+          className={`h-11 w-1.5 bg-orange-600 ${isAdmin ? "opacity-100" : "opacity-0"}`}
         ></div>
         <div
           className={`ml-5 flex items-center gap-4 hover:opacity-100 ${isAdmin ? "opacity-100" : "opacity-40"}`}
@@ -84,7 +84,7 @@ const Sidebar = () => {
       </NavLink>
       <NavLink to="/anggota" className="flex items-center">
         <div
-          className={`h-11 w-1 bg-orange-600 ${isAnggota ? "opacity-100" : "opacity-0"}`}
+          className={`h-11 w-1.5 bg-orange-600 ${isAnggota ? "opacity-100" : "opacity-0"}`}
         ></div>
         <div
           className={`ml-5 flex items-center gap-4 hover:opacity-100 ${isAnggota ? "opacity-100" : "opacity-40"}`}
@@ -103,7 +103,7 @@ const Sidebar = () => {
         }}
       >
         <div
-          className={`h-11 w-1 bg-orange-600 ${isRamu || isRakit || isTerap ? "opacity-100" : "opacity-0"}`}
+          className={`h-11 w-1.5 bg-orange-600 ${isRamu || isRakit || isTerap ? "opacity-100" : "opacity-0"}`}
         ></div>
         <div
           className={`ml-5 flex items-center gap-4 hover:opacity-100 ${isRamu || isRakit || isTerap ? "opacity-100" : "opacity-40"}`}
@@ -168,7 +168,7 @@ const Sidebar = () => {
         }}
       >
         <div
-          className={`h-11 w-1 bg-orange-600 ${isPurwa || isMadya || isUtama ? "opacity-100" : "opacity-0"}`}
+          className={`h-11 w-1.5 bg-orange-600 ${isPurwa || isMadya || isUtama ? "opacity-100" : "opacity-0"}`}
         ></div>
         <div
           className={`ml-5 flex items-center gap-4 hover:opacity-100 ${isPurwa || isMadya || isUtama ? "opacity-100" : "opacity-40"}`}
@@ -226,7 +226,7 @@ const Sidebar = () => {
 
       <NavLink to="/jenis" className="flex items-center">
         <div
-          className={`h-11 w-1 bg-orange-600 ${isJenis ? "opacity-100" : "opacity-0"}`}
+          className={`h-11 w-1.5 bg-orange-600 ${isJenis ? "opacity-100" : "opacity-0"}`}
         ></div>
         <div
           className={`ml-5 flex items-center gap-4 hover:opacity-100 ${isJenis ? "opacity-100" : "opacity-40"}`}
@@ -238,7 +238,7 @@ const Sidebar = () => {
 
       <NavLink to="/rekap" className="flex items-center">
         <div
-          className={`h-11 w-1 bg-orange-600 ${isRekap ? "opacity-100" : "opacity-0"}`}
+          className={`h-11 w-1.5 bg-orange-600 ${isRekap ? "opacity-100" : "opacity-0"}`}
         ></div>
         <div
           className={`ml-5 flex items-center gap-4 hover:opacity-100 ${isRekap ? "opacity-100" : "opacity-40"}`}

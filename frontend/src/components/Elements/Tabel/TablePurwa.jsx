@@ -9,7 +9,6 @@ import {
 import Modal from "../Modal/ModalInput";
 import Input from "../Form/Input";
 import Button from "../Form/Button";
-import SelectOpt from "../Form/SelectOpt";
 import { useDispatch, useSelector } from "react-redux";
 import {
   createPurwa,
@@ -28,6 +27,71 @@ import ModalDetail from "../Modal/ModalDetail";
 import ListDetail from "../Modal/ListDetail";
 
 const TablePurwa = () => {
+  // GET DATA
+  const dispatch = useDispatch();
+  const dataPurwa = useSelector((i) => i.purwa.data);
+  const dataPurwaId = useSelector((i) => i.purwa.dataById);
+  const typeAction = useSelector((i) => i.purwa.type);
+  const [initialValues, setInitialValues] = useState({
+    id_anggota: "",
+    id_jenis_tkk: "",
+    nama_penguji: "",
+    jabatan_penguji: "",
+    alamat_penguji: "",
+  });
+
+  useEffect(() => {
+    dispatch(getPurwa());
+    dispatch(getRakit());
+    dispatch(getJenisTkk());
+  }, []);
+
+  useEffect(() => {
+    if (typeAction === "createPurwa/fulfilled") {
+      dispatch(getPurwa());
+    }
+  }, [typeAction]);
+
+  // GET ANGGOTA & JENIS TKK FOR CHOICE
+  const dataAnggota = useSelector((i) => i.rakit.data);
+  const dataJenis = useSelector((i) => i.jenis.data);
+
+  // HANDLE SELECT SEARCH LEMBAGA
+  const [lembagaSelected, setLembagaSelected] = useState("");
+
+  const optionAnggota = dataAnggota.map((data) => ({
+    value: data.id_anggota,
+    label: data.anggota.nama,
+    lembaga: data.anggota.lembaga.nama_lembaga,
+  }));
+
+  const optionJenis = dataJenis.map((data) => ({
+    value: data.id,
+    label: data.nama,
+  }));
+
+  // HANDLE FORM & VALIDASI
+  const validationSchema = Yup.object().shape({
+    id_anggota: Yup.number().required("Anggota harus diisi"),
+    id_jenis_tkk: Yup.number().required("TKK harus diisi"),
+    nama_penguji: Yup.string().required("Nama harus diisi"),
+    jabatan_penguji: Yup.string().required("Jabatan harus diisi"),
+    alamat_penguji: Yup.string().required("Alamat harus diisi"),
+  });
+
+  const onSubmit = (values, { resetForm }) => {
+    dispatch(createPurwa(values));
+    closeModal();
+  };
+
+  // HANDLE DETAIL
+  const [sk, setSk] = useState("");
+  const handleDetail = async (id, sk) => {
+    setSk(sk);
+    setModalDetailOpen(true);
+    dispatch(getPurwaId(id));
+  };
+
   // HANDLE MODAL
   const [isModalOpen, setModalOpen] = useState(false);
   const [isModalDetailOpen, setModalDetailOpen] = useState(false);
@@ -42,108 +106,8 @@ const TablePurwa = () => {
     setModalOpen(false);
     setModalDetailOpen(false);
     setLembagaSelected("");
-    setSelected("");
-    setSelected2("");
-    setSearchResult(null);
-    setSearchResult2(null);
     formRef.current.reset();
     document.body.style.overflow = "auto";
-  };
-
-  // GET DATA
-  const dispatch = useDispatch();
-  const dataPurwa = useSelector((i) => i.purwa.data);
-  const dataPurwaId = useSelector((i) => i.purwa.dataById);
-  const typeAction = useSelector((i) => i.purwa.type);
-
-  useEffect(() => {
-    dispatch(getPurwa());
-    dispatch(getRakit());
-    dispatch(getJenisTkk());
-  }, []);
-
-  useEffect(() => {
-    if (typeAction === "createPurwa/fulfilled") {
-      dispatch(getPurwa());
-    } else if (typeAction === "getPurwaId/fulfilled") {
-      dispatch(getPurwa());
-    }
-  }, [typeAction]);
-
-  // GET ANGGOTA & JENIS TKK FOR CHOICE
-  const dataAnggota = useSelector((i) => i.rakit.data);
-  const dataJenis = useSelector((i) => i.jenis.data);
-
-  // HANDLE SELECT SEARCH LEMBAGA
-  const [searchResult, setSearchResult] = useState(null);
-  const [errorSearch, setErrorSearch] = useState(false);
-  const [selected, setSelected] = useState(false);
-
-  const [lembagaSelected, setLembagaSelected] = useState("");
-
-  const optionAnggota = dataAnggota.map((data) => ({
-    id: data.id_anggota,
-    key: data.id,
-    value: data.anggota.nama,
-    lembaga: data.anggota.lembaga.nama_lembaga,
-  }));
-  const optionJenis = dataJenis.map((data) => ({
-    id: data.id,
-    key: data.id,
-    value: data.nama,
-  }));
-
-  const onSearch = (record) => {
-    setSearchResult(record.item.id);
-    setSelected(record.item.value);
-    setLembagaSelected(record.item.lembaga);
-  };
-
-  // HANDLE SELECT SEARCH JENIS TKK
-  const [searchResult2, setSearchResult2] = useState(null);
-  const [errorSearch2, setErrorSearch2] = useState(false);
-  const [selected2, setSelected2] = useState(false);
-
-  const onSearch2 = (record) => {
-    setSearchResult2(record.item.id);
-    setSelected2(record.item.key);
-  };
-
-  // HANDLE FORM & VALIDASI
-  const initialValues = {
-    nama_penguji: "",
-    jabatan_penguji: "",
-    alamat_penguji: "",
-  };
-
-  const validationSchema = Yup.object().shape({
-    nama_penguji: Yup.string().required("Nama harus diisi"),
-    jabatan_penguji: Yup.string().required("Jabatan harus diisi"),
-    alamat_penguji: Yup.string().required("Alamat harus diisi"),
-  });
-
-  const onSubmit = (values, { resetForm }) => {
-    const dataCreate = {
-      ...values,
-      id_anggota: searchResult,
-      id_jenis_tkk: searchResult2,
-    };
-
-    if (searchResult && searchResult2) {
-      dispatch(createPurwa(dataCreate));
-      closeModal();
-    } else {
-      setErrorSearch(!searchResult);
-      setErrorSearch2(!searchResult2);
-    }
-  };
-
-  // HANDLE DETAIL
-  const [sk, setSk] = useState("");
-  const handleDetail = async (id, sk) => {
-    setSk(sk);
-    setModalDetailOpen(true);
-    dispatch(getPurwaId(id));
   };
 
   return (
@@ -195,9 +159,10 @@ const TablePurwa = () => {
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
+          enableReinitialize={true}
           onSubmit={onSubmit}
         >
-          {(form) => (
+          {({ values, setFieldValue }) => (
             <Form
               action="#"
               ref={formRef}
@@ -206,19 +171,32 @@ const TablePurwa = () => {
               <SelectSearch
                 name="id_anggota"
                 label="Nama"
-                placeholder={selected ? selected : "Cari Nama Anggota"}
+                placeholder={"Cari Nama Anggota"}
                 data={optionAnggota}
-                onselect={onSearch}
-                error={errorSearch}
+                onChange={(selected) => {
+                  setFieldValue("id_anggota", selected?.value);
+                  setLembagaSelected(selected.lembaga);
+                }}
+                value={
+                  optionAnggota.find(
+                    (option) => option.value === values.id_anggota,
+                  ) || ""
+                }
               />
               <InputDisabled label="Asal Lembaga" value={lembagaSelected} />
               <SelectSearch
                 name="id_jenis_tkk"
-                label="Jenis TKK"
-                placeholder={selected2 ? selected2 : "Cari Jenis TKK"}
+                label="Nama"
+                placeholder={"Cari Jenis TKK"}
                 data={optionJenis}
-                onselect={onSearch2}
-                error={errorSearch2}
+                onChange={(selected) => {
+                  setFieldValue("id_jenis_tkk", selected?.value);
+                }}
+                value={
+                  optionJenis.find(
+                    (option) => option.value === values.id_jenis_tkk,
+                  ) || ""
+                }
               />
               <Input label="Nama Penguji" name="nama_penguji" type="text" />
               <Input
