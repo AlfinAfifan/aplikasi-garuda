@@ -69,6 +69,7 @@ const TableAnggota = () => {
     dispatch(getLembaga());
   }, []);
 
+  console.log(typeAction);
   useEffect(() => {
     if (
       typeAction === "createAnggota/fulfilled" ||

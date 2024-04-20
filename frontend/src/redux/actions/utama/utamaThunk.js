@@ -21,7 +21,7 @@ export const getUtamaId = createAsyncThunk("getUtamaId", async (id) => {
 export const createUtama = createAsyncThunk("createUtama", async (data) => {
   try {
     const resp = await axios.patch(
-      `${import.meta.env.VITE_APP_DOMAIN}utama/${data.id}`,
+      `${import.meta.env.VITE_APP_DOMAIN}/utama/${data.id}`,
       data,
       {
         withCredentials: true,

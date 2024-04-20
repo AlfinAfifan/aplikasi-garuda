@@ -39,7 +39,6 @@ export const createAnggota = createAsyncThunk("createAnggota", async (data) => {
 });
 
 export const updateAnggota = createAsyncThunk("updateAnggota", async (dataUpdate) => {
-  console.log(dataUpdate);
   try {
     const resp = await axios.patch(
       `${import.meta.env.VITE_APP_DOMAIN}/anggota/${dataUpdate.id}`,

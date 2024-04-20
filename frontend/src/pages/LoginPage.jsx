@@ -49,7 +49,6 @@ const LoginPage = () => {
   };
 
   const getToken = localStorage.getItem("access_token");
-  console.log(getToken);
 
   useEffect(() => {
     if (getToken) {

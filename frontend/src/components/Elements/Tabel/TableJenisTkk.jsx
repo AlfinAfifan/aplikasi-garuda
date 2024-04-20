@@ -9,14 +9,59 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   createJenisTkk,
   getJenisTkk,
+  getJenisTkkById,
+  updateJenisTkk,
 } from "../../../redux/actions/jenisTkk/jenisTkkThunk";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 
 const TableJenisTkk = () => {
+  // GET DATA
+  const dispatch = useDispatch();
+  const dataJenis = useSelector((i) => i.jenis.data);
+  const dataJenisById = useSelector((i) => i.jenis.dataById);
+  const typeAction = useSelector((i) => i.jenis.type);
+  const [initialValues, setInitialValues] = useState({
+    nama: "",
+    bidang: "",
+  });
+
+  useEffect(() => {
+    dispatch(getJenisTkk());
+  }, []);
+
+  useEffect(() => {
+    if (
+      typeAction === "createJenisTkk/fulfilled" ||
+      typeAction === "updateJenisTkk/fulfilled"
+    ) {
+      dispatch(getJenisTkk());
+    }
+    if (typeAction === "getJenisTkkById/fulfilled") {
+      setInitialValues({
+        nama: dataJenisById.nama || "",
+        bidang: dataJenisById.bidang || "",
+      });
+    }
+  }, [typeAction]);
+
+  // HANDLE FORM & VALIDASI
+  const validationSchema = Yup.object().shape({
+    nama: Yup.string().required("Nama harus diisi"),
+    bidang: Yup.string().required("Bidang harus diisi"),
+  });
+
+  const onSubmit = (values, { resetForm }) => {
+    if (Object.keys(dataJenisById).length === 0) {
+      dispatch(createJenisTkk(values));
+    } else {
+      dispatch(updateJenisTkk({ id: dataJenisById.id, data: values }));
+    }
+    closeModal();
+  };
+
   // HANDLE MODAL
   const [isModalOpen, setModalOpen] = useState(false);
-
   const openModal = () => {
     setModalOpen(true);
     document.body.style.overflow = "hidden";
@@ -26,40 +71,17 @@ const TableJenisTkk = () => {
   const closeModal = () => {
     setModalOpen(false);
     formRef.current.reset();
+    setInitialValues({
+      nama: "",
+      bidang: "",
+    });
     document.body.style.overflow = "auto";
   };
 
-  // GET DATA
-  const dispatch = useDispatch();
-  const dataJenis = useSelector((i) => i.jenis.data);
-  const typeAction = useSelector((i) => i.jenis.type);
-
-  useEffect(() => {
-    dispatch(getJenisTkk());
-  }, []);
-
-  useEffect(() => {
-    if (typeAction === "createJenisTkk/fulfilled") {
-      dispatch(getJenisTkk());
-    }
-  }, [typeAction]);
-
-  // HANDLE FORM & VALIDASI
-  const initialValues = {
-    nama: "",
-    bidang: "",
-    warna: "",
-  };
-
-  const validationSchema = Yup.object().shape({
-    nama: Yup.string().required("Nama harus diisi"),
-    bidang: Yup.string().required("Bidang harus diisi"),
-    warna: Yup.string().required("Warna harus diisi"),
-  });
-
-  const onSubmit = (values, { resetForm }) => {
-    dispatch(createJenisTkk(values));
-    closeModal();
+  // HANDLE EDIT
+  const handleEdit = (id) => {
+    dispatch(getJenisTkkById(id));
+    openModal();
   };
 
   return (
@@ -85,7 +107,10 @@ const TableJenisTkk = () => {
 
                 <td className="flex gap-2">
                   <TrashIcon className="hover w-6 cursor-pointer text-red-600 hover:text-red-700" />
-                  <PencilSquareIcon className="w-6 cursor-pointer text-third hover:text-first" />
+                  <PencilSquareIcon
+                    className="w-6 cursor-pointer text-third hover:text-first"
+                    onClick={() => handleEdit(data.id)}
+                  />
                 </td>
               </tr>
             ))
@@ -108,6 +133,7 @@ const TableJenisTkk = () => {
           initialValues={initialValues}
           validationSchema={validationSchema}
           onSubmit={onSubmit}
+          enableReinitialize={true}
         >
           {(form) => (
             <Form
@@ -117,7 +143,6 @@ const TableJenisTkk = () => {
             >
               <Input label="Nama" name="nama" type="text" />
               <Input label="Bidang" name="bidang" type="text" />
-              <Input label="Warna" name="warna" type="text" />
 
               <Button>Simpan</Button>
             </Form>
