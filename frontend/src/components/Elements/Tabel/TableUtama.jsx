@@ -26,6 +26,60 @@ import ModalDetail from "../Modal/ModalDetail";
 import ListDetail from "../Modal/ListDetail";
 
 const TableUtama = () => {
+  // GET DATA
+  const dispatch = useDispatch();
+  const dataUtama = useSelector((i) => i.utama.data);
+  const dataUtamaId = useSelector((i) => i.utama.dataById);
+  const typeAction = useSelector((i) => i.utama.type);
+  const [initialValues, setInitialValues] = useState({
+    id_madya: "",
+    nama_penguji: "",
+    jabatan_penguji: "",
+    alamat_penguji: "",
+  });
+
+  useEffect(() => {
+    dispatch(getUtama());
+    dispatch(getMadya());
+  }, []);
+
+  useEffect(() => {
+    if (typeAction === "createUtama/fulfilled") {
+      dispatch(getUtama());
+    }
+  }, [typeAction]);
+
+  // HANDLE SELECT SEARCH
+  const dataAnggota = useSelector((i) => i.madya.data);
+  const [jenisSelected, setJenisSelected] = useState("");
+
+  const optionAnggota = dataAnggota.map((data) => ({
+    value: data.id,
+    label: `${data.anggota.nama} - ${data.jenis_tkk.nama}`,
+    jenis: data.jenis_tkk.nama,
+  }));
+
+  // HANDLE FORM & VALIDASI
+  const validationSchema = Yup.object().shape({
+    id_madya: Yup.string().required("Anggota harus diisi"),
+    nama_penguji: Yup.string().required("Nama harus diisi"),
+    jabatan_penguji: Yup.string().required("Jabatan harus diisi"),
+    alamat_penguji: Yup.string().required("Alamat harus diisi"),
+  });
+
+  const onSubmit = (values, { resetForm }) => {
+    dispatch(createUtama({ id: values.id_madya, data: values }));
+    closeModal()
+  };
+
+  // HANDLE DETAIL
+  const [sk, setSk] = useState("");
+  const handleDetail = async (id, sk) => {
+    setSk(sk);
+    setModalDetailOpen(true);
+    dispatch(getUtamaId(id));
+  };
+
   // HANDLE MODAL
   const [isModalOpen, setModalOpen] = useState(false);
   const [isModalDetailOpen, setModalDetailOpen] = useState(false);
@@ -39,98 +93,14 @@ const TableUtama = () => {
   const closeModal = () => {
     setModalOpen(false);
     setModalDetailOpen(false);
-    setSelected("");
     setJenisSelected("");
-    setSearchResult(null);
     formRef.current.reset();
     document.body.style.overflow = "auto";
   };
 
-  const handleOption = () => {
-    console.log("Option");
-  };
-
-  // GET DATA
-  const dispatch = useDispatch();
-  const dataUtama = useSelector((i) => i.utama.data);
-  const dataUtamaId = useSelector((i) => i.utama.dataById);
-  const typeAction = useSelector((i) => i.utama.type);
-
-  useEffect(() => {
-    dispatch(getUtama());
-    dispatch(getMadya());
-  }, []);
-
-  useEffect(() => {
-    if (typeAction === "createUtama/fulfilled") {
-      dispatch(getUtama());
-    } else if (typeAction === "getTerapId/fulfilled") {
-      dispatch(getPurwa());
-    }
-  }, [typeAction]);
-
-  // HANDLE SELECT SEARCH
-  const dataAnggota = useSelector((i) => i.madya.data);
-  const [searchResult, setSearchResult] = useState(null);
-  const [errorSearch, setErrorSearch] = useState(false);
-  const [selected, setSelected] = useState(false);
-  const [jenisSelected, setJenisSelected] = useState("");
-
-  const optionAnggota = dataAnggota.map((data) => ({
-    id: data.id,
-    key: data.id,
-    value: `${data.anggota.nama} - ${data.jenis_tkk.nama}`,
-    jenis: data.jenis_tkk.nama,
-  }));
-
-  const onSearch = (record) => {
-    setSearchResult(record.item.id);
-    setSelected(record.item.value);
-    setJenisSelected(record.item.jenis);
-  };
-
-  // HANDLE FORM & VALIDASI
-  const initialValues = {
-    nama_penguji: "",
-    jabatan_penguji: "",
-    alamat_penguji: "",
-  };
-
-  const validationSchema = Yup.object().shape({
-    nama_penguji: Yup.string().required("Nama harus diisi"),
-    jabatan_penguji: Yup.string().required("Jabatan harus diisi"),
-    alamat_penguji: Yup.string().required("Alamat harus diisi"),
-  });
-
-  const onSubmit = (values, { resetForm }) => {
-    const dataCreate = {
-      ...values,
-      id: searchResult,
-    };
-
-    if (searchResult) {
-      dispatch(createUtama(dataCreate));
-      closeModal();
-    } else {
-      setErrorSearch(!searchResult);
-    }
-  };
-
-  // HANDLE DETAIL
-  const [sk, setSk] = useState("");
-  const handleDetail = async (id, sk) => {
-    setSk(sk);
-    setModalDetailOpen(true);
-    dispatch(getUtamaId(id));
-  };
-
   return (
     <>
-      <ShowDataLayout
-        title="Tabel Data Utama"
-        clickAdd={openModal}
-        clickOption={handleOption}
-      >
+      <ShowDataLayout title="Tabel Data Utama" clickAdd={openModal}>
         <THead>
           <tr>
             <td>No SK</td>
@@ -179,19 +149,26 @@ const TableUtama = () => {
           validationSchema={validationSchema}
           onSubmit={onSubmit}
         >
-          {(form) => (
+          {({ values, setFieldValue }) => (
             <Form
               action="#"
               ref={formRef}
               className="mt-8 grid grid-cols-2 gap-x-10 gap-y-6 pb-10"
             >
               <SelectSearch
-                name="id_anggota"
+                name="id_madya"
                 label="Nama"
-                placeholder={selected ? selected : "Cari Nama Anggota"}
+                placeholder={"Cari Nama Anggota"}
                 data={optionAnggota}
-                onselect={onSearch}
-                error={errorSearch}
+                onChange={(selected) => {
+                  setFieldValue("id_madya", selected?.value);
+                  setJenisSelected(selected?.jenis);
+                }}
+                value={
+                  optionAnggota.find(
+                    (option) => option.value === values.id_madya,
+                  ) || ""
+                }
               />
               <InputDisabled label="Jenis TKK" value={jenisSelected} />
               <Input label="Nama Penguji" name="nama_penguji" type="text" />

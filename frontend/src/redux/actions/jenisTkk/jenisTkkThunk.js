@@ -10,6 +10,20 @@ export const getJenisTkk = createAsyncThunk("getJenisTkk", async () => {
   return resp.data;
 });
 
+export const getJenisTkkById = createAsyncThunk(
+  "getJenisTkkById",
+  async (id) => {
+    const resp = await axios.get(
+      `${import.meta.env.VITE_APP_DOMAIN}/jenistkk/${id}`,
+      {
+        withCredentials: true,
+      },
+    );
+
+    return resp.data;
+  },
+);
+
 export const createJenisTkk = createAsyncThunk(
   "createJenisTkk",
   async (data) => {
@@ -23,6 +37,26 @@ export const createJenisTkk = createAsyncThunk(
       );
 
       toast.success("Tambah Data Sukses");
+      return resp.data;
+    } catch (error) {
+      toast.error(error.response.data.message);
+    }
+  },
+);
+
+export const updateJenisTkk = createAsyncThunk(
+  "updateJenisTkk",
+  async (dataUpdate) => {
+    try {
+      const resp = await axios.patch(
+        `${import.meta.env.VITE_APP_DOMAIN}/jenistkk/${dataUpdate.id}`,
+        dataUpdate.data,
+        {
+          withCredentials: true,
+        },
+      );
+
+      toast.success("Edit Data Sukses");
       return resp.data;
     } catch (error) {
       toast.error(error.response.data.message);

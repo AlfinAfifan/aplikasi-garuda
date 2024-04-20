@@ -68,7 +68,6 @@ const TableMadya = () => {
   });
 
   const onSubmit = (values, { resetForm }) => {
-    console.log(values);
     dispatch(createMadya({id: values.id_purwa, data: values}));
     closeModal();
   };
@@ -163,7 +162,7 @@ const TableMadya = () => {
                 data={optionAnggota}
                 onChange={(selected) => {
                   setFieldValue("id_purwa", selected?.value);
-                  setJenisSelected(selected.jenis);
+                  setJenisSelected(selected?.jenis);
                 }}
                 value={
                   optionAnggota.find(
