@@ -38,19 +38,43 @@ export const createAnggota = createAsyncThunk("createAnggota", async (data) => {
   }
 });
 
-export const updateAnggota = createAsyncThunk("updateAnggota", async (dataUpdate) => {
+export const updateAnggota = createAsyncThunk(
+  "updateAnggota",
+  async (dataUpdate) => {
+    try {
+      const resp = await axios.patch(
+        `${import.meta.env.VITE_APP_DOMAIN}/anggota/${dataUpdate.id}`,
+        dataUpdate.data,
+        {
+          withCredentials: true,
+        },
+      );
+
+      toast.success("Edit Data Sukses");
+      return resp.data;
+    } catch (error) {
+      toast.error(error.response.data.message);
+    }
+  },
+);
+
+export const deleteAnggota = createAsyncThunk("deleteAnggota", async (id) => {
   try {
-    const resp = await axios.patch(
-      `${import.meta.env.VITE_APP_DOMAIN}/anggota/${dataUpdate.id}`,
-      dataUpdate.data,
+    const resp = await axios.delete(
+      `${import.meta.env.VITE_APP_DOMAIN}/anggota/${id}`,
       {
         withCredentials: true,
       },
     );
 
-    toast.success("Edit Data Sukses");
+    toast.success("Hapus Data Sukses");
     return resp.data;
   } catch (error) {
-    toast.error(error.response.data.message);
+    const errorMessage = error.response.data.message.name;
+    if (errorMessage === "SequelizeForeignKeyConstraintError") {
+      toast.error("GAGAL! Anggota masih tertaut pada tabel TKU / TKK");
+    } else {
+      toast.error(error.response.data.message.name);
+    }
   }
 });

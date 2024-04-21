@@ -63,3 +63,24 @@ export const updateJenisTkk = createAsyncThunk(
     }
   },
 );
+
+export const deleteJenisTkk = createAsyncThunk("deleteJenisTkk", async (id) => {
+  try {
+    const resp = await axios.delete(
+      `${import.meta.env.VITE_APP_DOMAIN}/jenistkk/${id}`,
+      {
+        withCredentials: true,
+      },
+    );
+
+    toast.success("Hapus Data Sukses");
+    return resp.data;
+  } catch (error) {
+    const errorMessage = error.response.data.message.name;
+    if (errorMessage === "SequelizeForeignKeyConstraintError") {
+      toast.error("GAGAL! TKK masih tertaut pada data kecakapan khusus");
+    } else {
+      toast.error(error.response.data.message.name);
+    }
+  }
+});

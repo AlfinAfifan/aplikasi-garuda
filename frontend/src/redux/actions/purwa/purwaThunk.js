@@ -34,3 +34,19 @@ export const createPurwa = createAsyncThunk("createPurwa", async (data) => {
     toast.error(error.response.data.message);
   }
 });
+
+export const deletePurwa = createAsyncThunk("deletePurwa", async (id) => {
+  try {
+    const resp = await axios.delete(
+      `${import.meta.env.VITE_APP_DOMAIN}/deletepurwa/${id}`,
+      {
+        withCredentials: true,
+      },
+    );
+
+    toast.success("Hapus Data Sukses");
+    return resp.data;
+  } catch (error) {
+    toast.error(error.response.data.message);
+  }
+});

@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { createRakit, getRakit } from "./rakitThunk";
+import { createRakit, deleteRakit, getRakit } from "./rakitThunk";
 
 const initialState = {
   data: [],
@@ -53,6 +53,29 @@ const rakitSlice = createSlice({
         };
       })
       .addCase(createRakit.rejected, (state, action) => {
+        return {
+          ...state,
+          loading: false,
+          errorCreate: true,
+          type: action.type,
+        };
+      })
+      .addCase(deleteRakit.pending, (state, action) => {
+        return {
+          ...state,
+          loading: true,
+          type: action.type,
+        };
+      })
+      .addCase(deleteRakit.fulfilled, (state, action) => {
+        return {
+          ...state,
+          loading: false,
+          data: action.payload,
+          type: action.type,
+        };
+      })
+      .addCase(deleteRakit.rejected, (state, action) => {
         return {
           ...state,
           loading: false,

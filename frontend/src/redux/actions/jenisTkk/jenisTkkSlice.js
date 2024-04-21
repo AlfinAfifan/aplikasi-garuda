@@ -1,5 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { createJenisTkk, getJenisTkk, getJenisTkkById, updateJenisTkk } from "./jenisTkkThunk";
+import {
+  createJenisTkk,
+  deleteJenisTkk,
+  getJenisTkk,
+  getJenisTkkById,
+  updateJenisTkk,
+} from "./jenisTkkThunk";
 
 const initialState = {
   data: [],
@@ -106,6 +112,29 @@ const jenisTkkSlice = createSlice({
           type: action.type,
         };
       })
+      .addCase(deleteJenisTkk.pending, (state, action) => {
+        return {
+          ...state,
+          loading: true,
+          type: action.type,
+        };
+      })
+      .addCase(deleteJenisTkk.fulfilled, (state, action) => {
+        return {
+          ...state,
+          loading: false,
+          data: action.payload,
+          type: action.type,
+        };
+      })
+      .addCase(deleteJenisTkk.rejected, (state, action) => {
+        return {
+          ...state,
+          loading: false,
+          error: action.payload,
+          type: action.type,
+        };
+      });
   },
 });
 

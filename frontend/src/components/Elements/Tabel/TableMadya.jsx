@@ -12,6 +12,7 @@ import Button from "../Form/Button";
 import { useDispatch, useSelector } from "react-redux";
 import {
   createMadya,
+  deleteMadya,
   getMadya,
   getMadyaId,
 } from "../../../redux/actions/madya/madyaThunk";
@@ -24,6 +25,11 @@ import { getPurwa } from "../../../redux/actions/purwa/purwaThunk";
 import SelectSearch from "../Form/SelectSearch";
 import ModalDetail from "../Modal/ModalDetail";
 import ListDetail from "../Modal/ListDetail";
+import {
+  closeModalDelete,
+  openModalDelete,
+} from "../../../redux/actions/modal/modalSlice";
+import ModalDelete from "../Modal/ModalDelete";
 
 const TableMadya = () => {
   // GET DATA
@@ -44,7 +50,10 @@ const TableMadya = () => {
   }, []);
 
   useEffect(() => {
-    if (typeAction === "createMadya/fulfilled") {
+    if (
+      typeAction === "createMadya/fulfilled" ||
+      typeAction === "deleteMadya/fulfilled"
+    ) {
       dispatch(getMadya());
     }
   }, [typeAction]);
@@ -68,7 +77,7 @@ const TableMadya = () => {
   });
 
   const onSubmit = (values, { resetForm }) => {
-    dispatch(createMadya({id: values.id_purwa, data: values}));
+    dispatch(createMadya({ id: values.id_purwa, data: values }));
     closeModal();
   };
 
@@ -98,6 +107,8 @@ const TableMadya = () => {
     document.body.style.overflow = "auto";
   };
 
+  const [idDelete, setIdDelete] = useState(null);
+
   return (
     <>
       <ShowDataLayout title="Tabel Data Madya" clickAdd={openModal}>
@@ -121,7 +132,12 @@ const TableMadya = () => {
                 <td>{data.jenis_tkk.nama}</td>
                 <td>{dateFormat(data.tgl_madya)}</td>
                 <td className="flex gap-2">
-                  <TrashIcon className="hover w-6 cursor-pointer text-red-600 hover:text-red-700" />
+                  <TrashIcon
+                    className="hover w-6 cursor-pointer text-red-600 hover:text-red-700"
+                    onClick={() => {
+                      dispatch(openModalDelete()), setIdDelete(data.id);
+                    }}
+                  />
                   <DocumentTextIcon
                     className="w-6 cursor-pointer text-amber-500 hover:text-amber-600"
                     onClick={() => handleDetail(data.id, formatSK(idx))}
@@ -149,7 +165,7 @@ const TableMadya = () => {
           validationSchema={validationSchema}
           onSubmit={onSubmit}
         >
-          {({values, setFieldValue}) => (
+          {({ values, setFieldValue }) => (
             <Form
               action="#"
               ref={formRef}
@@ -213,6 +229,12 @@ const TableMadya = () => {
           style=""
         />
       </ModalDetail>
+      <ModalDelete
+        title="Apakah anda yakin menghapus data ini?"
+        handleDelete={() => {
+          dispatch(deleteMadya(idDelete)), dispatch(closeModalDelete());
+        }}
+      />
     </>
   );
 };

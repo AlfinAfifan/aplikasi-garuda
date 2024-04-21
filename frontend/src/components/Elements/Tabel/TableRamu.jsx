@@ -5,7 +5,11 @@ import { TrashIcon } from "@heroicons/react/24/solid";
 import Modal from "../Modal/ModalInput";
 import Button from "../Form/Button";
 import { useDispatch, useSelector } from "react-redux";
-import { createRamu, getRamu } from "../../../redux/actions/ramu/ramuThunk";
+import {
+  createRamu,
+  deleteRamu,
+  getRamu,
+} from "../../../redux/actions/ramu/ramuThunk";
 import { dateFormat } from "../DataFormat/DateFormat";
 import { formatSK } from "../DataFormat/FormatSK";
 import { getAnggota } from "../../../redux/actions/anggota/anggotaThunk";
@@ -13,6 +17,11 @@ import SelectSearch from "../Form/SelectSearch";
 import InputDisabled from "../Form/InputDisabled";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
+import ModalDelete from "../Modal/ModalDelete";
+import {
+  closeModalDelete,
+  openModalDelete,
+} from "../../../redux/actions/modal/modalSlice";
 
 const TableRamu = () => {
   // GET DATA
@@ -28,7 +37,10 @@ const TableRamu = () => {
   }, []);
 
   useEffect(() => {
-    if (typeAction === "createRamu/fulfilled") {
+    if (
+      typeAction === "createRamu/fulfilled" ||
+      typeAction === "deleteRamu/fulfilled"
+    ) {
       dispatch(getRamu());
     }
   }, [typeAction]);
@@ -68,6 +80,8 @@ const TableRamu = () => {
     document.body.style.overflow = "auto";
   };
 
+  const [idDelete, setIdDelete] = useState(null);
+
   return (
     <>
       <ShowDataLayout title="Tabel Data Ramu" clickAdd={openModal}>
@@ -89,7 +103,12 @@ const TableRamu = () => {
                 <td>{data.anggota.lembaga.nama_lembaga}</td>
                 <td>{dateFormat(data.tgl_ramu)}</td>
                 <td className="flex gap-2">
-                  <TrashIcon className="hover w-6 cursor-pointer text-red-600 hover:text-red-700" />
+                  <TrashIcon
+                    className="hover w-6 cursor-pointer text-red-600 hover:text-red-700"
+                    onClick={() => {
+                      dispatch(openModalDelete()), setIdDelete(data.id);
+                    }}
+                  />
                 </td>
               </tr>
             ))
@@ -142,6 +161,12 @@ const TableRamu = () => {
           )}
         </Formik>
       </Modal>
+      <ModalDelete
+        title="Apakah anda yakin menghapus data ini?"
+        handleDelete={() => {
+          dispatch(deleteRamu(idDelete)), dispatch(closeModalDelete());
+        }}
+      />
     </>
   );
 };

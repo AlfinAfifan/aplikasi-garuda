@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { createTerap, getTerap, getTerapId } from "./terapThunk";
+import { createTerap, deleteTerap, getTerap, getTerapId } from "./terapThunk";
 
 const initialState = {
   data: [],
@@ -82,7 +82,30 @@ const terapSlice = createSlice({
           error: action.payload,
           type: action.type,
         };
-      });
+      })
+      .addCase(deleteTerap.pending, (state, action) => {
+        return {
+          ...state,
+          loading: true,
+          type: action.type,
+        };
+      })
+      .addCase(deleteTerap.fulfilled, (state, action) => {
+        return {
+          ...state,
+          loading: false,
+          data: action.payload,
+          type: action.type,
+        };
+      })
+      .addCase(deleteTerap.rejected, (state, action) => {
+        return {
+          ...state,
+          loading: false,
+          error: action.payload,
+          type: action.type,
+        };
+      })
   },
 });
 

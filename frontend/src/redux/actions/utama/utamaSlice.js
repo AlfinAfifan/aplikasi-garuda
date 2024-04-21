@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { createUtama, getUtama, getUtamaId } from "./utamaThunk";
+import { createUtama, deleteUtama, getUtama, getUtamaId } from "./utamaThunk";
 
 const initialState = {
   data: [],
@@ -76,6 +76,29 @@ const utamaSlice = createSlice({
         };
       })
       .addCase(createUtama.rejected, (state, action) => {
+        return {
+          ...state,
+          loading: false,
+          error: action.payload,
+          type: action.type,
+        };
+      })
+      .addCase(deleteUtama.pending, (state, action) => {
+        return {
+          ...state,
+          loading: true,
+          type: action.type,
+        };
+      })
+      .addCase(deleteUtama.fulfilled, (state, action) => {
+        return {
+          ...state,
+          loading: false,
+          data: action.payload,
+          type: action.type,
+        };
+      })
+      .addCase(deleteUtama.rejected, (state, action) => {
         return {
           ...state,
           loading: false,

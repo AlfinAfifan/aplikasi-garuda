@@ -9,6 +9,7 @@ import SelectOpt from "../Form/SelectOpt";
 import { useDispatch, useSelector } from "react-redux";
 import {
   createAdmin,
+  deleteAdmin,
   getAdmin,
   getAdminById,
   updateAdmin,
@@ -18,6 +19,11 @@ import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import { getLembaga } from "../../../redux/actions/lembaga/lembagaThunk";
 import SelectSearch from "../Form/SelectSearch";
+import ModalDelete from "../Modal/ModalDelete";
+import {
+  closeModalDelete,
+  openModalDelete,
+} from "../../../redux/actions/modal/modalSlice";
 
 const TableAdmin = () => {
   // GET LEMBAGA FOR CHOICE
@@ -53,7 +59,8 @@ const TableAdmin = () => {
   useEffect(() => {
     if (
       typeAction === "createAdmin/fulfilled" ||
-      typeAction === "updateAdmin/fulfilled"
+      typeAction === "updateAdmin/fulfilled" ||
+      typeAction === "deleteAdmin/fulfilled"
     ) {
       dispatch(getAdmin());
     }
@@ -106,8 +113,7 @@ const TableAdmin = () => {
 
   // HANDLE MODAL
   const [isModalOpen, setModalOpen] = useState(false);
-
-  const openModal = () => {
+  const openModalInput = () => {
     setModalOpen(true);
     document.body.style.overflow = "hidden";
   };
@@ -133,15 +139,18 @@ const TableAdmin = () => {
   // HANDLE EDIT
   const handleEdit = (id) => {
     dispatch(getAdminById(id));
-    openModal();
+    openModalInput();
   };
+
+  // HANDLE DELETE
+  const [idDelete, setIdDelete] = useState(null);
 
   return (
     <>
       <ShowDataLayout
         title="Tabel Data Admin"
         descript="*Gunakan alamat email admin untuk mengisi form email dan password login"
-        clickAdd={openModal}
+        clickAdd={openModalInput}
       >
         <THead>
           <tr>
@@ -169,7 +178,12 @@ const TableAdmin = () => {
                 <td>{data.agama}</td>
                 <td>{data.jabatan}</td>
                 <td className="flex gap-2">
-                  <TrashIcon className="hover w-6 cursor-pointer text-red-600 hover:text-red-700" />
+                  <TrashIcon
+                    className="hover w-6 cursor-pointer text-red-600 hover:text-red-700"
+                    onClick={() => {
+                      dispatch(openModalDelete()), setIdDelete(data.id);
+                    }}
+                  />
                   <PencilSquareIcon
                     className="w-6 cursor-pointer text-third hover:text-first"
                     onClick={() => handleEdit(data?.id)}
@@ -242,6 +256,13 @@ const TableAdmin = () => {
           )}
         </Formik>
       </Modal>
+
+      <ModalDelete
+        title="Apakah anda yakin menghapus data ini?"
+        handleDelete={() => {
+          dispatch(deleteAdmin(idDelete)), dispatch(closeModalDelete());
+        }}
+      />
     </>
   );
 };

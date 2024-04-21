@@ -12,6 +12,7 @@ import Button from "../Form/Button";
 import { useDispatch, useSelector } from "react-redux";
 import {
   createPurwa,
+  deletePurwa,
   getPurwa,
   getPurwaId,
 } from "../../../redux/actions/purwa/purwaThunk";
@@ -25,6 +26,11 @@ import InputDisabled from "../Form/InputDisabled";
 import { getJenisTkk } from "../../../redux/actions/jenisTkk/jenisTkkThunk";
 import ModalDetail from "../Modal/ModalDetail";
 import ListDetail from "../Modal/ListDetail";
+import ModalDelete from "../Modal/ModalDelete";
+import {
+  closeModalDelete,
+  openModalDelete,
+} from "../../../redux/actions/modal/modalSlice";
 
 const TablePurwa = () => {
   // GET DATA
@@ -47,7 +53,10 @@ const TablePurwa = () => {
   }, []);
 
   useEffect(() => {
-    if (typeAction === "createPurwa/fulfilled") {
+    if (
+      typeAction === "createPurwa/fulfilled" ||
+      typeAction === "deletePurwa/fulfilled"
+    ) {
       dispatch(getPurwa());
     }
   }, [typeAction]);
@@ -110,6 +119,8 @@ const TablePurwa = () => {
     document.body.style.overflow = "auto";
   };
 
+  const [idDelete, setIdDelete] = useState(null);
+
   return (
     <>
       <ShowDataLayout title="Tabel Data Purwa" clickAdd={openModal}>
@@ -133,7 +144,12 @@ const TablePurwa = () => {
                 <td>{data.jenis_tkk.nama}</td>
                 <td>{dateFormat(data.tgl_purwa)}</td>
                 <td className="flex gap-2">
-                  <TrashIcon className="hover w-6 cursor-pointer text-red-600 hover:text-red-700" />
+                  <TrashIcon
+                    className="hover w-6 cursor-pointer text-red-600 hover:text-red-700"
+                    onClick={() => {
+                      dispatch(openModalDelete()), setIdDelete(data.id);
+                    }}
+                  />
                   <DocumentTextIcon
                     className="w-6 cursor-pointer text-amber-500 hover:text-amber-600"
                     onClick={() => handleDetail(data.id, formatSK(idx))}
@@ -240,6 +256,12 @@ const TablePurwa = () => {
           style=""
         />
       </ModalDetail>
+      <ModalDelete
+        title="Apakah anda yakin menghapus data ini?"
+        handleDelete={() => {
+          dispatch(deletePurwa(idDelete)), dispatch(closeModalDelete());
+        }}
+      />
     </>
   );
 };

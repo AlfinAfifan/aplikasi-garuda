@@ -57,3 +57,22 @@ export const updateAdmin = createAsyncThunk(
     }
   },
 );
+
+export const deleteAdmin = createAsyncThunk(
+  "deleteAdmin",
+  async (id) => {
+    try {
+      const resp = await axios.delete(
+        `${import.meta.env.VITE_APP_DOMAIN}/admin/${id}`,
+        {
+          withCredentials: true,
+        },
+      );
+
+      toast.success("Hapus Data Sukses");
+      return resp.data;
+    } catch (error) {
+      toast.error(error.response.data.message);
+    }
+  },
+);

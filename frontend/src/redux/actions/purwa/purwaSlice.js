@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { createPurwa, getPurwa, getPurwaId } from "./purwaThunk";
+import { createPurwa, deletePurwa, getPurwa, getPurwaId } from "./purwaThunk";
 
 const initialState = {
   data: [],
@@ -76,6 +76,29 @@ const purwaSlice = createSlice({
         };
       })
       .addCase(createPurwa.rejected, (state, action) => {
+        return {
+          ...state,
+          loading: false,
+          error: action.payload,
+          type: action.type,
+        };
+      })
+      .addCase(deletePurwa.pending, (state, action) => {
+        return {
+          ...state,
+          loading: true,
+          type: action.type,
+        };
+      })
+      .addCase(deletePurwa.fulfilled, (state, action) => {
+        return {
+          ...state,
+          loading: false,
+          data: action.payload,
+          type: action.type,
+        };
+      })
+      .addCase(deletePurwa.rejected, (state, action) => {
         return {
           ...state,
           loading: false,
