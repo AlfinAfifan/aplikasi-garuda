@@ -61,9 +61,23 @@ exports.createJenisTkk = async (req, res) => {
   if (!user[0]) return res.sendStatus(403);
 
   // request body
-  const { nama, bidang, warna } = req.body;
+  const { nama, bidang } = req.body;
+
+  let warna = '';
+  if (bidang === 'agama' || bidang === 'moral' || bidang === 'pembentukan pribadi dan watak') {
+    warna = 'kuning';
+  } else if (bidang === 'kesehatan' || bidang === 'ketangkasan') {
+    warna = 'putih';
+  } else if (bidang === 'sosial' || bidang === 'perikemanusiaan' || bidang === 'ketertiban masyarakat' || bidang === 'gotong royong') {
+    warna = 'biru';
+  } else if (bidang === 'patriotisme' || bidang === 'seni budaya') {
+    warna = 'merah';
+  } else if (bidang === 'keterampilan' || bidang === 'teknik pembangunan') {
+    warna = 'hijau';
+  }
 
   try {
+    console.log('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', warna);
     // Save data to database without file processing
     await jenisTkkModel.create({
       nama,
@@ -103,7 +117,19 @@ exports.updateJenisTkk = async (req, res) => {
     });
 
   // request new update
-  const { nama, bidang, warna } = req.body;
+  const { nama, bidang } = req.body;
+  let warna = '';
+  if (bidang === 'agama' || bidang === 'moral' || bidang === 'pembentukan pribadi dan watak') {
+    warna = 'kuning';
+  } else if (bidang === 'kesehatan' || bidang === 'ketangkasan') {
+    warna = 'putih';
+  } else if (bidang === 'sosial' || bidang === 'perikemanusiaan' || bidang === 'ketertiban masyarakat' || bidang === 'gotong royong') {
+    warna = 'biru';
+  } else if (bidang === 'patriotisme' || bidang === 'seni budaya') {
+    warna = 'merah';
+  } else if (bidang === 'keterampilan' || bidang === 'teknik pembangunan') {
+    warna = 'hijau';
+  }
 
   // save update to database
   try {
@@ -159,7 +185,7 @@ exports.deleteJenisTkk = async (req, res) => {
     res.status(200).json({ message: 'Delete Jenis TKK Success' });
   } catch (error) {
     res.json({
-      message: 'Delete Jenis TKK Failed',
+      message: error,
       Error: error,
     });
   }

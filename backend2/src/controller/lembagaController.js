@@ -165,7 +165,7 @@ exports.deleteLembaga = async (req, res) => {
     res.status(200).json({ message: 'Delete Lembaga Success' });
   } catch (error) {
     res.json({
-      message: 'Delete Lembaga Failed',
+      message: error,
       Error: error,
     });
   }
