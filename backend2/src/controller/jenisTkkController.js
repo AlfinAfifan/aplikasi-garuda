@@ -185,7 +185,7 @@ exports.deleteJenisTkk = async (req, res) => {
     res.status(200).json({ message: 'Delete Jenis TKK Success' });
   } catch (error) {
     res.json({
-      message: 'Delete Jenis TKK Failed',
+      message: error,
       Error: error,
     });
   }

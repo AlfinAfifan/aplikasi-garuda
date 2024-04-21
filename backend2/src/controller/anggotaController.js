@@ -288,9 +288,9 @@ exports.deleteAnggota = async (req, res) => {
     });
     res.status(200).json({ message: 'Deleted Anggota Success' });
   } catch (error) {
-    res.json({
-      message: 'Delete Anggota Failed',
-      Error: error,
+    res.status(500).json({
+      message: error,
+      error: error,
     });
   }
 };
