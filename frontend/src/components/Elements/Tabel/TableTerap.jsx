@@ -5,7 +5,7 @@ import { PencilSquareIcon, TrashIcon } from "@heroicons/react/24/solid";
 import Modal from "../Modal/ModalInput";
 import Button from "../Form/Button";
 import { useDispatch, useSelector } from "react-redux";
-import { createTerap, getTerap } from "../../../redux/actions/terap/terapThunk";
+import { createTerap, deleteTerap, getTerap } from "../../../redux/actions/terap/terapThunk";
 import { dateFormat } from "../DataFormat/DateFormat";
 import { formatSK } from "../DataFormat/FormatSK";
 import { Form, Formik } from "formik";
@@ -13,6 +13,8 @@ import * as Yup from "yup";
 import SelectSearch from "../Form/SelectSearch";
 import InputDisabled from "../Form/InputDisabled";
 import { getRakit } from "../../../redux/actions/rakit/rakitThunk";
+import ModalDelete from "../Modal/ModalDelete";
+import { closeModalDelete, openModalDelete } from "../../../redux/actions/modal/modalSlice";
 
 const TableTerap = () => {
   // GET DATA
@@ -27,7 +29,7 @@ const TableTerap = () => {
   }, []);
 
   useEffect(() => {
-    if (typeAction === "createTerap/fulfilled") {
+    if (typeAction === "createTerap/fulfilled" || typeAction === "deleteTerap/fulfilled") {
       dispatch(getTerap());
     }
   }, [typeAction]);
@@ -66,6 +68,7 @@ const TableTerap = () => {
     document.body.style.overflow = "auto";
   };
 
+  const [idDelete, setIdDelete] = useState(null)
   return (
     <>
       <ShowDataLayout title="Tabel Data Terap" clickAdd={openModal}>
@@ -87,7 +90,7 @@ const TableTerap = () => {
                 <td>{data.anggota.lembaga.nama_lembaga}</td>
                 <td>{dateFormat(data.tgl_terap)}</td>
                 <td className="flex gap-2">
-                  <TrashIcon className="hover w-6 cursor-pointer text-red-600 hover:text-red-700" />
+                  <TrashIcon className="hover w-6 cursor-pointer text-red-600 hover:text-red-700" onClick={()=>{dispatch(openModalDelete()), setIdDelete(data.id)}}/>
                 </td>
               </tr>
             ))
@@ -139,6 +142,12 @@ const TableTerap = () => {
           )}
         </Formik>
       </Modal>
+      <ModalDelete
+        title="Apakah anda yakin menghapus data ini?"
+        handleDelete={() => {
+          dispatch(deleteTerap(idDelete)), dispatch(closeModalDelete());
+        }}
+      />
     </>
   );
 };

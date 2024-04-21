@@ -26,3 +26,19 @@ export const createRamu = createAsyncThunk("createRamu", async (data) => {
     toast.error(error.response.data.message);
   }
 });
+
+export const deleteRamu = createAsyncThunk("deleteRamu", async (id) => {
+  try {
+    const resp = await axios.delete(
+      `${import.meta.env.VITE_APP_DOMAIN}/deleteramu/${id}`,
+      {
+        withCredentials: true,
+      },
+    );
+
+    toast.success("Hapus Data Sukses");
+    return resp.data;
+  } catch (error) {
+    toast.error(error.response.data.message);
+  }
+});

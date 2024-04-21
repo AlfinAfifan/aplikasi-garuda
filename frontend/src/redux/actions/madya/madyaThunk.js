@@ -34,3 +34,20 @@ export const createMadya = createAsyncThunk("createMadya", async (data) => {
     toast.error(error.response.data.message);
   }
 });
+
+export const deleteMadya = createAsyncThunk("deleteMadya", async (id) => {
+  try {
+    const resp = await axios.patch(
+      `${import.meta.env.VITE_APP_DOMAIN}/deletemadya/${id}`,
+      id,
+      {
+        withCredentials: true,
+      },
+    );
+
+    toast.success("Hapus Data Sukses");
+    return resp.data;
+  } catch (error) {
+    toast.error(error.response.data.message);
+  }
+});

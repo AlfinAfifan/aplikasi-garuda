@@ -10,6 +10,7 @@ import { purwaReducer } from "./actions/purwa/purwaSlice";
 import { madyaReducer } from "./actions/madya/madyaSlice";
 import { utamaReducer } from "./actions/utama/utamaSlice";
 import { jenisTkkReducer } from "./actions/jenisTkk/jenisTkkSlice";
+import { modalReducer } from "./actions/modal/modalSlice";
 // import thunk from "redux-thunk";
 
 const reducer = combineReducers({
@@ -24,6 +25,7 @@ const reducer = combineReducers({
   madya: madyaReducer,
   utama: utamaReducer,
   jenis: jenisTkkReducer,
+  modal: modalReducer,
 });
 
 const store = configureStore({

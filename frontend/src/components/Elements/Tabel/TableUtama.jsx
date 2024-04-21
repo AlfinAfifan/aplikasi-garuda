@@ -12,6 +12,7 @@ import Button from "../Form/Button";
 import { useDispatch, useSelector } from "react-redux";
 import {
   createUtama,
+  deleteUtama,
   getUtama,
   getUtamaId,
 } from "../../../redux/actions/utama/utamaThunk";
@@ -24,6 +25,11 @@ import InputDisabled from "../Form/InputDisabled";
 import { getMadya } from "../../../redux/actions/madya/madyaThunk";
 import ModalDetail from "../Modal/ModalDetail";
 import ListDetail from "../Modal/ListDetail";
+import ModalDelete from "../Modal/ModalDelete";
+import {
+  closeModalDelete,
+  openModalDelete,
+} from "../../../redux/actions/modal/modalSlice";
 
 const TableUtama = () => {
   // GET DATA
@@ -44,7 +50,10 @@ const TableUtama = () => {
   }, []);
 
   useEffect(() => {
-    if (typeAction === "createUtama/fulfilled") {
+    if (
+      typeAction === "createUtama/fulfilled" ||
+      typeAction === "deleteUtama/fulfilled"
+    ) {
       dispatch(getUtama());
     }
   }, [typeAction]);
@@ -69,7 +78,7 @@ const TableUtama = () => {
 
   const onSubmit = (values, { resetForm }) => {
     dispatch(createUtama({ id: values.id_madya, data: values }));
-    closeModal()
+    closeModal();
   };
 
   // HANDLE DETAIL
@@ -98,6 +107,8 @@ const TableUtama = () => {
     document.body.style.overflow = "auto";
   };
 
+  const [idDelete, setIdDelete] = useState(null);
+
   return (
     <>
       <ShowDataLayout title="Tabel Data Utama" clickAdd={openModal}>
@@ -121,7 +132,12 @@ const TableUtama = () => {
                 <td>{data.jenis_tkk.nama}</td>
                 <td>{dateFormat(data.tgl_utama)}</td>
                 <td className="flex gap-2">
-                  <TrashIcon className="hover w-6 cursor-pointer text-red-600 hover:text-red-700" />
+                  <TrashIcon
+                    className="hover w-6 cursor-pointer text-red-600 hover:text-red-700"
+                    onClick={() => {
+                      dispatch(openModalDelete()), setIdDelete(data.id);
+                    }}
+                  />
                   <DocumentTextIcon
                     className="w-6 cursor-pointer text-amber-500 hover:text-amber-600"
                     onClick={() => handleDetail(data.id, formatSK(idx))}
@@ -213,6 +229,12 @@ const TableUtama = () => {
           style=""
         />
       </ModalDetail>
+      <ModalDelete
+        title="Apakah anda yakin menghapus data ini?"
+        handleDelete={() => {
+          dispatch(deleteUtama(idDelete)), dispatch(closeModalDelete());
+        }}
+      />
     </>
   );
 };

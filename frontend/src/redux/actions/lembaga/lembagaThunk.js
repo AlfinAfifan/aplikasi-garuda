@@ -57,3 +57,24 @@ export const updateLembaga = createAsyncThunk(
     }
   },
 );
+
+export const deleteLembaga = createAsyncThunk("deleteLembaga", async (id) => {
+  try {
+    const resp = await axios.delete(
+      `${import.meta.env.VITE_APP_DOMAIN}/lembaga/${id}`,
+      {
+        withCredentials: true,
+      },
+    );
+
+    toast.success("Hapus Data Sukses");
+    return resp.data;
+  } catch (error) {
+    const errorMessage = error.response.data.message.name;
+    if (errorMessage === "SequelizeForeignKeyConstraintError") {
+      toast.error("GAGAL! Lembaga masih tertaut pada data anggota / admin");
+    } else {
+      toast.error(error.response.data.message.name);
+    }
+  }
+});

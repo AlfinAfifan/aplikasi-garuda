@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { createAdmin, getAdmin, getAdminById, updateAdmin } from "./adminThunk";
+import { createAdmin, deleteAdmin, getAdmin, getAdminById, updateAdmin } from "./adminThunk";
 
 const initialState = {
   data: [],
@@ -105,7 +105,30 @@ const adminSlice = createSlice({
           error: action.payload,
           type: action.type,
         };
-      });
+      })
+      .addCase(deleteAdmin.pending, (state, action) => {
+        return {
+          ...state,
+          loading: true,
+          type: action.type,
+        };
+      })
+      .addCase(deleteAdmin.fulfilled, (state, action) => {
+        return {
+          ...state,
+          loading: false,
+          data: action.payload,
+          type: action.type,
+        };
+      })
+      .addCase(deleteAdmin.rejected, (state, action) => {
+        return {
+          ...state,
+          loading: false,
+          error: action.payload,
+          type: action.type,
+        };
+      })
   },
 });
 

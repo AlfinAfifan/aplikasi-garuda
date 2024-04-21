@@ -13,6 +13,7 @@ import SelectOpt from "../Form/SelectOpt";
 import { useDispatch, useSelector } from "react-redux";
 import {
   createAnggota,
+  deleteAnggota,
   getAnggota,
   getAnggotaById,
   updateAnggota,
@@ -24,6 +25,11 @@ import SelectSearch from "../Form/SelectSearch";
 import { getLembaga } from "../../../redux/actions/lembaga/lembagaThunk";
 import ModalDetail from "../Modal/ModalDetail";
 import ListDetail from "../Modal/ListDetail";
+import ModalDelete from "../Modal/ModalDelete";
+import {
+  closeModalDelete,
+  openModalDelete,
+} from "../../../redux/actions/modal/modalSlice";
 
 const TableAnggota = () => {
   // GET DATA
@@ -69,11 +75,11 @@ const TableAnggota = () => {
     dispatch(getLembaga());
   }, []);
 
-  console.log(typeAction);
   useEffect(() => {
     if (
       typeAction === "createAnggota/fulfilled" ||
-      typeAction === "updateAnggota/fulfilled"
+      typeAction === "updateAnggota/fulfilled" ||
+      typeAction === "deleteAnggota/fulfilled"
     ) {
       dispatch(getAnggota());
     }
@@ -240,6 +246,9 @@ const TableAnggota = () => {
     openModal();
   };
 
+  // HANDLE DELETE
+  const [idDelete, setIdDelete] = useState(null);
+
   return (
     <>
       <ShowDataLayout title="Tabel Data Anggota" clickAdd={openModal}>
@@ -269,7 +278,12 @@ const TableAnggota = () => {
                 <td>{`${data.tmpt_lahir}, ${dateFormat(data.tgl_lahir)}`}</td>
                 <td>{data.no_telp}</td>
                 <td className="flex gap-2">
-                  <TrashIcon className="hover w-6 cursor-pointer text-red-600 hover:text-red-700" />
+                  <TrashIcon
+                    className="hover w-6 cursor-pointer text-red-600 hover:text-red-700"
+                    onClick={() => {
+                      dispatch(openModalDelete()), setIdDelete(data.id);
+                    }}
+                  />
                   <PencilSquareIcon
                     className="w-6 cursor-pointer text-third hover:text-first"
                     onClick={() => handleEdit(data.id)}
@@ -313,9 +327,11 @@ const TableAnggota = () => {
                 label="Asal Lembaga"
                 placeholder="Cari Nama Lembaga"
                 data={optionLembaga}
-                value={optionLembaga.find(
-                  (option) => option.value === values.id_lembaga,
-                ) || ''}
+                value={
+                  optionLembaga.find(
+                    (option) => option.value === values.id_lembaga,
+                  ) || ""
+                }
                 onChange={(selected) => {
                   setFieldValue("id_lembaga", selected?.value);
                 }}
@@ -482,6 +498,13 @@ const TableAnggota = () => {
           value={dataAnggotaById?.alasan_keluar}
         />
       </ModalDetail>
+
+      <ModalDelete
+        title="Apakah anda yakin menghapus data ini?"
+        handleDelete={() => {
+          dispatch(deleteAnggota(idDelete)), dispatch(closeModalDelete());
+        }}
+      />
     </>
   );
 };

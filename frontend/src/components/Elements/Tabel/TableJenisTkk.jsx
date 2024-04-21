@@ -8,12 +8,18 @@ import Button from "../Form/Button";
 import { useDispatch, useSelector } from "react-redux";
 import {
   createJenisTkk,
+  deleteJenisTkk,
   getJenisTkk,
   getJenisTkkById,
   updateJenisTkk,
 } from "../../../redux/actions/jenisTkk/jenisTkkThunk";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
+import ModalDelete from "../Modal/ModalDelete";
+import {
+  closeModalDelete,
+  openModalDelete,
+} from "../../../redux/actions/modal/modalSlice";
 
 const TableJenisTkk = () => {
   // GET DATA
@@ -33,7 +39,8 @@ const TableJenisTkk = () => {
   useEffect(() => {
     if (
       typeAction === "createJenisTkk/fulfilled" ||
-      typeAction === "updateJenisTkk/fulfilled"
+      typeAction === "updateJenisTkk/fulfilled" ||
+      typeAction === "deleteJenisTkk/fulfilled"
     ) {
       dispatch(getJenisTkk());
     }
@@ -84,6 +91,9 @@ const TableJenisTkk = () => {
     openModal();
   };
 
+  // HANDLE DELETE
+  const [idDelete, setIdDelete] = useState(null);
+
   return (
     <>
       <ShowDataLayout title="Tabel Data Admin" clickAdd={openModal}>
@@ -106,7 +116,12 @@ const TableJenisTkk = () => {
                 <td>{data.warna}</td>
 
                 <td className="flex gap-2">
-                  <TrashIcon className="hover w-6 cursor-pointer text-red-600 hover:text-red-700" />
+                  <TrashIcon
+                    className="hover w-6 cursor-pointer text-red-600 hover:text-red-700"
+                    onClick={() => {
+                      dispatch(openModalDelete()), setIdDelete(data.id);
+                    }}
+                  />
                   <PencilSquareIcon
                     className="w-6 cursor-pointer text-third hover:text-first"
                     onClick={() => handleEdit(data.id)}
@@ -149,6 +164,12 @@ const TableJenisTkk = () => {
           )}
         </Formik>
       </Modal>
+      <ModalDelete
+        title="Apakah anda yakin menghapus data ini?"
+        handleDelete={() => {
+          dispatch(deleteJenisTkk(idDelete)), dispatch(closeModalDelete());
+        }}
+      />
     </>
   );
 };

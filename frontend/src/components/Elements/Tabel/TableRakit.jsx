@@ -5,7 +5,11 @@ import { PencilSquareIcon, TrashIcon } from "@heroicons/react/24/solid";
 import Modal from "../Modal/ModalInput";
 import Button from "../Form/Button";
 import { useDispatch, useSelector } from "react-redux";
-import { createRakit, getRakit } from "../../../redux/actions/rakit/rakitThunk";
+import {
+  createRakit,
+  deleteRakit,
+  getRakit,
+} from "../../../redux/actions/rakit/rakitThunk";
 import { dateFormat } from "../DataFormat/DateFormat";
 import { formatSK } from "../DataFormat/FormatSK";
 import { Form, Formik } from "formik";
@@ -13,6 +17,11 @@ import * as Yup from "yup";
 import SelectSearch from "../Form/SelectSearch";
 import InputDisabled from "../Form/InputDisabled";
 import { getRamu } from "../../../redux/actions/ramu/ramuThunk";
+import ModalDelete from "../Modal/ModalDelete";
+import {
+  closeModalDelete,
+  openModalDelete,
+} from "../../../redux/actions/modal/modalSlice";
 
 const TableRakit = () => {
   // GET DATA
@@ -27,7 +36,10 @@ const TableRakit = () => {
   }, []);
 
   useEffect(() => {
-    if (typeAction === "createRakit/fulfilled") {
+    if (
+      typeAction === "createRakit/fulfilled" ||
+      typeAction === "deleteRakit/fulfilled"
+    ) {
       dispatch(getRakit());
     }
   }, [typeAction]);
@@ -47,7 +59,7 @@ const TableRakit = () => {
     id_anggota: Yup.number().required("Anggota harus diisi"),
   });
   const onSubmit = (values) => {
-    dispatch(createRakit({id: values.id_anggota, data: values.id_anggota}));
+    dispatch(createRakit({ id: values.id_anggota, data: values.id_anggota }));
     closeModal();
   };
 
@@ -65,6 +77,8 @@ const TableRakit = () => {
     formRef.current.reset();
     document.body.style.overflow = "auto";
   };
+
+  const [idDelete, setIdDelete] = useState(null);
 
   return (
     <>
@@ -87,7 +101,12 @@ const TableRakit = () => {
                 <td>{data.anggota.lembaga.nama_lembaga}</td>
                 <td>{dateFormat(data.tgl_rakit)}</td>
                 <td className="flex gap-2">
-                  <TrashIcon className="hover w-6 cursor-pointer text-red-600 hover:text-red-700" />
+                  <TrashIcon
+                    className="hover w-6 cursor-pointer text-red-600 hover:text-red-700"
+                    onClick={() => {
+                      dispatch(openModalDelete()), setIdDelete(data.id);
+                    }}
+                  />
                 </td>
               </tr>
             ))
@@ -139,6 +158,12 @@ const TableRakit = () => {
           )}
         </Formik>
       </Modal>
+      <ModalDelete
+        title="Apakah anda yakin menghapus data ini?"
+        handleDelete={() => {
+          dispatch(deleteRakit(idDelete)), dispatch(closeModalDelete());
+        }}
+      />
     </>
   );
 };

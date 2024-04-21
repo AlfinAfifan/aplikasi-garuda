@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import {
   createAnggota,
+  deleteAnggota,
   getAnggota,
   getAnggotaById,
   updateAnggota,
@@ -109,7 +110,30 @@ const anggotaSlice = createSlice({
           loading: false,
           error: action.payload,
           type: action.type,
+        }
+      })
+      .addCase(deleteAnggota.pending, (state, action) => {
+        return {
+          ...state,
+          loading: true,
+          type: action.type,
         };
+      })
+      .addCase(deleteAnggota.fulfilled, (state, action) => {
+        return {
+          ...state,
+          loading: false,
+          type: action.type,
+          data: action.payload,
+        };
+      })
+      .addCase(deleteAnggota.rejected, (state, action) => {
+        return {
+          ...state,
+          loading: false,
+          error: action.payload,
+          type: action.type,
+        }
       });
   },
 });

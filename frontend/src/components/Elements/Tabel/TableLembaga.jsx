@@ -8,12 +8,18 @@ import Button from "../Form/Button";
 import { useDispatch, useSelector } from "react-redux";
 import {
   createLembaga,
+  deleteLembaga,
   getLembaga,
   getLembagaById,
   updateLembaga,
 } from "../../../redux/actions/lembaga/lembagaThunk";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
+import ModalDelete from "../Modal/ModalDelete";
+import {
+  closeModalDelete,
+  openModalDelete,
+} from "../../../redux/actions/modal/modalSlice";
 
 const TableLembaga = () => {
   // GET DATA
@@ -37,7 +43,8 @@ const TableLembaga = () => {
   useEffect(() => {
     if (
       typeAction === "createLembaga/fulfilled" ||
-      typeAction === "updateLembaga/fulfilled"
+      typeAction === "updateLembaga/fulfilled" ||
+      typeAction === "deleteLembaga/fulfilled"
     ) {
       dispatch(getLembaga());
     }
@@ -100,6 +107,9 @@ const TableLembaga = () => {
     openModal();
   };
 
+  // HANDLE DELETE
+  const [idDelete, setIdDelete] = useState(null);
+
   return (
     <>
       <ShowDataLayout title="Tabel Data Lembaga" clickAdd={openModal}>
@@ -127,7 +137,12 @@ const TableLembaga = () => {
                 <td>{data?.kepsek}</td>
                 <td>{data?.nip_kepsek}</td>
                 <td className="flex gap-2">
-                  <TrashIcon className="hover w-6 cursor-pointer text-red-600 hover:text-red-700" />
+                  <TrashIcon
+                    className="hover w-6 cursor-pointer text-red-600 hover:text-red-700"
+                    onClick={() => {
+                      dispatch(openModalDelete()), setIdDelete(data.id);
+                    }}
+                  />
                   <PencilSquareIcon
                     className="w-6 cursor-pointer text-third hover:text-first"
                     onClick={() => handleEdit(data?.id)}
@@ -173,6 +188,12 @@ const TableLembaga = () => {
           )}
         </Formik>
       </Modal>
+      <ModalDelete
+        title="Apakah anda yakin menghapus data ini?"
+        handleDelete={() => {
+          dispatch(deleteLembaga(idDelete)), dispatch(closeModalDelete());
+        }}
+      />
     </>
   );
 };

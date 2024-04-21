@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { createMadya, getMadya, getMadyaId } from "./madyaThunk";
+import { createMadya, deleteMadya, getMadya, getMadyaId } from "./madyaThunk";
 
 const initialState = {
   data: [],
@@ -82,7 +82,30 @@ const madyaSlice = createSlice({
           error: action.payload,
           type: action.type,
         };
-      });
+      })
+      .addCase(deleteMadya.pending, (state, action) => {
+        return {
+          ...state,
+          loading: true,
+          type: action.type,
+        };
+      })
+      .addCase(deleteMadya.fulfilled, (state, action) => {
+        return {
+          ...state,
+          loading: false,
+          data: action.payload,
+          type: action.type,
+        };
+      })
+      .addCase(deleteMadya.rejected, (state, action) => {
+        return {
+          ...state,
+          loading: false,
+          error: action.payload,
+          type: action.type,
+        };
+      })
   },
 });
 

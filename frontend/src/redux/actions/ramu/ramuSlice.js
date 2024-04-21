@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { createRamu, getRamu } from "./ramuThunk";
+import { createRamu, deleteRamu, getRamu } from "./ramuThunk";
 
 const initialState = {
   data: [],
@@ -52,6 +52,29 @@ const ramuSlice = createSlice({
         };
       })
       .addCase(createRamu.rejected, (state, action) => {
+        return {
+          ...state,
+          loading: false,
+          error: action.payload,
+          type: action.type,
+        };
+      })
+      .addCase(deleteRamu.pending, (state, action) => {
+        return {
+          ...state,
+          loading: true,
+          type: action.type,
+        };
+      })
+      .addCase(deleteRamu.fulfilled, (state, action) => {
+        return {
+          ...state,
+          loading: false,
+          data: action.payload,
+          type: action.type,
+        };
+      })
+      .addCase(deleteRamu.rejected, (state, action) => {
         return {
           ...state,
           loading: false,
