@@ -10,6 +10,14 @@ export const getRamu = createAsyncThunk("getRamu", async () => {
   return resp.data;
 });
 
+export const getYearRamu = createAsyncThunk("getYearRamu", async () => {
+  const resp = await axios.get(`${import.meta.env.VITE_APP_DOMAIN}/yearramu`, {
+    withCredentials: true,
+  });
+
+  return resp.data;
+});
+
 export const createRamu = createAsyncThunk("createRamu", async (data) => {
   try {
     const resp = await axios.post(
