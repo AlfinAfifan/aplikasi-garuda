@@ -240,6 +240,7 @@ exports.getYearRakit = async (req, res) => {
     res.status(500).send('Internal Server Error');
   }
 };
+
 exports.getYearTerap = async (req, res) => {
   // CEK TOKEN
   const refreshToken = req.cookies.refreshToken;
