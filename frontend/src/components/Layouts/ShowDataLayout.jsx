@@ -1,7 +1,7 @@
 import React from "react";
 import { useLocation } from "react-router-dom";
 
-const ShowDataLayout = ({ children, title, clickAdd, descript }) => {
+const ShowDataLayout = ({ children, title, clickAdd, descript, yearList }) => {
   const location = useLocation();
 
   const isDashboard = location.pathname === "/dashboard";
@@ -20,7 +20,9 @@ const ShowDataLayout = ({ children, title, clickAdd, descript }) => {
           id=""
           className={`rounded-md border border-black p-1 ${isDashboard || isLembaga || isAdmin || isAnggota || isJenis ? "hidden" : ""}`}
         >
-          <option value="">2020</option>
+          {yearList.map((year, idx) => (
+            <option value="" key={idx}>{year}</option>
+          ))}
         </select>
       </h1>
       <div className="mt-2 h-0.5 w-full rounded-full bg-second opacity-75"></div>

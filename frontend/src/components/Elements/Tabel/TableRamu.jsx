@@ -9,6 +9,7 @@ import {
   createRamu,
   deleteRamu,
   getRamu,
+  getYearRamu,
 } from "../../../redux/actions/ramu/ramuThunk";
 import { dateFormat } from "../DataFormat/DateFormat";
 import { formatSK } from "../DataFormat/FormatSK";
@@ -28,12 +29,14 @@ const TableRamu = () => {
   const [lembagaSelected, setLembagaSelected] = useState("");
   const dispatch = useDispatch();
   const dataRamu = useSelector((i) => i.ramu.data);
+  const yearList = useSelector((i) => i.ramu.yearList);
   const typeAction = useSelector((i) => i.ramu.type);
   const [initialValues, setInitialValues] = useState({ id_anggota: "" });
 
   useEffect(() => {
     dispatch(getRamu());
     dispatch(getAnggota());
+    dispatch(getYearRamu())
   }, []);
 
   useEffect(() => {
@@ -42,6 +45,7 @@ const TableRamu = () => {
       typeAction === "deleteRamu/fulfilled"
     ) {
       dispatch(getRamu());
+      dispatch(getYearRamu());
     }
   }, [typeAction]);
 
@@ -84,7 +88,7 @@ const TableRamu = () => {
 
   return (
     <>
-      <ShowDataLayout title="Tabel Data Ramu" clickAdd={openModal}>
+      <ShowDataLayout title="Tabel Data Ramu" clickAdd={openModal} yearList={yearList}>
         <THead>
           <tr>
             <td>No SK</td>
