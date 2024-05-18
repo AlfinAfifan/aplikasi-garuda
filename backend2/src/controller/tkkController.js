@@ -5,6 +5,7 @@ const anggotaModel = require('../models/anggotaModel.js');
 const jenisTkkModel = require('../models/jenisTkkModel.js');
 const usersModel = require('../models/usersModel.js');
 const lembagaModel = require('../models/lembagaModel.js');
+const db = require('../config/database.js');
 
 // CONTROLLER GET ALL SURAT
 exports.getTkk = async (req, res) => {
@@ -218,6 +219,69 @@ exports.getTkkById = async (req, res) => {
     res.json(response);
   } catch (error) {
     response;
+  }
+};
+
+exports.getYearPurwa = async (req, res) => {
+  // CEK TOKEN
+  const refreshToken = req.cookies.refreshToken;
+  if (!refreshToken) return res.sendStatus(401);
+  const user = await usersModel.findAll({
+    where: {
+      refresh_token: refreshToken,
+    },
+  });
+  if (!user[0]) return res.sendStatus(403);
+
+  try {
+    const [results, metadata] = await db.query('SELECT DISTINCT YEAR(tgl_purwa) as year FROM tkk WHERE tgl_purwa IS NOT NULL ORDER BY year');
+    const years = results.map((row) => row.year);
+    res.json(years);
+  } catch (error) {
+    console.error('Error fetching years:', error);
+    res.status(500).send('Internal Server Error');
+  }
+};
+
+exports.getYearMadya = async (req, res) => {
+  // CEK TOKEN
+  const refreshToken = req.cookies.refreshToken;
+  if (!refreshToken) return res.sendStatus(401);
+  const user = await usersModel.findAll({
+    where: {
+      refresh_token: refreshToken,
+    },
+  });
+  if (!user[0]) return res.sendStatus(403);
+
+  try {
+    const [results, metadata] = await db.query('SELECT DISTINCT YEAR(tgl_madya) as year FROM tkk WHERE tgl_madya IS NOT NULL ORDER BY year');
+    const years = results.map((row) => row.year);
+    res.json(years);
+  } catch (error) {
+    console.error('Error fetching years:', error);
+    res.status(500).send('Internal Server Error');
+  }
+};
+
+exports.getYearUtama = async (req, res) => {
+  // CEK TOKEN
+  const refreshToken = req.cookies.refreshToken;
+  if (!refreshToken) return res.sendStatus(401);
+  const user = await usersModel.findAll({
+    where: {
+      refresh_token: refreshToken,
+    },
+  });
+  if (!user[0]) return res.sendStatus(403);
+
+  try {
+    const [results, metadata] = await db.query('SELECT DISTINCT YEAR(tgl_utama) as year FROM tkk WHERE tgl_utama IS NOT NULL ORDER BY year');
+    const years = results.map((row) => row.year);
+    res.json(years);
+  } catch (error) {
+    console.error('Error fetching years:', error);
+    res.status(500).send('Internal Server Error');
   }
 };
 

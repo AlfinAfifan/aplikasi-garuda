@@ -1,5 +1,5 @@
 const express = require('express');
-const { createMadya, createPurwa, createUtama, deleteMadya, deletePurwa, deleteUtama, getMadya, getPurwa, getTkk, getTkkById, getUtama, updateTkk } = require('../controller/tkkController.js');
+const { createMadya, createPurwa, createUtama, deleteMadya, deletePurwa, deleteUtama, getMadya, getPurwa, getTkk, getTkkById, getUtama, updateTkk, getYearPurwa, getYearMadya, getYearUtama } = require('../controller/tkkController.js');
 
 const router = express.Router();
 
@@ -8,6 +8,9 @@ router.get('/tkk', getTkk);
 router.get('/purwa', getPurwa);
 router.get('/madya', getMadya);
 router.get('/utama', getUtama);
+router.get('/yearpurwa', getYearPurwa);
+router.get('/yearmadya', getYearMadya);
+router.get('/yearutama', getYearUtama);
 // ROUTE GET SURAT BY ID
 router.get('/tkk/:id', getTkkById);
 // ROUTE CREATE SURAT
