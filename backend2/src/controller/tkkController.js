@@ -61,6 +61,9 @@ exports.getPurwa = async (req, res) => {
     const response = await tkkModel.findAll({
       where: {
         purwa: true,
+        madya: {
+          [Sequelize.Op.not]: true,
+        },
       },
       include: [
         {
@@ -103,6 +106,9 @@ exports.getMadya = async (req, res) => {
     const response = await tkkModel.findAll({
       where: {
         madya: true,
+        utama: {
+          [Sequelize.Op.not]: true,
+        },
       },
       include: [
         {
