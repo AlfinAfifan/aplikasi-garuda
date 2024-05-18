@@ -4,6 +4,8 @@ const tkuModel = require('../models/tkuModel.js');
 const anggotaModel = require('../models/anggotaModel.js');
 const lembagaModel = require('../models/lembagaModel.js');
 const usersModel = require('../models/usersModel.js');
+const { Sequelize } = require('sequelize');
+const db = require('../config/database.js');
 
 // CONTROLLER GET ALL SURAT
 
@@ -56,6 +58,9 @@ exports.getRamu = async (req, res) => {
     const response = await tkuModel.findAll({
       where: {
         ramu: true,
+        rakit: {
+          [Sequelize.Op.not]: true,
+        },
       },
       include: [
         {
@@ -93,6 +98,9 @@ exports.getRakit = async (req, res) => {
     const response = await tkuModel.findAll({
       where: {
         rakit: true,
+        terap: {
+          [Sequelize.Op.not]: true,
+        },
       },
       include: [
         {
@@ -187,6 +195,69 @@ exports.getTkuById = async (req, res) => {
     res.json(response);
   } catch (error) {
     response;
+  }
+};
+
+// GET TAHUN
+exports.getYearRamu = async (req, res) => {
+  // CEK TOKEN
+  const refreshToken = req.cookies.refreshToken;
+  if (!refreshToken) return res.sendStatus(401);
+  const user = await usersModel.findAll({
+    where: {
+      refresh_token: refreshToken,
+    },
+  });
+  if (!user[0]) return res.sendStatus(403);
+
+  try {
+    const [results, metadata] = await db.query('SELECT DISTINCT YEAR(tgl_ramu) as year FROM tku WHERE tgl_ramu IS NOT NULL ORDER BY year');
+    const years = results.map((row) => row.year);
+    res.json(years);
+  } catch (error) {
+    console.error('Error fetching years:', error);
+    res.status(500).send('Internal Server Error');
+  }
+};
+
+exports.getYearRakit = async (req, res) => {
+  // CEK TOKEN
+  const refreshToken = req.cookies.refreshToken;
+  if (!refreshToken) return res.sendStatus(401);
+  const user = await usersModel.findAll({
+    where: {
+      refresh_token: refreshToken,
+    },
+  });
+  if (!user[0]) return res.sendStatus(403);
+
+  try {
+    const [results, metadata] = await db.query('SELECT DISTINCT YEAR(tgl_rakit) as year FROM tku WHERE tgl_rakit IS NOT NULL ORDER BY year');
+    const years = results.map((row) => row.year);
+    res.json(years);
+  } catch (error) {
+    console.error('Error fetching years:', error);
+    res.status(500).send('Internal Server Error');
+  }
+};
+exports.getYearTerap = async (req, res) => {
+  // CEK TOKEN
+  const refreshToken = req.cookies.refreshToken;
+  if (!refreshToken) return res.sendStatus(401);
+  const user = await usersModel.findAll({
+    where: {
+      refresh_token: refreshToken,
+    },
+  });
+  if (!user[0]) return res.sendStatus(403);
+
+  try {
+    const [results, metadata] = await db.query('SELECT DISTINCT YEAR(tgl_terap) as year FROM tku WHERE tgl_terap IS NOT NULL ORDER BY year');
+    const years = results.map((row) => row.year);
+    res.json(years);
+  } catch (error) {
+    console.error('Error fetching years:', error);
+    res.status(500).send('Internal Server Error');
   }
 };
 
@@ -317,7 +388,6 @@ exports.updateRakit = async (req, res) => {
     });
 
   // request new update
-  const { id_anggota } = req.body;
   const rakit = true;
   const tgl_rakit = dateNow;
 
@@ -325,7 +395,6 @@ exports.updateRakit = async (req, res) => {
   try {
     await tkuModel.update(
       {
-        id_anggota,
         rakit,
         tgl_rakit,
       },
@@ -383,7 +452,6 @@ exports.updateTerap = async (req, res) => {
     });
 
   // request new update
-  const { id_anggota } = req.body;
   const terap = true;
   const tgl_terap = dateNow;
 
@@ -391,7 +459,6 @@ exports.updateTerap = async (req, res) => {
   try {
     await tkuModel.update(
       {
-        id_anggota,
         terap,
         tgl_terap,
       },

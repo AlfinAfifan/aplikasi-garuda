@@ -7,6 +7,7 @@ Content-Type: application/json
 
 {
     "name": "aku",
+    "id_lembaga": 2,
     "email": "aku@gmail.com",
     "password" : "123",
     "confirmPassword": "123"

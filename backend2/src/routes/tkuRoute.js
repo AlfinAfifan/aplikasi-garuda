@@ -1,5 +1,5 @@
 const express = require('express');
-const { createTku, deleteRakit, deleteRamu, deleteTerap, getRakit, getRamu, getTerap, getTku, getTkuById, updateRakit, updateTerap, updateTku } = require('../controller/tkuController.js');
+const { createTku, deleteRakit, deleteRamu, deleteTerap, getRakit, getRamu, getTerap, getTku, getTkuById, updateRakit, updateTerap, updateTku, getYearRamu, getYearRakit, getYearTerap } = require('../controller/tkuController.js');
 
 const router = express.Router();
 
@@ -8,8 +8,10 @@ router.get('/tku', getTku);
 router.get('/ramu', getRamu);
 router.get('/rakit', getRakit);
 router.get('/terap', getTerap);
-// ROUTE GET SURAT BY ID
 router.get('/tku/:id', getTkuById);
+router.get('/yearramu', getYearRamu);
+router.get('/yearrakit', getYearRakit);
+router.get('/yearterap', getYearTerap);
 // ROUTE CREATE SURAT
 router.post('/tku', createTku);
 // ROUTE EDIT SURAT
