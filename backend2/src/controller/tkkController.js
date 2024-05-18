@@ -6,6 +6,7 @@ const jenisTkkModel = require('../models/jenisTkkModel.js');
 const usersModel = require('../models/usersModel.js');
 const lembagaModel = require('../models/lembagaModel.js');
 const db = require('../config/database.js');
+const { Op, Sequelize } = require('sequelize');
 
 // CONTROLLER GET ALL SURAT
 exports.getTkk = async (req, res) => {
@@ -58,6 +59,7 @@ exports.getPurwa = async (req, res) => {
   });
   if (!user[0]) return res.sendStatus(403);
 
+  const year = req.params.year
   try {
     const response = await tkkModel.findAll({
       where: {
@@ -65,6 +67,9 @@ exports.getPurwa = async (req, res) => {
         madya: {
           [Sequelize.Op.not]: true,
         },
+        tgl_purwa: {
+          [Op.between]: [`${year}-01-01`, `${year}-12-31`]
+        }
       },
       include: [
         {
@@ -103,6 +108,7 @@ exports.getMadya = async (req, res) => {
   });
   if (!user[0]) return res.sendStatus(403);
 
+  const year = req.params.year
   try {
     const response = await tkkModel.findAll({
       where: {
@@ -110,6 +116,9 @@ exports.getMadya = async (req, res) => {
         utama: {
           [Sequelize.Op.not]: true,
         },
+        tgl_madya: {
+          [Op.between]: [`${year}-01-01`, `${year}-12-31`]
+        }
       },
       include: [
         {
@@ -148,10 +157,14 @@ exports.getUtama = async (req, res) => {
   });
   if (!user[0]) return res.sendStatus(403);
 
+  const year = req.params.year
   try {
     const response = await tkkModel.findAll({
       where: {
         utama: true,
+        tgl_utama: {
+          [Op.between]: [`${year}-01-01`, `${year}-12-31`]
+        }
       },
       include: [
         {
