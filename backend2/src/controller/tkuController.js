@@ -4,7 +4,7 @@ const tkuModel = require('../models/tkuModel.js');
 const anggotaModel = require('../models/anggotaModel.js');
 const lembagaModel = require('../models/lembagaModel.js');
 const usersModel = require('../models/usersModel.js');
-const { Sequelize } = require('sequelize');
+const { Sequelize, Op } = require('sequelize');
 const db = require('../config/database.js');
 
 // CONTROLLER GET ALL SURAT
@@ -54,6 +54,7 @@ exports.getRamu = async (req, res) => {
   });
   if (!user[0]) return res.sendStatus(403);
 
+  const year = req.params.year;
   try {
     const response = await tkuModel.findAll({
       where: {
@@ -61,6 +62,9 @@ exports.getRamu = async (req, res) => {
         rakit: {
           [Sequelize.Op.not]: true,
         },
+        tgl_ramu: {
+          [Op.between]: [`${year}-01-01`, `${year}-12-31`]
+        }
       },
       include: [
         {
@@ -94,6 +98,7 @@ exports.getRakit = async (req, res) => {
   });
   if (!user[0]) return res.sendStatus(403);
 
+  const year = req.params.year
   try {
     const response = await tkuModel.findAll({
       where: {
@@ -101,6 +106,9 @@ exports.getRakit = async (req, res) => {
         terap: {
           [Sequelize.Op.not]: true,
         },
+        tgl_rakit: {
+          [Op.between]: [`${year}-01-01`, `${year}-12-31`]
+        }
       },
       include: [
         {
@@ -134,10 +142,14 @@ exports.getTerap = async (req, res) => {
   });
   if (!user[0]) return res.sendStatus(403);
 
+  const year = req.params.year
   try {
     const response = await tkuModel.findAll({
       where: {
         terap: true,
+        tgl_terap: {
+          [Op.between]: [`${year}-01-01`, `${year}-12-31`]
+        }
       },
       include: [
         {

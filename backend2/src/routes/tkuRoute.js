@@ -5,9 +5,9 @@ const router = express.Router();
 
 // ROUTE GET ALL SURAT
 router.get('/tku', getTku);
-router.get('/ramu', getRamu);
-router.get('/rakit', getRakit);
-router.get('/terap', getTerap);
+router.get('/ramu/:year', getRamu);
+router.get('/rakit/:year', getRakit);
+router.get('/terap/:year', getTerap);
 router.get('/tku/:id', getTkuById);
 router.get('/yearramu', getYearRamu);
 router.get('/yearrakit', getYearRakit);
