@@ -1,13 +1,35 @@
 const express = require('express');
-const { createMadya, createPurwa, createUtama, deleteMadya, deletePurwa, deleteUtama, getMadya, getPurwa, getTkk, getTkkById, getUtama, updateTkk, getYearPurwa, getYearMadya, getYearUtama } = require('../controller/tkkController.js');
+const {
+  createMadya,
+  createPurwa,
+  createUtama,
+  deleteMadya,
+  deletePurwa,
+  deleteUtama,
+  getMadya,
+  getPurwa,
+  getTkk,
+  getTkkById,
+  getUtama,
+  updateTkk,
+  getYearPurwa,
+  getYearMadya,
+  getYearUtama,
+  getPurwaByYear,
+  getMadyaByYear,
+  getUtamaByYear,
+} = require('../controller/tkkController.js');
 
 const router = express.Router();
 
 // ROUTE GET ALL SURAT
 router.get('/tkk', getTkk);
-router.get('/purwa/:year', getPurwa);
-router.get('/madya/:year', getMadya);
-router.get('/utama/:year', getUtama);
+router.get('/purwa', getPurwa);
+router.get('/madya', getMadya);
+router.get('/utama', getUtama);
+router.get('/purwa/:year', getPurwaByYear);
+router.get('/madya/:year', getMadyaByYear);
+router.get('/utama/:year', getUtamaByYear);
 router.get('/yearpurwa', getYearPurwa);
 router.get('/yearmadya', getYearMadya);
 router.get('/yearutama', getYearUtama);
