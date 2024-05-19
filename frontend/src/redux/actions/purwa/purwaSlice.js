@@ -1,8 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { createPurwa, deletePurwa, getPurwa, getPurwaId } from "./purwaThunk";
+import { createPurwa, deletePurwa, getOptionPurwa, getPurwa, getPurwaId, getYearPurwa } from "./purwaThunk";
 
 const initialState = {
   data: [],
+  yearList: [],
   dataById: [],
   loading: false,
   error: null,
@@ -30,6 +31,52 @@ const purwaSlice = createSlice({
         };
       })
       .addCase(getPurwa.rejected, (state, action) => {
+        return {
+          ...state,
+          loading: false,
+          error: action.payload,
+          type: action.type,
+        };
+      })
+      .addCase(getOptionPurwa.pending, (state, action) => {
+        return {
+          ...state,
+          loading: true,
+          type: action.type,
+        };
+      })
+      .addCase(getOptionPurwa.fulfilled, (state, action) => {
+        return {
+          ...state,
+          loading: false,
+          data: action.payload,
+          type: action.type,
+        };
+      })
+      .addCase(getOptionPurwa.rejected, (state, action) => {
+        return {
+          ...state,
+          loading: false,
+          error: action.payload,
+          type: action.type,
+        };
+      })
+      .addCase(getYearPurwa.pending, (state, action) => {
+        return {
+          ...state,
+          loading: true,
+          type: action.type,
+        };
+      })
+      .addCase(getYearPurwa.fulfilled, (state, action) => {
+        return {
+          ...state,
+          loading: false,
+          yearList: action.payload,
+          type: action.type,
+        };
+      })
+      .addCase(getYearPurwa.rejected, (state, action) => {
         return {
           ...state,
           loading: false,

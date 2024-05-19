@@ -2,8 +2,24 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { toast } from "react-toastify";
 
-export const getRakit = createAsyncThunk("getRakit", async () => {
+export const getRakit = createAsyncThunk("getRakit", async (year) => {
+  const resp = await axios.get(`${import.meta.env.VITE_APP_DOMAIN}/rakit/${year}`, {
+    withCredentials: true,
+  });
+
+  return resp.data;
+});
+
+export const getOptionRakit = createAsyncThunk("getOptionRakit", async () => {
   const resp = await axios.get(`${import.meta.env.VITE_APP_DOMAIN}/rakit`, {
+    withCredentials: true,
+  });
+
+  return resp.data;
+});
+
+export const getYearRakit = createAsyncThunk("getYearRakit", async () => {
+  const resp = await axios.get(`${import.meta.env.VITE_APP_DOMAIN}/yearrakit`, {
     withCredentials: true,
   });
 

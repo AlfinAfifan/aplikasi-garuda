@@ -1,8 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { createRakit, deleteRakit, getRakit } from "./rakitThunk";
+import { createRakit, deleteRakit, getOptionRakit, getRakit, getYearRakit } from "./rakitThunk";
 
 const initialState = {
   data: [],
+  yearList: [],
   loading: false,
   errorCreate: false,
   error: null,
@@ -30,6 +31,52 @@ const rakitSlice = createSlice({
         };
       })
       .addCase(getRakit.rejected, (state, action) => {
+        return {
+          ...state,
+          loading: false,
+          error: action.payload,
+          type: action.type,
+        };
+      })
+      .addCase(getOptionRakit.pending, (state, action) => {
+        return {
+          ...state,
+          loading: true,
+          type: action.type,
+        };
+      })
+      .addCase(getOptionRakit.fulfilled, (state, action) => {
+        return {
+          ...state,
+          loading: false,
+          data: action.payload,
+          type: action.type,
+        };
+      })
+      .addCase(getOptionRakit.rejected, (state, action) => {
+        return {
+          ...state,
+          loading: false,
+          error: action.payload,
+          type: action.type,
+        };
+      })
+      .addCase(getYearRakit.pending, (state, action) => {
+        return {
+          ...state,
+          loading: true,
+          type: action.type,
+        };
+      })
+      .addCase(getYearRakit.fulfilled, (state, action) => {
+        return {
+          ...state,
+          loading: false,
+          yearList: action.payload,
+          type: action.type,
+        };
+      })
+      .addCase(getYearRakit.rejected, (state, action) => {
         return {
           ...state,
           loading: false,

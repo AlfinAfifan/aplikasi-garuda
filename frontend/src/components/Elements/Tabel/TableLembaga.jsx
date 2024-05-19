@@ -27,6 +27,7 @@ const TableLembaga = () => {
   const dataLembaga = useSelector((i) => i.lembaga.data);
   const dataLembagaById = useSelector((i) => i.lembaga.dataById);
   const typeAction = useSelector((i) => i.lembaga.type);
+  const isLoading = useSelector((i) => i.lembaga.loading);
   const [initialValues, setInitialValues] = useState({
     nama_lembaga: "",
     alamat: "",
@@ -112,7 +113,12 @@ const TableLembaga = () => {
 
   return (
     <>
-      <ShowDataLayout title="Tabel Data Lembaga" clickAdd={openModal}>
+      <ShowDataLayout
+        title="Tabel Data Lembaga"
+        clickAdd={openModal}
+        dataLenght={dataLembaga.length}
+        isLoading={isLoading}
+      >
         <THead>
           <tr>
             <td className="w-5">No</td>

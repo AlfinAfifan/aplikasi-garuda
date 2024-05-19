@@ -39,6 +39,7 @@ const TableAdmin = () => {
   const dataAdmin = useSelector((i) => i.admin.data);
   const dataAdminById = useSelector((i) => i.admin.dataById);
   const typeAction = useSelector((i) => i.admin.type);
+  const isLoading = useSelector((i) => i.admin.loading);
   const [initialValues, setInitialValues] = useState({
     nama: "",
     id_lembaga: "",
@@ -151,6 +152,8 @@ const TableAdmin = () => {
         title="Tabel Data Admin"
         descript="*Gunakan alamat email admin untuk mengisi form email dan password login"
         clickAdd={openModalInput}
+        dataLenght={dataAdmin.length}
+        isLoading={isLoading}
       >
         <THead>
           <tr>

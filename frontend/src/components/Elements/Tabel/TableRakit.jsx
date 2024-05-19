@@ -9,6 +9,7 @@ import {
   createRakit,
   deleteRakit,
   getRakit,
+  getYearRakit,
 } from "../../../redux/actions/rakit/rakitThunk";
 import { dateFormat } from "../DataFormat/DateFormat";
 import { formatSK } from "../DataFormat/FormatSK";
@@ -16,7 +17,7 @@ import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import SelectSearch from "../Form/SelectSearch";
 import InputDisabled from "../Form/InputDisabled";
-import { getRamu } from "../../../redux/actions/ramu/ramuThunk";
+import { getOptionRamu, getRamu } from "../../../redux/actions/ramu/ramuThunk";
 import ModalDelete from "../Modal/ModalDelete";
 import {
   closeModalDelete,
@@ -29,10 +30,14 @@ const TableRakit = () => {
   const dataRakit = useSelector((i) => i.rakit.data);
   const typeAction = useSelector((i) => i.rakit.type);
   const [initialValues, setInitialValues] = useState({ id_anggota: "" });
+  const yearList = useSelector((i) => i.rakit.yearList);
+  const isLoading = useSelector((i) => i.rakit.loading);
+  const yearNow = new Date().getFullYear();
+  const [selectedYear, setSelectedYear] = useState(yearNow);
 
   useEffect(() => {
-    dispatch(getRakit());
-    dispatch(getRamu());
+    dispatch(getOptionRamu());
+    dispatch(getYearRakit());
   }, []);
 
   useEffect(() => {
@@ -40,9 +45,14 @@ const TableRakit = () => {
       typeAction === "createRakit/fulfilled" ||
       typeAction === "deleteRakit/fulfilled"
     ) {
-      dispatch(getRakit());
+      dispatch(getRakit(selectedYear));
+      dispatch(getYearRakit());
     }
   }, [typeAction]);
+
+  useEffect(() => {
+    dispatch(getRakit(selectedYear));
+  }, [selectedYear]);
 
   // GET ANGGOTA FOR CHOICE
   const dataAnggota = useSelector((i) => i.ramu.data);
@@ -82,7 +92,16 @@ const TableRakit = () => {
 
   return (
     <>
-      <ShowDataLayout title="Tabel Data Rakit" clickAdd={openModal}>
+      <ShowDataLayout
+        title="Tabel Data Rakit"
+        clickAdd={openModal}
+        yearList={yearList}
+        selectedYear={selectedYear}
+        setSelectedYear={setSelectedYear}
+        yearNow={yearNow}
+        dataLenght={dataRakit.length}
+        isLoading={isLoading}
+      >
         <THead>
           <tr>
             <td>No SK</td>
@@ -116,6 +135,12 @@ const TableRakit = () => {
             </tr>
           )}
         </TBody>
+
+        {dataRakit.length === 0 && (
+          <div className="flex justify-center">
+            Belum ada data
+          </div>
+        )}
       </ShowDataLayout>
 
       {/* MODAL INPUT */}

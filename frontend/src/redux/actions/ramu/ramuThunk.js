@@ -2,7 +2,15 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { toast } from "react-toastify";
 
-export const getRamu = createAsyncThunk("getRamu", async () => {
+export const getRamu = createAsyncThunk("getRamu", async (year) => {
+  const resp = await axios.get(`${import.meta.env.VITE_APP_DOMAIN}/ramu/${year}`, {
+    withCredentials: true,
+  });
+
+  return resp.data;
+});
+
+export const getOptionRamu = createAsyncThunk("getOptionRamu", async () => {
   const resp = await axios.get(`${import.meta.env.VITE_APP_DOMAIN}/ramu`, {
     withCredentials: true,
   });

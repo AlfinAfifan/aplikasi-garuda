@@ -3,9 +3,7 @@ import TableAdmin from "../components/Elements/Tabel/TableAdmin";
 
 const AdminPage = () => {
   return (
-    <>
       <TableAdmin />
-    </>
   );
 };
 

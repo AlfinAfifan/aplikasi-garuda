@@ -5,16 +5,24 @@ import { PencilSquareIcon, TrashIcon } from "@heroicons/react/24/solid";
 import Modal from "../Modal/ModalInput";
 import Button from "../Form/Button";
 import { useDispatch, useSelector } from "react-redux";
-import { createTerap, deleteTerap, getTerap } from "../../../redux/actions/terap/terapThunk";
+import {
+  createTerap,
+  deleteTerap,
+  getTerap,
+  getYearTerap,
+} from "../../../redux/actions/terap/terapThunk";
 import { dateFormat } from "../DataFormat/DateFormat";
 import { formatSK } from "../DataFormat/FormatSK";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import SelectSearch from "../Form/SelectSearch";
 import InputDisabled from "../Form/InputDisabled";
-import { getRakit } from "../../../redux/actions/rakit/rakitThunk";
+import { getOptionRakit, getRakit } from "../../../redux/actions/rakit/rakitThunk";
 import ModalDelete from "../Modal/ModalDelete";
-import { closeModalDelete, openModalDelete } from "../../../redux/actions/modal/modalSlice";
+import {
+  closeModalDelete,
+  openModalDelete,
+} from "../../../redux/actions/modal/modalSlice";
 
 const TableTerap = () => {
   // GET DATA
@@ -22,17 +30,29 @@ const TableTerap = () => {
   const dataTerap = useSelector((i) => i.terap.data);
   const typeAction = useSelector((i) => i.terap.type);
   const [initialValues, setInitialValues] = useState({ id_anggota: "" });
+  const yearList = useSelector((i) => i.terap.yearList);
+  const isLoading = useSelector((i) => i.terap.loading);
+  const yearNow = new Date().getFullYear();
+  const [selectedYear, setSelectedYear] = useState(yearNow);
 
   useEffect(() => {
-    dispatch(getTerap());
-    dispatch(getRakit());
+    dispatch(getOptionRakit());
+    dispatch(getYearTerap());
   }, []);
 
   useEffect(() => {
-    if (typeAction === "createTerap/fulfilled" || typeAction === "deleteTerap/fulfilled") {
-      dispatch(getTerap());
+    if (
+      typeAction === "createTerap/fulfilled" ||
+      typeAction === "deleteTerap/fulfilled"
+    ) {
+      dispatch(getTerap(selectedYear));
+      dispatch(getYearTerap());
     }
   }, [typeAction]);
+
+  useEffect(() => {
+    dispatch(getTerap(selectedYear));
+  }, [selectedYear]);
 
   // GET ANGGOTA FOR CHOICE
   const dataAnggota = useSelector((i) => i.rakit.data);
@@ -68,10 +88,19 @@ const TableTerap = () => {
     document.body.style.overflow = "auto";
   };
 
-  const [idDelete, setIdDelete] = useState(null)
+  const [idDelete, setIdDelete] = useState(null);
   return (
     <>
-      <ShowDataLayout title="Tabel Data Terap" clickAdd={openModal}>
+      <ShowDataLayout
+        title="Tabel Data Terap"
+        clickAdd={openModal}
+        yearList={yearList}
+        yearNow={yearNow}
+        selectedYear={selectedYear}
+        setSelectedYear={setSelectedYear}
+        dataLenght={dataTerap.length}
+        isLoading={isLoading}
+      >
         <THead>
           <tr>
             <td>No SK</td>
@@ -90,7 +119,12 @@ const TableTerap = () => {
                 <td>{data.anggota.lembaga.nama_lembaga}</td>
                 <td>{dateFormat(data.tgl_terap)}</td>
                 <td className="flex gap-2">
-                  <TrashIcon className="hover w-6 cursor-pointer text-red-600 hover:text-red-700" onClick={()=>{dispatch(openModalDelete()), setIdDelete(data.id)}}/>
+                  <TrashIcon
+                    className="hover w-6 cursor-pointer text-red-600 hover:text-red-700"
+                    onClick={() => {
+                      dispatch(openModalDelete()), setIdDelete(data.id);
+                    }}
+                  />
                 </td>
               </tr>
             ))

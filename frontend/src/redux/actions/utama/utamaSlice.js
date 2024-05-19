@@ -1,9 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { createUtama, deleteUtama, getUtama, getUtamaId } from "./utamaThunk";
+import { createUtama, deleteUtama, getUtama, getUtamaId, getYearUtama } from "./utamaThunk";
 
 const initialState = {
   data: [],
   dataById: [],
+  yearList: [],
   loading: false,
   error: null,
   type: "",
@@ -30,6 +31,29 @@ const utamaSlice = createSlice({
         };
       })
       .addCase(getUtama.rejected, (state, action) => {
+        return {
+          ...state,
+          loading: false,
+          error: action.payload,
+          type: action.type,
+        };
+      })
+      .addCase(getYearUtama.pending, (state, action) => {
+        return {
+          ...state,
+          loading: true,
+          type: action.type,
+        };
+      })
+      .addCase(getYearUtama.fulfilled, (state, action) => {
+        return {
+          ...state,
+          loading: false,
+          yearList: action.payload,
+          type: action.type,
+        };
+      })
+      .addCase(getYearUtama.rejected, (state, action) => {
         return {
           ...state,
           loading: false,

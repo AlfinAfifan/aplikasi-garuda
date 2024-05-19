@@ -2,8 +2,24 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { toast } from "react-toastify";
 
-export const getPurwa = createAsyncThunk("getPurwa", async () => {
+export const getPurwa = createAsyncThunk("getPurwa", async (year) => {
+  const resp = await axios.get(`${import.meta.env.VITE_APP_DOMAIN}/purwa/${year}`, {
+    withCredentials: true,
+  });
+
+  return resp.data;
+});
+
+export const getOptionPurwa = createAsyncThunk("getOptionPurwa", async () => {
   const resp = await axios.get(`${import.meta.env.VITE_APP_DOMAIN}/purwa`, {
+    withCredentials: true,
+  });
+
+  return resp.data;
+});
+
+export const getYearPurwa = createAsyncThunk("getYearPurwa", async () => {
+  const resp = await axios.get(`${import.meta.env.VITE_APP_DOMAIN}/yearpurwa`, {
     withCredentials: true,
   });
 

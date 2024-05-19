@@ -9,9 +9,7 @@ const DashboardLayout = () => {
       <Sidebar />
       <div className="flex w-full flex-col">
         <Navbar />
-        <div className="m-5 rounded-lg border bg-white p-5 shadow-md">
-          <Outlet />
-        </div>
+        <Outlet />
       </div>
     </div>
   );
