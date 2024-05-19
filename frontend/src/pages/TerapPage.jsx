@@ -3,9 +3,7 @@ import TableTerap from "../components/Elements/Tabel/TableTerap";
 
 const TerapPage = () => {
   return (
-    <div>
       <TableTerap />
-    </div>
   );
 };
 

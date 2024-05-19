@@ -29,14 +29,16 @@ const TableRamu = () => {
   const [lembagaSelected, setLembagaSelected] = useState("");
   const dispatch = useDispatch();
   const dataRamu = useSelector((i) => i.ramu.data);
-  const yearList = useSelector((i) => i.ramu.yearList);
   const typeAction = useSelector((i) => i.ramu.type);
   const [initialValues, setInitialValues] = useState({ id_anggota: "" });
+  const yearList = useSelector((i) => i.ramu.yearList);
+  const isLoading = useSelector((i) => i.ramu.loading);
+  const yearNow = new Date().getFullYear();
+  const [selectedYear, setSelectedYear] = useState(yearNow);
 
   useEffect(() => {
-    dispatch(getRamu());
     dispatch(getAnggota());
-    dispatch(getYearRamu())
+    dispatch(getYearRamu());
   }, []);
 
   useEffect(() => {
@@ -44,10 +46,14 @@ const TableRamu = () => {
       typeAction === "createRamu/fulfilled" ||
       typeAction === "deleteRamu/fulfilled"
     ) {
-      dispatch(getRamu());
+      dispatch(getRamu(selectedYear));
       dispatch(getYearRamu());
     }
   }, [typeAction]);
+
+  useEffect(() => {
+    dispatch(getRamu(selectedYear))
+  }, [selectedYear])
 
   // GET ANGGOTA FOR CHOICE
   const dataAnggota = useSelector((i) => i.anggota.data);
@@ -73,7 +79,7 @@ const TableRamu = () => {
   const [isModalOpen, setModalOpen] = useState(false);
   const openModal = () => {
     setModalOpen(true);
-    document.body.style.overflow = "hidden"; // Menghilangkan scroll pada body
+    document.body.style.overflow = "hidden";
   };
 
   const formRef = useRef(null);
@@ -88,7 +94,16 @@ const TableRamu = () => {
 
   return (
     <>
-      <ShowDataLayout title="Tabel Data Ramu" clickAdd={openModal} yearList={yearList}>
+      <ShowDataLayout
+        title="Tabel Data Ramu"
+        clickAdd={openModal}
+        yearList={yearList}
+        selectedYear={selectedYear}
+        setSelectedYear={setSelectedYear}
+        yearNow={yearNow}
+        dataLenght={dataRamu.length}
+        isLoading={isLoading}
+      >
         <THead>
           <tr>
             <td>No SK</td>

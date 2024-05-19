@@ -15,13 +15,14 @@ import {
   deleteMadya,
   getMadya,
   getMadyaId,
+  getYearMadya,
 } from "../../../redux/actions/madya/madyaThunk";
 import { formatSK } from "../DataFormat/FormatSK";
 import { dateFormat } from "../DataFormat/DateFormat";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import InputDisabled from "../Form/InputDisabled";
-import { getPurwa } from "../../../redux/actions/purwa/purwaThunk";
+import { getOptionPurwa, getPurwa } from "../../../redux/actions/purwa/purwaThunk";
 import SelectSearch from "../Form/SelectSearch";
 import ModalDetail from "../Modal/ModalDetail";
 import ListDetail from "../Modal/ListDetail";
@@ -37,16 +38,20 @@ const TableMadya = () => {
   const dataMadya = useSelector((i) => i.madya.data);
   const dataMadyaId = useSelector((i) => i.madya.dataById);
   const typeAction = useSelector((i) => i.madya.type);
+  const isLoading = useSelector((i) => i.madya.loading);
   const [initialValues, setInitialValues] = useState({
     id_purwa: "",
     nama_penguji: "",
     jabatan_penguji: "",
     alamat_penguji: "",
   });
+  const yearList = useSelector((i) => i.madya.yearList);
+  const yearNow = new Date().getFullYear();
+  const [selectedYear, setSelectedYear] = useState(yearNow);
 
   useEffect(() => {
-    dispatch(getMadya());
-    dispatch(getPurwa());
+    dispatch(getOptionPurwa());
+    dispatch(getYearMadya());
   }, []);
 
   useEffect(() => {
@@ -54,9 +59,14 @@ const TableMadya = () => {
       typeAction === "createMadya/fulfilled" ||
       typeAction === "deleteMadya/fulfilled"
     ) {
-      dispatch(getMadya());
+      dispatch(getMadya(selectedYear));
+      dispatch(getYearMadya());
     }
   }, [typeAction]);
+
+  useEffect(() => {
+    dispatch(getMadya(selectedYear));
+  }, [selectedYear]);
 
   // HANDLE SELECT SEARCH
   const dataAnggota = useSelector((i) => i.purwa.data);
@@ -111,7 +121,16 @@ const TableMadya = () => {
 
   return (
     <>
-      <ShowDataLayout title="Tabel Data Madya" clickAdd={openModal}>
+      <ShowDataLayout
+        title="Tabel Data Madya"
+        clickAdd={openModal}
+        dataLenght={dataMadya.length}
+        yearList={yearList}
+        yearNow={yearNow}
+        selectedYear={selectedYear}
+        setSelectedYear={setSelectedYear}
+        isLoading={isLoading}
+      >
         <THead>
           <tr>
             <td>No SK</td>

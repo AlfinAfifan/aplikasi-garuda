@@ -2,8 +2,16 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { toast } from "react-toastify";
 
-export const getTerap = createAsyncThunk("getTerap", async () => {
-  const resp = await axios.get(`${import.meta.env.VITE_APP_DOMAIN}/terap`, {
+export const getTerap = createAsyncThunk("getTerap", async (year) => {
+  const resp = await axios.get(`${import.meta.env.VITE_APP_DOMAIN}/terap/${year}`, {
+    withCredentials: true,
+  });
+
+  return resp.data;
+});
+
+export const getYearTerap = createAsyncThunk("getYearTerap", async () => {
+  const resp = await axios.get(`${import.meta.env.VITE_APP_DOMAIN}/yearterap`, {
     withCredentials: true,
   });
 

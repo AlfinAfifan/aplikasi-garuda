@@ -15,13 +15,14 @@ import {
   deletePurwa,
   getPurwa,
   getPurwaId,
+  getYearPurwa,
 } from "../../../redux/actions/purwa/purwaThunk";
 import { dateFormat } from "../DataFormat/DateFormat";
 import { formatSK } from "../DataFormat/FormatSK";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import SelectSearch from "../Form/SelectSearch";
-import { getRakit } from "../../../redux/actions/rakit/rakitThunk";
+import { getOptionRakit, getRakit } from "../../../redux/actions/rakit/rakitThunk";
 import InputDisabled from "../Form/InputDisabled";
 import { getJenisTkk } from "../../../redux/actions/jenisTkk/jenisTkkThunk";
 import ModalDetail from "../Modal/ModalDetail";
@@ -38,6 +39,7 @@ const TablePurwa = () => {
   const dataPurwa = useSelector((i) => i.purwa.data);
   const dataPurwaId = useSelector((i) => i.purwa.dataById);
   const typeAction = useSelector((i) => i.purwa.type);
+  const isLoading = useSelector((i) => i.purwa.loading);
   const [initialValues, setInitialValues] = useState({
     id_anggota: "",
     id_jenis_tkk: "",
@@ -45,11 +47,14 @@ const TablePurwa = () => {
     jabatan_penguji: "",
     alamat_penguji: "",
   });
+  const yearList = useSelector((i) => i.purwa.yearList);
+  const yearNow = new Date().getFullYear();
+  const [selectedYear, setSelectedYear] = useState(yearNow);
 
   useEffect(() => {
-    dispatch(getPurwa());
-    dispatch(getRakit());
+    dispatch(getOptionRakit());
     dispatch(getJenisTkk());
+    dispatch(getYearPurwa())
   }, []);
 
   useEffect(() => {
@@ -57,9 +62,14 @@ const TablePurwa = () => {
       typeAction === "createPurwa/fulfilled" ||
       typeAction === "deletePurwa/fulfilled"
     ) {
-      dispatch(getPurwa());
+      dispatch(getPurwa(selectedYear));
+      dispatch(getYearPurwa())
     }
   }, [typeAction]);
+
+  useEffect(() => {
+    dispatch(getPurwa(selectedYear));
+  }, [selectedYear]);
 
   // GET ANGGOTA & JENIS TKK FOR CHOICE
   const dataAnggota = useSelector((i) => i.rakit.data);
@@ -123,7 +133,16 @@ const TablePurwa = () => {
 
   return (
     <>
-      <ShowDataLayout title="Tabel Data Purwa" clickAdd={openModal}>
+      <ShowDataLayout
+        title="Tabel Data Purwa"
+        clickAdd={openModal}
+        dataLenght={dataPurwa.length}
+        yearList={yearList}
+        yearNow={yearNow}
+        selectedYear={selectedYear}
+        setSelectedYear={setSelectedYear}
+        isLoading={isLoading}
+      >
         <THead>
           <tr>
             <td>No SK</td>

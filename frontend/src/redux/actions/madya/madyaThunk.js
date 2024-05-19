@@ -2,8 +2,24 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { toast } from "react-toastify";
 
-export const getMadya = createAsyncThunk("getMadya", async () => {
+export const getMadya = createAsyncThunk("getMadya", async (year) => {
+  const resp = await axios.get(`${import.meta.env.VITE_APP_DOMAIN}/madya/${year}`, {
+    withCredentials: true,
+  });
+
+  return resp.data;
+});
+
+export const getOptionMadya = createAsyncThunk("getOptionMadya", async () => {
   const resp = await axios.get(`${import.meta.env.VITE_APP_DOMAIN}/madya`, {
+    withCredentials: true,
+  });
+
+  return resp.data;
+});
+
+export const getYearMadya = createAsyncThunk("getYearMadya", async () => {
+  const resp = await axios.get(`${import.meta.env.VITE_APP_DOMAIN}/yearmadya`, {
     withCredentials: true,
   });
 

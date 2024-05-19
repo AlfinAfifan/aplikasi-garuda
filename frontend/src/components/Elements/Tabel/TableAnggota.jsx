@@ -37,6 +37,7 @@ const TableAnggota = () => {
   const dataAnggota = useSelector((i) => i.anggota.data);
   const dataAnggotaById = useSelector((i) => i.anggota.dataById);
   const typeAction = useSelector((i) => i.anggota.type);
+  const isLoading = useSelector((i) => i.anggota.loading);
   const [initialValues, setInitialValues] = useState({
     nama: "",
     id_lembaga: "",
@@ -251,7 +252,12 @@ const TableAnggota = () => {
 
   return (
     <>
-      <ShowDataLayout title="Tabel Data Anggota" clickAdd={openModal}>
+      <ShowDataLayout
+        title="Tabel Data Anggota"
+        clickAdd={openModal}
+        dataLenght={dataAnggota.length}
+        isLoading={isLoading}
+      >
         <THead>
           <tr>
             <td className="w-5">No</td>

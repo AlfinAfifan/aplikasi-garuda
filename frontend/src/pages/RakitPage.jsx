@@ -3,9 +3,7 @@ import TableRakit from "../components/Elements/Tabel/TableRakit";
 
 const RakitPage = () => {
   return (
-    <div>
       <TableRakit />
-    </div>
   );
 };
 

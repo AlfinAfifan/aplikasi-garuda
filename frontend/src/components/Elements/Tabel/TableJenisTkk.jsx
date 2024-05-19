@@ -27,6 +27,7 @@ const TableJenisTkk = () => {
   const dataJenis = useSelector((i) => i.jenis.data);
   const dataJenisById = useSelector((i) => i.jenis.dataById);
   const typeAction = useSelector((i) => i.jenis.type);
+  const isLoading = useSelector((i) => i.jenis.loading);
   const [initialValues, setInitialValues] = useState({
     nama: "",
     bidang: "",
@@ -96,7 +97,12 @@ const TableJenisTkk = () => {
 
   return (
     <>
-      <ShowDataLayout title="Tabel Data Admin" clickAdd={openModal}>
+      <ShowDataLayout
+        title="Tabel Data Admin"
+        clickAdd={openModal}
+        dataLenght={dataJenis.length}
+        isLoading={isLoading}
+      >
         <THead>
           <tr>
             <td>No</td>

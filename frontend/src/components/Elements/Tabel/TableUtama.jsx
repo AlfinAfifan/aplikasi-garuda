@@ -15,6 +15,7 @@ import {
   deleteUtama,
   getUtama,
   getUtamaId,
+  getYearUtama,
 } from "../../../redux/actions/utama/utamaThunk";
 import { formatSK } from "../DataFormat/FormatSK";
 import { dateFormat } from "../DataFormat/DateFormat";
@@ -22,7 +23,7 @@ import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import SelectSearch from "../Form/SelectSearch";
 import InputDisabled from "../Form/InputDisabled";
-import { getMadya } from "../../../redux/actions/madya/madyaThunk";
+import { getMadya, getOptionMadya } from "../../../redux/actions/madya/madyaThunk";
 import ModalDetail from "../Modal/ModalDetail";
 import ListDetail from "../Modal/ListDetail";
 import ModalDelete from "../Modal/ModalDelete";
@@ -43,10 +44,14 @@ const TableUtama = () => {
     jabatan_penguji: "",
     alamat_penguji: "",
   });
+  const yearList = useSelector((i) => i.utama.yearList);
+  const isLoading = useSelector((i) => i.utama.loading);
+  const yearNow = new Date().getFullYear();
+  const [selectedYear, setSelectedYear] = useState(yearNow);
 
   useEffect(() => {
-    dispatch(getUtama());
-    dispatch(getMadya());
+    dispatch(getYearUtama());
+    dispatch(getOptionMadya());
   }, []);
 
   useEffect(() => {
@@ -54,9 +59,14 @@ const TableUtama = () => {
       typeAction === "createUtama/fulfilled" ||
       typeAction === "deleteUtama/fulfilled"
     ) {
-      dispatch(getUtama());
+      dispatch(getUtama(selectedYear));
+      dispatch(getYearUtama());
     }
   }, [typeAction]);
+
+  useEffect(() => {
+    dispatch(getUtama(selectedYear));
+  }, [selectedYear]);
 
   // HANDLE SELECT SEARCH
   const dataAnggota = useSelector((i) => i.madya.data);
@@ -111,7 +121,16 @@ const TableUtama = () => {
 
   return (
     <>
-      <ShowDataLayout title="Tabel Data Utama" clickAdd={openModal}>
+      <ShowDataLayout
+        title="Tabel Data Utama"
+        clickAdd={openModal}
+        dataLenght={dataUtama.length}
+        yearList={yearList}
+        yearNow={yearNow}
+        selectedYear={selectedYear}
+        setSelectedYear={setSelectedYear}
+        isLoading={isLoading}
+      >
         <THead>
           <tr>
             <td>No SK</td>
