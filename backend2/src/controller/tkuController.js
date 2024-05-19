@@ -54,6 +54,46 @@ exports.getRamu = async (req, res) => {
   });
   if (!user[0]) return res.sendStatus(403);
 
+  try {
+    const response = await tkuModel.findAll({
+      where: {
+        ramu: true,
+        rakit: {
+          [Sequelize.Op.not]: true,
+        },
+      },
+      include: [
+        {
+          model: anggotaModel,
+          as: 'anggota',
+          attributes: ['nama'],
+          include: [
+            {
+              model: lembagaModel,
+              attributes: ['nama_lembaga'],
+            },
+          ],
+        },
+      ],
+    });
+
+    res.json(response);
+  } catch (error) {
+    res.json(error);
+  }
+};
+
+exports.getRamuByYear = async (req, res) => {
+  // CEK TOKEN
+  const refreshToken = req.cookies.refreshToken;
+  if (!refreshToken) return res.sendStatus(401);
+  const user = await usersModel.findAll({
+    where: {
+      refresh_token: refreshToken,
+    },
+  });
+  if (!user[0]) return res.sendStatus(403);
+
   const year = req.params.year;
   try {
     const response = await tkuModel.findAll({
@@ -63,8 +103,8 @@ exports.getRamu = async (req, res) => {
           [Sequelize.Op.not]: true,
         },
         tgl_ramu: {
-          [Op.between]: [`${year}-01-01`, `${year}-12-31`]
-        }
+          [Op.between]: [`${year}-01-01`, `${year}-12-31`],
+        },
       },
       include: [
         {
@@ -98,7 +138,47 @@ exports.getRakit = async (req, res) => {
   });
   if (!user[0]) return res.sendStatus(403);
 
-  const year = req.params.year
+  try {
+    const response = await tkuModel.findAll({
+      where: {
+        rakit: true,
+        terap: {
+          [Sequelize.Op.not]: true,
+        },
+      },
+      include: [
+        {
+          model: anggotaModel,
+          as: 'anggota',
+          attributes: ['nama'],
+          include: [
+            {
+              model: lembagaModel,
+              attributes: ['nama_lembaga'],
+            },
+          ],
+        },
+      ],
+    });
+
+    res.json(response);
+  } catch (error) {
+    res.json(error);
+  }
+};
+
+exports.getRakitByYear = async (req, res) => {
+  // CEK TOKEN
+  const refreshToken = req.cookies.refreshToken;
+  if (!refreshToken) return res.sendStatus(401);
+  const user = await usersModel.findAll({
+    where: {
+      refresh_token: refreshToken,
+    },
+  });
+  if (!user[0]) return res.sendStatus(403);
+
+  const year = req.params.year;
   try {
     const response = await tkuModel.findAll({
       where: {
@@ -107,8 +187,8 @@ exports.getRakit = async (req, res) => {
           [Sequelize.Op.not]: true,
         },
         tgl_rakit: {
-          [Op.between]: [`${year}-01-01`, `${year}-12-31`]
-        }
+          [Op.between]: [`${year}-01-01`, `${year}-12-31`],
+        },
       },
       include: [
         {
@@ -142,14 +222,51 @@ exports.getTerap = async (req, res) => {
   });
   if (!user[0]) return res.sendStatus(403);
 
-  const year = req.params.year
+  try {
+    const response = await tkuModel.findAll({
+      where: {
+        terap: true,
+      },
+      include: [
+        {
+          model: anggotaModel,
+          as: 'anggota',
+          attributes: ['nama'],
+          include: [
+            {
+              model: lembagaModel,
+              attributes: ['nama_lembaga'],
+            },
+          ],
+        },
+      ],
+    });
+
+    res.json(response);
+  } catch (error) {
+    res.json(error);
+  }
+};
+
+exports.getTerapByYear = async (req, res) => {
+  // CEK TOKEN
+  const refreshToken = req.cookies.refreshToken;
+  if (!refreshToken) return res.sendStatus(401);
+  const user = await usersModel.findAll({
+    where: {
+      refresh_token: refreshToken,
+    },
+  });
+  if (!user[0]) return res.sendStatus(403);
+
+  const year = req.params.year;
   try {
     const response = await tkuModel.findAll({
       where: {
         terap: true,
         tgl_terap: {
-          [Op.between]: [`${year}-01-01`, `${year}-12-31`]
-        }
+          [Op.between]: [`${year}-01-01`, `${year}-12-31`],
+        },
       },
       include: [
         {
@@ -224,7 +341,13 @@ exports.getYearRamu = async (req, res) => {
 
   try {
     const [results, metadata] = await db.query('SELECT DISTINCT YEAR(tgl_ramu) as year FROM tku WHERE tgl_ramu IS NOT NULL ORDER BY year');
-    const years = results.map((row) => row.year);
+    let years = results.map((row) => row.year);
+    const currentYear = new Date().getFullYear();
+    if (!years.includes(currentYear)) {
+      years.push(currentYear);
+    }
+    years.sort((a, b) => a - b);
+
     res.json(years);
   } catch (error) {
     console.error('Error fetching years:', error);
@@ -245,7 +368,13 @@ exports.getYearRakit = async (req, res) => {
 
   try {
     const [results, metadata] = await db.query('SELECT DISTINCT YEAR(tgl_rakit) as year FROM tku WHERE tgl_rakit IS NOT NULL ORDER BY year');
-    const years = results.map((row) => row.year);
+    let years = results.map((row) => row.year);
+    const currentYear = new Date().getFullYear();
+    if (!years.includes(currentYear)) {
+      years.push(currentYear);
+    }
+    years.sort((a, b) => a - b);
+
     res.json(years);
   } catch (error) {
     console.error('Error fetching years:', error);
@@ -266,7 +395,13 @@ exports.getYearTerap = async (req, res) => {
 
   try {
     const [results, metadata] = await db.query('SELECT DISTINCT YEAR(tgl_terap) as year FROM tku WHERE tgl_terap IS NOT NULL ORDER BY year');
-    const years = results.map((row) => row.year);
+    let years = results.map((row) => row.year);
+    const currentYear = new Date().getFullYear();
+    if (!years.includes(currentYear)) {
+      years.push(currentYear);
+    }
+    years.sort((a, b) => a - b);
+
     res.json(years);
   } catch (error) {
     console.error('Error fetching years:', error);

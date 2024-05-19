@@ -59,7 +59,52 @@ exports.getPurwa = async (req, res) => {
   });
   if (!user[0]) return res.sendStatus(403);
 
-  const year = req.params.year
+  try {
+    const response = await tkkModel.findAll({
+      where: {
+        purwa: true,
+        madya: {
+          [Sequelize.Op.not]: true,
+        },
+      },
+      include: [
+        {
+          model: anggotaModel,
+          as: 'anggota',
+          attributes: ['nama'],
+          include: [
+            {
+              model: lembagaModel,
+              attributes: ['nama_lembaga'],
+            },
+          ],
+        },
+        {
+          model: jenisTkkModel,
+          as: 'jenis_tkk',
+          attributes: ['nama', 'bidang', 'warna'],
+        },
+      ],
+    });
+
+    res.json(response);
+  } catch (error) {
+    res.json(error);
+  }
+};
+
+exports.getPurwaByYear = async (req, res) => {
+  // CEK TOKEN
+  const refreshToken = req.cookies.refreshToken;
+  if (!refreshToken) return res.sendStatus(401);
+  const user = await usersModel.findAll({
+    where: {
+      refresh_token: refreshToken,
+    },
+  });
+  if (!user[0]) return res.sendStatus(403);
+
+  const year = req.params.year;
   try {
     const response = await tkkModel.findAll({
       where: {
@@ -68,8 +113,8 @@ exports.getPurwa = async (req, res) => {
           [Sequelize.Op.not]: true,
         },
         tgl_purwa: {
-          [Op.between]: [`${year}-01-01`, `${year}-12-31`]
-        }
+          [Op.between]: [`${year}-01-01`, `${year}-12-31`],
+        },
       },
       include: [
         {
@@ -108,7 +153,52 @@ exports.getMadya = async (req, res) => {
   });
   if (!user[0]) return res.sendStatus(403);
 
-  const year = req.params.year
+  try {
+    const response = await tkkModel.findAll({
+      where: {
+        madya: true,
+        utama: {
+          [Sequelize.Op.not]: true,
+        },
+      },
+      include: [
+        {
+          model: anggotaModel,
+          as: 'anggota',
+          attributes: ['nama'],
+          include: [
+            {
+              model: lembagaModel,
+              attributes: ['nama_lembaga'],
+            },
+          ],
+        },
+        {
+          model: jenisTkkModel,
+          as: 'jenis_tkk',
+          attributes: ['nama', 'bidang', 'warna'],
+        },
+      ],
+    });
+
+    res.json(response);
+  } catch (error) {
+    res.json(error);
+  }
+};
+
+exports.getMadyaByYear = async (req, res) => {
+  // CEK TOKEN
+  const refreshToken = req.cookies.refreshToken;
+  if (!refreshToken) return res.sendStatus(401);
+  const user = await usersModel.findAll({
+    where: {
+      refresh_token: refreshToken,
+    },
+  });
+  if (!user[0]) return res.sendStatus(403);
+
+  const year = req.params.year;
   try {
     const response = await tkkModel.findAll({
       where: {
@@ -117,8 +207,8 @@ exports.getMadya = async (req, res) => {
           [Sequelize.Op.not]: true,
         },
         tgl_madya: {
-          [Op.between]: [`${year}-01-01`, `${year}-12-31`]
-        }
+          [Op.between]: [`${year}-01-01`, `${year}-12-31`],
+        },
       },
       include: [
         {
@@ -157,14 +247,56 @@ exports.getUtama = async (req, res) => {
   });
   if (!user[0]) return res.sendStatus(403);
 
-  const year = req.params.year
+  try {
+    const response = await tkkModel.findAll({
+      where: {
+        utama: true,
+      },
+      include: [
+        {
+          model: anggotaModel,
+          as: 'anggota',
+          attributes: ['nama'],
+          include: [
+            {
+              model: lembagaModel,
+              attributes: ['nama_lembaga'],
+            },
+          ],
+        },
+        {
+          model: jenisTkkModel,
+          as: 'jenis_tkk',
+          attributes: ['nama', 'bidang', 'warna'],
+        },
+      ],
+    });
+
+    res.json(response);
+  } catch (error) {
+    res.json(error);
+  }
+};
+
+exports.getUtamaByYear = async (req, res) => {
+  // CEK TOKEN
+  const refreshToken = req.cookies.refreshToken;
+  if (!refreshToken) return res.sendStatus(401);
+  const user = await usersModel.findAll({
+    where: {
+      refresh_token: refreshToken,
+    },
+  });
+  if (!user[0]) return res.sendStatus(403);
+
+  const year = req.params.year;
   try {
     const response = await tkkModel.findAll({
       where: {
         utama: true,
         tgl_utama: {
-          [Op.between]: [`${year}-01-01`, `${year}-12-31`]
-        }
+          [Op.between]: [`${year}-01-01`, `${year}-12-31`],
+        },
       },
       include: [
         {
@@ -248,7 +380,13 @@ exports.getYearPurwa = async (req, res) => {
 
   try {
     const [results, metadata] = await db.query('SELECT DISTINCT YEAR(tgl_purwa) as year FROM tkk WHERE tgl_purwa IS NOT NULL ORDER BY year');
-    const years = results.map((row) => row.year);
+    let years = results.map((row) => row.year);
+    const currentYear = new Date().getFullYear();
+    if (!years.includes(currentYear)) {
+      years.push(currentYear);
+    }
+    years.sort((a, b) => a - b);
+
     res.json(years);
   } catch (error) {
     console.error('Error fetching years:', error);
@@ -269,7 +407,13 @@ exports.getYearMadya = async (req, res) => {
 
   try {
     const [results, metadata] = await db.query('SELECT DISTINCT YEAR(tgl_madya) as year FROM tkk WHERE tgl_madya IS NOT NULL ORDER BY year');
-    const years = results.map((row) => row.year);
+    let years = results.map((row) => row.year);
+    const currentYear = new Date().getFullYear();
+    if (!years.includes(currentYear)) {
+      years.push(currentYear);
+    }
+    years.sort((a, b) => a - b);
+
     res.json(years);
   } catch (error) {
     console.error('Error fetching years:', error);
@@ -290,7 +434,13 @@ exports.getYearUtama = async (req, res) => {
 
   try {
     const [results, metadata] = await db.query('SELECT DISTINCT YEAR(tgl_utama) as year FROM tkk WHERE tgl_utama IS NOT NULL ORDER BY year');
-    const years = results.map((row) => row.year);
+    let years = results.map((row) => row.year);
+    const currentYear = new Date().getFullYear();
+    if (!years.includes(currentYear)) {
+      years.push(currentYear);
+    }
+    years.sort((a, b) => a - b);
+
     res.json(years);
   } catch (error) {
     console.error('Error fetching years:', error);
