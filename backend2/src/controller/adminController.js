@@ -99,6 +99,7 @@ exports.createAdmin = async (req, res) => {
       name: nama,
       email: email,
       password: hashPassword,
+      id_lembaga,
     });
 
     res.status(201).json({ message: 'Creating Admin Success' });
@@ -220,6 +221,13 @@ exports.deleteAdmin = async (req, res) => {
         id: req.params.id,
       },
     });
+
+    await usersModel.destroy({
+      where: {
+        name: dataDelete.nama,
+        email: dataDelete.email
+      }
+    })
     res.status(200).json({ message: 'Deleted Admin Success' });
   } catch (error) {
     res.json({
@@ -227,4 +235,5 @@ exports.deleteAdmin = async (req, res) => {
       Error: error,
     });
   }
+  
 };
