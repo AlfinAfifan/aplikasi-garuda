@@ -13,6 +13,7 @@ exports.getAdmin = async (req, res) => {
   const user = await usersModel.findAll({
     where: {
       refresh_token: refreshToken,
+      id_lembaga: null
     },
   });
   if (!user[0]) return res.sendStatus(403);
@@ -41,6 +42,7 @@ exports.getAdminById = async (req, res) => {
   const user = await usersModel.findAll({
     where: {
       refresh_token: refreshToken,
+      id_lembaga: null
     },
   });
   if (!user[0]) return res.sendStatus(403);
@@ -71,6 +73,7 @@ exports.createAdmin = async (req, res) => {
   const user = await usersModel.findAll({
     where: {
       refresh_token: refreshToken,
+      id_lembaga: null
     },
   });
   if (!user[0]) return res.sendStatus(403);
@@ -119,6 +122,7 @@ exports.updateAdmin = async (req, res) => {
   const user = await usersModel.findAll({
     where: {
       refresh_token: refreshToken,
+      id_lembaga: null
     },
   });
   if (!user[0]) return res.sendStatus(403);
@@ -201,6 +205,7 @@ exports.deleteAdmin = async (req, res) => {
   const user = await usersModel.findAll({
     where: {
       refresh_token: refreshToken,
+      id_lembaga: null
     },
   });
   if (!user[0]) return res.sendStatus(403);

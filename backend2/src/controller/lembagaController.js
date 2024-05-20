@@ -164,9 +164,16 @@ exports.deleteLembaga = async (req, res) => {
     });
     res.status(200).json({ message: 'Delete Lembaga Success' });
   } catch (error) {
-    res.status(500).json({
-      message: error,
-      error: error,
-    });
+    if (error.original.errno === 1451) {
+      res.status(500).json({
+        message: 'Data masih tertaut pada tabel Anggota / Admin',
+        error: error,
+      });
+    } else {
+      res.status(500).json({
+        message: 'Delete Lembaga Failed',
+        error: error,
+      });
+    }
   }
 };
