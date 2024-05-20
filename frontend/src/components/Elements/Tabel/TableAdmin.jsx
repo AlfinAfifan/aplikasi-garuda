@@ -152,7 +152,7 @@ const TableAdmin = () => {
   const [idDelete, setIdDelete] = useState(null);
 
   const handleSearch = (values) => {
-    if (dataAdmin.length > 0) {
+    if (dataAdmin?.length > 0) {
       const dataSearch = dataAdmin?.filter((data) => {
         return (
           data.nama.toLowerCase().includes(values.search.toLowerCase()) ||
