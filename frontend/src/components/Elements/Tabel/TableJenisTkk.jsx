@@ -20,6 +20,7 @@ import {
   closeModalDelete,
   openModalDelete,
 } from "../../../redux/actions/modal/modalSlice";
+import SelectSearch from "../Form/SelectSearch";
 
 const TableJenisTkk = () => {
   // GET DATA
@@ -28,6 +29,8 @@ const TableJenisTkk = () => {
   const dataJenisById = useSelector((i) => i.jenis.dataById);
   const typeAction = useSelector((i) => i.jenis.type);
   const isLoading = useSelector((i) => i.jenis.loading);
+  const [dataSearch, setDataSearch] = useState(null);
+  const [isEdit, setIsEdit] = useState(false);
   const [initialValues, setInitialValues] = useState({
     nama: "",
     bidang: "",
@@ -44,6 +47,7 @@ const TableJenisTkk = () => {
       typeAction === "deleteJenisTkk/fulfilled"
     ) {
       dispatch(getJenisTkk());
+      setDataSearch(null);
     }
     if (typeAction === "getJenisTkkById/fulfilled") {
       setInitialValues({
@@ -54,13 +58,32 @@ const TableJenisTkk = () => {
   }, [typeAction]);
 
   // HANDLE FORM & VALIDASI
+  const option = [
+    { value: "agama", label: "agama" },
+    { value: "moral", label: "moral" },
+    {
+      value: "pembentukan pribadi dan watak",
+      label: "pembentukan pribadi dan watak",
+    },
+    { value: "kesehatan", label: "kesehatan" },
+    { value: "ketangkasan", label: "ketangkasan" },
+    { value: "sosial", label: "sosial" },
+    { value: "perikemanusiaan", label: "perikemanusiaan" },
+    { value: "ketertiban masyarakat", label: "ketertiban masyarakat" },
+    { value: "gotong royong", label: "gotong royong" },
+    { value: "patriotisme", label: "patriotisme" },
+    { value: "seni budaya", label: "seni budaya" },
+    { value: "keterampilan", label: "keterampilan" },
+    { value: "teknik pembangunan", label: "teknik pembangunan" },
+  ];
+
   const validationSchema = Yup.object().shape({
     nama: Yup.string().required("Nama harus diisi"),
     bidang: Yup.string().required("Bidang harus diisi"),
   });
 
   const onSubmit = (values, { resetForm }) => {
-    if (Object.keys(dataJenisById).length === 0) {
+    if (isEdit === false) {
       dispatch(createJenisTkk(values));
     } else {
       dispatch(updateJenisTkk({ id: dataJenisById.id, data: values }));
@@ -78,6 +101,7 @@ const TableJenisTkk = () => {
   const formRef = useRef(null);
   const closeModal = () => {
     setModalOpen(false);
+    setIsEdit(false)
     formRef.current.reset();
     setInitialValues({
       nama: "",
@@ -89,19 +113,37 @@ const TableJenisTkk = () => {
   // HANDLE EDIT
   const handleEdit = (id) => {
     dispatch(getJenisTkkById(id));
+    setIsEdit(true)
     openModal();
   };
 
   // HANDLE DELETE
   const [idDelete, setIdDelete] = useState(null);
 
+  const handleSearch = (values) => {
+    if (dataJenis.length > 0) {
+      const dataSearch = dataJenis?.filter((data) => {
+        return (
+          data.nama.toLowerCase().includes(values.search.toLowerCase()) ||
+          data.bidang.toLowerCase().includes(values.search.toLowerCase()) ||
+          data.warna.toLowerCase().includes(values.search.toLowerCase())
+        );
+      });
+      setDataSearch(dataSearch);
+    }
+  };
+  const dataFiltered = dataSearch ? dataSearch : dataJenis;
+
   return (
     <>
       <ShowDataLayout
-        title="Tabel Data Admin"
+        title="Tabel Jenis TKK"
         clickAdd={openModal}
-        dataLenght={dataJenis.length}
+        dataLenght={dataJenis?.length}
         isLoading={isLoading}
+        handleSearch={handleSearch}
+        setDataSearch={setDataSearch}
+        searchPlacehold="Cari sesuai jenis / bidang / warna tkk"
       >
         <THead>
           <tr>
@@ -113,8 +155,8 @@ const TableJenisTkk = () => {
           </tr>
         </THead>
         <TBody>
-          {Array.isArray(dataJenis) ? (
-            dataJenis.map((data, idx) => (
+          {Array.isArray(dataFiltered) ? (
+            dataFiltered.map((data, idx) => (
               <tr className="capitalize" key={idx}>
                 <td className="font-bold">{idx + 1}</td>
                 <td>{data.nama}</td>
@@ -145,7 +187,7 @@ const TableJenisTkk = () => {
 
       {/* MODAL INPUT */}
       <Modal
-        title="Tambah Data Admin"
+        title="Tambah Jenis TKK"
         isModalOpen={isModalOpen}
         setModalOpen={setModalOpen}
         onClick={closeModal}
@@ -156,14 +198,25 @@ const TableJenisTkk = () => {
           onSubmit={onSubmit}
           enableReinitialize={true}
         >
-          {(form) => (
+          {({ values, setFieldValue }) => (
             <Form
               action="#"
               ref={formRef}
-              className="mt-8 grid grid-cols-2 gap-x-10 gap-y-6 pb-10"
+              className="mt-8 grid grid-cols-2 gap-x-10 gap-y-6 pb-40"
             >
               <Input label="Nama" name="nama" type="text" />
-              <Input label="Bidang" name="bidang" type="text" />
+              <SelectSearch
+                name="bidang"
+                label="Bidang"
+                placeholder="Cari bidang"
+                data={option}
+                value={
+                  option.find((option) => option.value === values.bidang) || ""
+                }
+                onChange={(selected) => {
+                  setFieldValue("bidang", selected?.value);
+                }}
+              />
 
               <Button>Simpan</Button>
             </Form>

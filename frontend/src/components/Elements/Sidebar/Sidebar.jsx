@@ -39,15 +39,16 @@ const Sidebar = () => {
 
   return (
     <div
-      className={`sticky top-0 flex h-screen flex-col bg-first py-5 font-montserrat text-sm text-white duration-500 ${isOpen ? "w-64 gap-2.5" : "w-24 gap-3"}`}
+      className={`sticky top-0 flex h-screen flex-col bg-first font-montserrat text-sm text-white duration-500 ${isOpen ? "w-64 gap-2.5" : "w-24 gap-2.5"}`}
     >
       <img
         src={Garuda}
         alt=""
-        className={`mx-auto mb-4 ${isOpen ? "h-24 w-24" : "h-14 w-14"}`}
+        className={`mx-auto ${isOpen ? "h-24 w-24 my-4" : "h-14 w-14 my-8"}`}
       />
+      <div className="w-full h-0.5 bg-white opacity-20"></div>
 
-      <NavLink to="/dashboard" className="-mt-2.5 flex items-center">
+      <NavLink to="/dashboard" className={`flex items-center`}>
         <div
           className={`h-11 w-1.5 bg-orange-600 ${isDashboard ? "opacity-100" : "opacity-0"}`}
         ></div>
@@ -251,10 +252,10 @@ const Sidebar = () => {
       {/* TOGGLE SIDEBAR */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="absolute bottom-10 left-[50%] mx-auto -translate-x-[50%] rounded-full bg-slate-400 p-2 hover:bg-white"
+        className="absolute bottom-6 left-[50%] mx-auto -translate-x-[50%] rounded-full bg-slate-400 p-2 hover:bg-white"
       >
         <ChevronDoubleLeftIcon
-          className={`h-5 text-[#06163a] duration-500 ${isOpen ? "rotate-0" : "rotate-180"}`}
+          className={`text-[#06163a] duration-500 ${isOpen ? "rotate-0 h-5" : "rotate-180 h-4"}`}
         />
       </button>
     </div>

@@ -5,6 +5,7 @@ const initialState = {
   data: [],
   dataById: {},
   loading: false,
+  loadingById: false,
   error: null,
   type: "",
 };
@@ -40,14 +41,14 @@ const adminSlice = createSlice({
       .addCase(getAdminById.pending, (state, action) => {
         return {
           ...state,
-          loading: true,
+          loadingById: true,
           type: action.type,
         };
       })
       .addCase(getAdminById.fulfilled, (state, action) => {
         return {
           ...state,
-          loading: false,
+          loadingById: false,
           dataById: action.payload,
           type: action.type,
         };
@@ -55,7 +56,7 @@ const adminSlice = createSlice({
       .addCase(getAdminById.rejected, (state, action) => {
         return {
           ...state,
-          loading: false,
+          loadingById: false,
           error: action.payload,
           type: action.type,
         };

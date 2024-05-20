@@ -38,6 +38,8 @@ const TableAnggota = () => {
   const dataAnggotaById = useSelector((i) => i.anggota.dataById);
   const typeAction = useSelector((i) => i.anggota.type);
   const isLoading = useSelector((i) => i.anggota.loading);
+  const [dataSearch, setDataSearch] = useState(null);
+  const [isEdit, setIsEdit] = useState(false);
   const [initialValues, setInitialValues] = useState({
     nama: "",
     id_lembaga: "",
@@ -83,6 +85,7 @@ const TableAnggota = () => {
       typeAction === "deleteAnggota/fulfilled"
     ) {
       dispatch(getAnggota());
+      setDataSearch(null);
     }
     if (typeAction === "getAnggotaById/fulfilled") {
       setInitialValues({
@@ -179,7 +182,7 @@ const TableAnggota = () => {
         values[key] = null;
       }
     });
-    if (Object.keys(dataAnggotaById).length === 0) {
+    if (isEdit === false) {
       dispatch(createAnggota(values));
     } else {
       dispatch(updateAnggota({ id: dataAnggotaById.id, data: values }));
@@ -204,6 +207,7 @@ const TableAnggota = () => {
   const formRef = useRef(null);
   const closeModal = () => {
     setModalOpen(false);
+    setIsEdit(false)
     setModalDetailOpen(false);
     formRef.current.reset();
     setInitialValues({
@@ -244,19 +248,40 @@ const TableAnggota = () => {
   // HANDLE EDIT
   const handleEdit = (id) => {
     dispatch(getAnggotaById(id));
+    setIsEdit(true)
     openModal();
   };
 
   // HANDLE DELETE
   const [idDelete, setIdDelete] = useState(null);
 
+  const handleSearch = (values) => {
+    if (dataAnggota.length > 0) {
+      const dataSearch = dataAnggota?.filter((data) => {
+        return (
+          data.nama.toLowerCase().includes(values.search.toLowerCase()) ||
+          data.no_induk.toLowerCase().includes(values.search.toLowerCase()) ||
+          data.lembaga.nama_lembaga
+            .toLowerCase()
+            .includes(values.search.toLowerCase()) ||
+          data.nta.toLowerCase().includes(values.search.toLowerCase())
+        );
+      });
+      setDataSearch(dataSearch);
+    }
+  };
+  const dataFiltered = dataSearch ? dataSearch : dataAnggota;
+
   return (
     <>
       <ShowDataLayout
         title="Tabel Data Anggota"
         clickAdd={openModal}
-        dataLenght={dataAnggota.length}
+        dataLenght={dataAnggota?.length}
         isLoading={isLoading}
+        handleSearch={handleSearch}
+        setDataSearch={setDataSearch}
+        searchPlacehold="Cari nama / asal lembaga / no. induk / NTA"
       >
         <THead>
           <tr>
@@ -272,8 +297,8 @@ const TableAnggota = () => {
           </tr>
         </THead>
         <TBody>
-          {Array.isArray(dataAnggota) ? (
-            dataAnggota.map((data, idx) => (
+          {Array.isArray(dataFiltered) ? (
+            dataFiltered.map((data, idx) => (
               <tr className="capitalize" key={idx}>
                 <td className="font-bold">{idx + 1}</td>
                 <td>{data.nama}</td>

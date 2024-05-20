@@ -40,6 +40,8 @@ const TableAdmin = () => {
   const dataAdminById = useSelector((i) => i.admin.dataById);
   const typeAction = useSelector((i) => i.admin.type);
   const isLoading = useSelector((i) => i.admin.loading);
+  const [dataSearch, setDataSearch] = useState(null);
+  const [isEdit, setIsEdit] = useState(false);
   const [initialValues, setInitialValues] = useState({
     nama: "",
     id_lembaga: "",
@@ -64,6 +66,7 @@ const TableAdmin = () => {
       typeAction === "deleteAdmin/fulfilled"
     ) {
       dispatch(getAdmin());
+      setDataSearch(null);
     }
 
     if (typeAction === "getAdminById/fulfilled") {
@@ -104,7 +107,7 @@ const TableAdmin = () => {
   });
 
   const onSubmit = (values, { resetForm }) => {
-    if (Object.keys(dataAdminById).length === 0) {
+    if (isEdit === false) {
       dispatch(createAdmin(values));
     } else {
       dispatch(updateAdmin({ id: dataAdminById.id, data: values }));
@@ -122,6 +125,7 @@ const TableAdmin = () => {
   const formRef = useRef(null);
   const closeModal = () => {
     setModalOpen(false);
+    setIsEdit(false);
     formRef.current.reset();
     setInitialValues({
       nama: "",
@@ -140,11 +144,29 @@ const TableAdmin = () => {
   // HANDLE EDIT
   const handleEdit = (id) => {
     dispatch(getAdminById(id));
+    setIsEdit(true);
     openModalInput();
   };
 
   // HANDLE DELETE
   const [idDelete, setIdDelete] = useState(null);
+
+  const handleSearch = (values) => {
+    if (dataAdmin.length > 0) {
+      const dataSearch = dataAdmin?.filter((data) => {
+        return (
+          data.nama.toLowerCase().includes(values.search.toLowerCase()) ||
+          data.email.toLowerCase().includes(values.search.toLowerCase()) ||
+          data.lembaga.nama_lembaga
+            .toLowerCase()
+            .includes(values.search.toLowerCase()) ||
+          data.nta.toLowerCase().includes(values.search.toLowerCase())
+        );
+      });
+      setDataSearch(dataSearch);
+    }
+  };
+  const dataFiltered = dataSearch ? dataSearch : dataAdmin;
 
   return (
     <>
@@ -152,8 +174,11 @@ const TableAdmin = () => {
         title="Tabel Data Admin"
         descript="*Gunakan alamat email admin untuk mengisi form email dan password login"
         clickAdd={openModalInput}
-        dataLenght={dataAdmin.length}
+        dataLenght={dataAdmin?.length}
         isLoading={isLoading}
+        handleSearch={handleSearch}
+        setDataSearch={setDataSearch}
+        searchPlacehold="Cari sesuai nama / asal lembaga / NTA"
       >
         <THead>
           <tr>
@@ -169,8 +194,8 @@ const TableAdmin = () => {
           </tr>
         </THead>
         <TBody>
-          {Array.isArray(dataAdmin) ? (
-            dataAdmin.map((data, idx) => (
+          {Array.isArray(dataFiltered) ? (
+            dataFiltered.map((data, idx) => (
               <tr className="capitalize" key={idx}>
                 <td className="font-bold">{idx + 1}</td>
                 <td>{data.nama}</td>
@@ -215,48 +240,50 @@ const TableAdmin = () => {
           onSubmit={onSubmit}
           enableReinitialize={true}
         >
-          {({ values, setFieldValue }) => (
-            <Form
-              action="#"
-              ref={formRef}
-              className="mt-8 grid grid-cols-2 gap-x-10 gap-y-4 pb-10"
-            >
-              <Input label="Nama" name="nama" type="text" />
-              <Input label="Email" name="email" type="email" />
-              <SelectSearch
-                name="id_lembaga"
-                label="Asal Lembaga"
-                placeholder="Cari Nama Lembaga"
-                data={optionLembaga}
-                value={
-                  optionLembaga.find(
-                    (option) => option.value === values.id_lembaga,
-                  ) || ""
-                }
-                onChange={(selected) => {
-                  setFieldValue("id_lembaga", selected?.value);
-                }}
-              />
-              <Input label="NTA" name="nta" type="text" />
-              <Input label="Tempat Lahir" name="tmpt_lahir" type="text" />
-              <Input label="Tanggal Lahir" name="tgl_lahir" type="date" />
-              <Input label="Alamat" name="alamat" type="text" />
-              <SelectOpt
-                label="Agama"
-                name="agama"
-                placeholder="Silahkan pilih agama"
-                options={optionAgama}
-              />
-              <SelectOpt
-                label="Jabatan"
-                name="jabatan"
-                placeholder="Silahkan pilih jabatan"
-                options={optionJabatan}
-              />
+          {({ values, setFieldValue }) => {
+            return (
+              <Form
+                action="#"
+                ref={formRef}
+                className="mt-8 grid grid-cols-2 gap-x-10 gap-y-4 pb-10"
+              >
+                <Input label="Nama" name="nama" type="text" />
+                <Input label="Email" name="email" type="email" />
+                <SelectSearch
+                  name="id_lembaga"
+                  label="Asal Lembaga"
+                  placeholder="Cari Nama Lembaga"
+                  data={optionLembaga}
+                  value={
+                    optionLembaga.find(
+                      (option) => option.value === values.id_lembaga,
+                    ) || ""
+                  }
+                  onChange={(selected) => {
+                    setFieldValue("id_lembaga", selected?.value);
+                  }}
+                />
+                <Input label="NTA" name="nta" type="text" />
+                <Input label="Tempat Lahir" name="tmpt_lahir" type="text" />
+                <Input label="Tanggal Lahir" name="tgl_lahir" type="date" />
+                <Input label="Alamat" name="alamat" type="text" />
+                <SelectOpt
+                  label="Agama"
+                  name="agama"
+                  placeholder="Silahkan pilih agama"
+                  options={optionAgama}
+                />
+                <SelectOpt
+                  label="Jabatan"
+                  name="jabatan"
+                  placeholder="Silahkan pilih jabatan"
+                  options={optionJabatan}
+                />
 
-              <Button>Simpan</Button>
-            </Form>
-          )}
+                <Button>Simpan</Button>
+              </Form>
+            );
+          }}
         </Formik>
       </Modal>
 

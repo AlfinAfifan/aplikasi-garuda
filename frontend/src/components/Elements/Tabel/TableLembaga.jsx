@@ -28,6 +28,8 @@ const TableLembaga = () => {
   const dataLembagaById = useSelector((i) => i.lembaga.dataById);
   const typeAction = useSelector((i) => i.lembaga.type);
   const isLoading = useSelector((i) => i.lembaga.loading);
+  const [dataSearch, setDataSearch] = useState(null);
+  const [isEdit, setIsEdit] = useState(false);
   const [initialValues, setInitialValues] = useState({
     nama_lembaga: "",
     alamat: "",
@@ -48,6 +50,7 @@ const TableLembaga = () => {
       typeAction === "deleteLembaga/fulfilled"
     ) {
       dispatch(getLembaga());
+      setDataSearch(null);
     }
     if (typeAction === "getLembagaById/fulfilled") {
       setInitialValues({
@@ -72,7 +75,7 @@ const TableLembaga = () => {
   });
 
   const onSubmit = (values) => {
-    if (Object.keys(dataLembagaById).length === 0) {
+    if (isEdit === false) {
       dispatch(createLembaga(values));
     } else {
       dispatch(updateLembaga({ id: dataLembagaById.id, data: values }));
@@ -90,6 +93,7 @@ const TableLembaga = () => {
   const formRef = useRef(null);
   const closeModal = () => {
     setModalOpen(false);
+    setIsEdit(false);
     formRef.current.reset();
     setInitialValues({
       nama_lembaga: "",
@@ -105,19 +109,42 @@ const TableLembaga = () => {
   // HANDLE EDIT
   const handleEdit = (id) => {
     dispatch(getLembagaById(id));
+    setIsEdit(true);
     openModal();
   };
 
   // HANDLE DELETE
   const [idDelete, setIdDelete] = useState(null);
 
+  const handleSearch = (values) => {
+    if (dataLembaga.length > 0) {
+      const dataSearch = dataLembaga?.filter((data) => {
+        return (
+          data.nama_lembaga
+            .toLowerCase()
+            .includes(values.search.toLowerCase()) ||
+          data.alamat.toLowerCase().includes(values.search.toLowerCase()) ||
+          data.no_gudep_lk
+            .toLowerCase()
+            .includes(values.search.toLowerCase()) ||
+          data.no_gudep_pr.toLowerCase().includes(values.search.toLowerCase())
+        );
+      });
+      setDataSearch(dataSearch);
+    }
+  };
+  const dataFiltered = dataSearch ? dataSearch : dataLembaga;
+
   return (
     <>
       <ShowDataLayout
         title="Tabel Data Lembaga"
         clickAdd={openModal}
-        dataLenght={dataLembaga.length}
+        dataLenght={dataLembaga?.length}
         isLoading={isLoading}
+        handleSearch={handleSearch}
+        setDataSearch={setDataSearch}
+        searchPlacehold="Cari sesuai nama / alamat / no. gudep"
       >
         <THead>
           <tr>
@@ -132,8 +159,8 @@ const TableLembaga = () => {
           </tr>
         </THead>
         <TBody>
-          {Array.isArray(dataLembaga) ? (
-            dataLembaga.map((data, idx) => (
+          {Array.isArray(dataFiltered) ? (
+            dataFiltered.map((data, idx) => (
               <tr className="capitalize" key={idx}>
                 <td className="font-bold">{idx + 1}</td>
                 <td>{data?.nama_lembaga}</td>

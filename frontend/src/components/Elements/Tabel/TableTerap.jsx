@@ -17,7 +17,10 @@ import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import SelectSearch from "../Form/SelectSearch";
 import InputDisabled from "../Form/InputDisabled";
-import { getOptionRakit, getRakit } from "../../../redux/actions/rakit/rakitThunk";
+import {
+  getOptionRakit,
+  getRakit,
+} from "../../../redux/actions/rakit/rakitThunk";
 import ModalDelete from "../Modal/ModalDelete";
 import {
   closeModalDelete,
@@ -34,8 +37,10 @@ const TableTerap = () => {
   const isLoading = useSelector((i) => i.terap.loading);
   const yearNow = new Date().getFullYear();
   const [selectedYear, setSelectedYear] = useState(yearNow);
+  const [dataSearch, setDataSearch] = useState(null);
 
   useEffect(() => {
+    dispatch(getTerap(selectedYear));
     dispatch(getOptionRakit());
     dispatch(getYearTerap());
   }, []);
@@ -47,6 +52,7 @@ const TableTerap = () => {
     ) {
       dispatch(getTerap(selectedYear));
       dispatch(getYearTerap());
+      setDataSearch(null);
     }
   }, [typeAction]);
 
@@ -89,6 +95,25 @@ const TableTerap = () => {
   };
 
   const [idDelete, setIdDelete] = useState(null);
+
+  const handleSearch = (values) => {
+    if (dataTerap.length > 0) {
+      const dataSearch = dataTerap?.filter((data) => {
+        return (
+          data.tgl_rakit.toLowerCase().includes(values.search.toLowerCase()) ||
+          data.anggota.nama
+            .toLowerCase()
+            .includes(values.search.toLowerCase()) ||
+          data.anggota.lembaga.nama_lembaga
+            .toLowerCase()
+            .includes(values.search.toLowerCase())
+        );
+      });
+      setDataSearch(dataSearch);
+    }
+  };
+  const dataFiltered = dataSearch ? dataSearch : dataTerap;
+
   return (
     <>
       <ShowDataLayout
@@ -98,8 +123,11 @@ const TableTerap = () => {
         yearNow={yearNow}
         selectedYear={selectedYear}
         setSelectedYear={setSelectedYear}
-        dataLenght={dataTerap.length}
+        dataLenght={dataTerap?.length}
         isLoading={isLoading}
+        handleSearch={handleSearch}
+        setDataSearch={setDataSearch}
+        searchPlacehold="Cari sesuai nama / asal lembaga"
       >
         <THead>
           <tr>
@@ -111,8 +139,8 @@ const TableTerap = () => {
           </tr>
         </THead>
         <TBody>
-          {Array.isArray(dataTerap) ? (
-            dataTerap.map((data, idx) => (
+          {Array.isArray(dataFiltered) ? (
+            dataFiltered.map((data, idx) => (
               <tr className="capitalize" key={idx}>
                 <td className="font-bold">{formatSK(idx)}</td>
                 <td>{data.anggota.nama}</td>

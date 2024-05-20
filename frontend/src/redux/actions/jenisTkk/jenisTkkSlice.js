@@ -11,6 +11,7 @@ const initialState = {
   data: [],
   dataById: [],
   loading: false,
+  loadingById: false,
   error: null,
   type: "",
 };
@@ -46,14 +47,14 @@ const jenisTkkSlice = createSlice({
       .addCase(getJenisTkkById.pending, (state, action) => {
         return {
           ...state,
-          loading: true,
+          loadingById: true,
           type: action.type,
         };
       })
       .addCase(getJenisTkkById.fulfilled, (state, action) => {
         return {
           ...state,
-          loading: false,
+          loadingById: false,
           dataById: action.payload,
           type: action.type,
         };
@@ -61,7 +62,7 @@ const jenisTkkSlice = createSlice({
       .addCase(getJenisTkkById.rejected, (state, action) => {
         return {
           ...state,
-          loading: false,
+          loadingById: false,
           error: action.payload,
           type: action.type,
         };

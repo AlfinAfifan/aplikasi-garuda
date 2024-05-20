@@ -22,7 +22,10 @@ import { formatSK } from "../DataFormat/FormatSK";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import SelectSearch from "../Form/SelectSearch";
-import { getOptionRakit, getRakit } from "../../../redux/actions/rakit/rakitThunk";
+import {
+  getOptionRakit,
+  getRakit,
+} from "../../../redux/actions/rakit/rakitThunk";
 import InputDisabled from "../Form/InputDisabled";
 import { getJenisTkk } from "../../../redux/actions/jenisTkk/jenisTkkThunk";
 import ModalDetail from "../Modal/ModalDetail";
@@ -50,11 +53,13 @@ const TablePurwa = () => {
   const yearList = useSelector((i) => i.purwa.yearList);
   const yearNow = new Date().getFullYear();
   const [selectedYear, setSelectedYear] = useState(yearNow);
+  const [dataSearch, setDataSearch] = useState(null);
 
   useEffect(() => {
+    dispatch(getPurwa(selectedYear));
     dispatch(getOptionRakit());
     dispatch(getJenisTkk());
-    dispatch(getYearPurwa())
+    dispatch(getYearPurwa());
   }, []);
 
   useEffect(() => {
@@ -63,7 +68,8 @@ const TablePurwa = () => {
       typeAction === "deletePurwa/fulfilled"
     ) {
       dispatch(getPurwa(selectedYear));
-      dispatch(getYearPurwa())
+      dispatch(getYearPurwa());
+      setDataSearch(null);
     }
   }, [typeAction]);
 
@@ -131,17 +137,41 @@ const TablePurwa = () => {
 
   const [idDelete, setIdDelete] = useState(null);
 
+  const handleSearch = (values) => {
+    if (dataPurwa.length > 0) {
+      const dataSearch = dataPurwa?.filter((data) => {
+        return (
+          data.tgl_purwa.toLowerCase().includes(values.search.toLowerCase()) ||
+          data.anggota.nama
+            .toLowerCase()
+            .includes(values.search.toLowerCase()) ||
+          data.anggota.lembaga.nama_lembaga
+            .toLowerCase()
+            .includes(values.search.toLowerCase()) ||
+          data.jenis_tkk.nama
+            .toLowerCase()
+            .includes(values.search.toLowerCase())
+        );
+      });
+      setDataSearch(dataSearch);
+    }
+  };
+  const dataFiltered = dataSearch ? dataSearch : dataPurwa;
+
   return (
     <>
       <ShowDataLayout
         title="Tabel Data Purwa"
         clickAdd={openModal}
-        dataLenght={dataPurwa.length}
+        dataLenght={dataPurwa?.length}
         yearList={yearList}
         yearNow={yearNow}
         selectedYear={selectedYear}
         setSelectedYear={setSelectedYear}
         isLoading={isLoading}
+        handleSearch={handleSearch}
+        setDataSearch={setDataSearch}
+        searchPlacehold="Cari sesuai nama / asal lembaga / jenis tkk"
       >
         <THead>
           <tr>
@@ -154,8 +184,8 @@ const TablePurwa = () => {
           </tr>
         </THead>
         <TBody>
-          {Array.isArray(dataPurwa) ? (
-            dataPurwa.map((data, idx) => (
+          {Array.isArray(dataFiltered) ? (
+            dataFiltered.map((data, idx) => (
               <tr className="capitalize" key={idx}>
                 <td className="font-bold">{formatSK(idx)}</td>
                 <td>{data.anggota.nama}</td>
