@@ -117,7 +117,7 @@ const TableLembaga = () => {
   const [idDelete, setIdDelete] = useState(null);
 
   const handleSearch = (values) => {
-    if (dataLembaga.length > 0) {
+    if (dataLembaga?.length > 0) {
       const dataSearch = dataLembaga?.filter((data) => {
         return (
           data.nama_lembaga

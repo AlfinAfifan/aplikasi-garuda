@@ -256,7 +256,7 @@ const TableAnggota = () => {
   const [idDelete, setIdDelete] = useState(null);
 
   const handleSearch = (values) => {
-    if (dataAnggota.length > 0) {
+    if (dataAnggota?.length > 0) {
       const dataSearch = dataAnggota?.filter((data) => {
         return (
           data.nama.toLowerCase().includes(values.search.toLowerCase()) ||

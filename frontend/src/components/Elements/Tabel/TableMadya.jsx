@@ -126,7 +126,7 @@ const TableMadya = () => {
   const [idDelete, setIdDelete] = useState(null);
 
   const handleSearch = (values) => {
-    if (dataMadya.length > 0) {
+    if (dataMadya?.length > 0) {
       const dataSearch = dataMadya?.filter((data) => {
         return (
           data.tgl_madya.toLowerCase().includes(values.search.toLowerCase()) ||

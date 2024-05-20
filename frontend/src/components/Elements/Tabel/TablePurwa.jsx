@@ -138,7 +138,7 @@ const TablePurwa = () => {
   const [idDelete, setIdDelete] = useState(null);
 
   const handleSearch = (values) => {
-    if (dataPurwa.length > 0) {
+    if (dataPurwa?.length > 0) {
       const dataSearch = dataPurwa?.filter((data) => {
         return (
           data.tgl_purwa.toLowerCase().includes(values.search.toLowerCase()) ||

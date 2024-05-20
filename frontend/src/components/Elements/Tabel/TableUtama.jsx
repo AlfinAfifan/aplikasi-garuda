@@ -126,7 +126,7 @@ const TableUtama = () => {
   const [idDelete, setIdDelete] = useState(null);
 
   const handleSearch = (values) => {
-    if (dataUtama.length > 0) {
+    if (dataUtama?.length > 0) {
       const dataSearch = dataUtama?.filter((data) => {
         return (
           data.tgl_utama.toLowerCase().includes(values.search.toLowerCase()) ||

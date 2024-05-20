@@ -94,7 +94,7 @@ const TableRakit = () => {
   const [idDelete, setIdDelete] = useState(null);
 
   const handleSearch = (values) => {
-    if (dataRakit.length > 0) {
+    if (dataRakit?.length > 0) {
       const dataSearch = dataRakit?.filter((data) => {
         return (
           data.tgl_rakit.toLowerCase().includes(values.search.toLowerCase()) ||

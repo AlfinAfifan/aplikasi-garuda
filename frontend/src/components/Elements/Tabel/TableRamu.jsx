@@ -96,7 +96,7 @@ const TableRamu = () => {
   const [idDelete, setIdDelete] = useState(null);
 
   const handleSearch = (values) => {
-    if (dataRamu.length > 0) {
+    if (dataRamu?.length > 0) {
       const dataSearch = dataRamu?.filter((data) => {
         return (
           data.tgl_ramu.toLowerCase().includes(values.search.toLowerCase()) ||
