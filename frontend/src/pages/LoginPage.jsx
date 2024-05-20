@@ -35,6 +35,7 @@ const LoginPage = () => {
         sessionStorage.setItem("access_token", token);
         sessionStorage.setItem("email", user.email);
         sessionStorage.setItem("name", user.name);
+        sessionStorage.setItem("id_lembaga", user.idLembaga);
         localStorage.setItem("access_token", token);
 
         toast.success("Login Berhasil");
@@ -50,11 +51,11 @@ const LoginPage = () => {
 
   const getToken = localStorage.getItem("access_token");
 
-  useEffect(() => {
-    if (getToken) {
-      navigate(-1);
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (getToken) {
+  //     navigate(-1);
+  //   }
+  // }, []);
 
   const formik = useFormik({
     initialValues: {

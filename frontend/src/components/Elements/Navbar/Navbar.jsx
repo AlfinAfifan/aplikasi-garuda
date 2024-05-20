@@ -14,6 +14,8 @@ const Navbar = () => {
     sessionStorage.removeItem("access_token");
     sessionStorage.removeItem("email");
     sessionStorage.removeItem("name");
+    sessionStorage.removeItem("id_lembaga");
+    sessionStorage.removeItem("login_time");
     const accessToken = sessionStorage.getItem("access_token");
     if (!accessToken) {
       navigate("/", { replace: true });
