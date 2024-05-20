@@ -97,7 +97,7 @@ const TableTerap = () => {
   const [idDelete, setIdDelete] = useState(null);
 
   const handleSearch = (values) => {
-    if (dataTerap.length > 0) {
+    if (dataTerap?.length > 0) {
       const dataSearch = dataTerap?.filter((data) => {
         return (
           data.tgl_rakit.toLowerCase().includes(values.search.toLowerCase()) ||

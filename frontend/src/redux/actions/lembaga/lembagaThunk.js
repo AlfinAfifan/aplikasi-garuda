@@ -70,11 +70,6 @@ export const deleteLembaga = createAsyncThunk("deleteLembaga", async (id) => {
     toast.success("Hapus Data Sukses");
     return resp.data;
   } catch (error) {
-    const errorMessage = error.response.data.message.name;
-    if (errorMessage === "SequelizeForeignKeyConstraintError") {
-      toast.error("GAGAL! Lembaga masih tertaut pada data anggota / admin");
-    } else {
-      toast.error(error.response.data.message.name);
-    }
+    toast.error(error.response.data.message);
   }
 });

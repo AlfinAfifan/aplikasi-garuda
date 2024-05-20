@@ -70,11 +70,6 @@ export const deleteAnggota = createAsyncThunk("deleteAnggota", async (id) => {
     toast.success("Hapus Data Sukses");
     return resp.data;
   } catch (error) {
-    const errorMessage = error.response.data.message.name;
-    if (errorMessage === "SequelizeForeignKeyConstraintError") {
-      toast.error("GAGAL! Anggota masih tertaut pada tabel TKU / TKK");
-    } else {
-      toast.error(error.response.data.message.name);
-    }
+    toast.error(error.response.data.message);
   }
 });

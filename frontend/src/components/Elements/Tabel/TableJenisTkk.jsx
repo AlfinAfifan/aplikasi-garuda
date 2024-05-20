@@ -121,7 +121,7 @@ const TableJenisTkk = () => {
   const [idDelete, setIdDelete] = useState(null);
 
   const handleSearch = (values) => {
-    if (dataJenis.length > 0) {
+    if (dataJenis?.length > 0) {
       const dataSearch = dataJenis?.filter((data) => {
         return (
           data.nama.toLowerCase().includes(values.search.toLowerCase()) ||
