@@ -6,6 +6,7 @@ const initialState = {
   yearList: [],
   dataById: [],
   loading: false,
+  loadingById: false,
   error: null,
   type: "",
 };
@@ -87,14 +88,14 @@ const purwaSlice = createSlice({
       .addCase(getPurwaId.pending, (state, action) => {
         return {
           ...state,
-          loading: true,
+          loadingById: true,
           type: action.type,
         };
       })
       .addCase(getPurwaId.fulfilled, (state, action) => {
         return {
           ...state,
-          loading: false,
+          loadingById: false,
           dataById: action.payload,
           type: action.type,
         };
@@ -102,7 +103,7 @@ const purwaSlice = createSlice({
       .addCase(getPurwaId.rejected, (state, action) => {
         return {
           ...state,
-          loading: false,
+          loadingById: false,
           error: action.payload,
           type: action.type,
         };

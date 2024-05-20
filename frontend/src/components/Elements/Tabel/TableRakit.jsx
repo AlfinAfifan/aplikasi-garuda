@@ -34,8 +34,10 @@ const TableRakit = () => {
   const isLoading = useSelector((i) => i.rakit.loading);
   const yearNow = new Date().getFullYear();
   const [selectedYear, setSelectedYear] = useState(yearNow);
+  const [dataSearch, setDataSearch] = useState(null);
 
   useEffect(() => {
+    dispatch(getRakit(selectedYear));
     dispatch(getOptionRamu());
     dispatch(getYearRakit());
   }, []);
@@ -47,6 +49,7 @@ const TableRakit = () => {
     ) {
       dispatch(getRakit(selectedYear));
       dispatch(getYearRakit());
+      setDataSearch(null);
     }
   }, [typeAction]);
 
@@ -90,6 +93,24 @@ const TableRakit = () => {
 
   const [idDelete, setIdDelete] = useState(null);
 
+  const handleSearch = (values) => {
+    if (dataRakit.length > 0) {
+      const dataSearch = dataRakit?.filter((data) => {
+        return (
+          data.tgl_rakit.toLowerCase().includes(values.search.toLowerCase()) ||
+          data.anggota.nama
+            .toLowerCase()
+            .includes(values.search.toLowerCase()) ||
+          data.anggota.lembaga.nama_lembaga
+            .toLowerCase()
+            .includes(values.search.toLowerCase())
+        );
+      });
+      setDataSearch(dataSearch);
+    }
+  };
+  const dataFiltered = dataSearch ? dataSearch : dataRakit;
+
   return (
     <>
       <ShowDataLayout
@@ -99,8 +120,11 @@ const TableRakit = () => {
         selectedYear={selectedYear}
         setSelectedYear={setSelectedYear}
         yearNow={yearNow}
-        dataLenght={dataRakit.length}
+        dataLenght={dataRakit?.length}
         isLoading={isLoading}
+        handleSearch={handleSearch}
+        setDataSearch={setDataSearch}
+        searchPlacehold="Cari sesuai nama / asal lembaga"
       >
         <THead>
           <tr>
@@ -112,8 +136,8 @@ const TableRakit = () => {
           </tr>
         </THead>
         <TBody>
-          {Array.isArray(dataRakit) ? (
-            dataRakit.map((data, idx) => (
+          {Array.isArray(dataFiltered) ? (
+            dataFiltered.map((data, idx) => (
               <tr className="capitalize" key={idx}>
                 <td className="font-bold">{formatSK(idx)}</td>
                 <td>{data.anggota.nama}</td>
@@ -137,9 +161,7 @@ const TableRakit = () => {
         </TBody>
 
         {dataRakit.length === 0 && (
-          <div className="flex justify-center">
-            Belum ada data
-          </div>
+          <div className="flex justify-center">Belum ada data</div>
         )}
       </ShowDataLayout>
 

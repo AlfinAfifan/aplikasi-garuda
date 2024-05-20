@@ -35,8 +35,10 @@ const TableRamu = () => {
   const isLoading = useSelector((i) => i.ramu.loading);
   const yearNow = new Date().getFullYear();
   const [selectedYear, setSelectedYear] = useState(yearNow);
+  const [dataSearch, setDataSearch] = useState(null);
 
   useEffect(() => {
+    dispatch(getRamu(selectedYear));
     dispatch(getAnggota());
     dispatch(getYearRamu());
   }, []);
@@ -48,12 +50,13 @@ const TableRamu = () => {
     ) {
       dispatch(getRamu(selectedYear));
       dispatch(getYearRamu());
+      setDataSearch(null);
     }
   }, [typeAction]);
 
   useEffect(() => {
-    dispatch(getRamu(selectedYear))
-  }, [selectedYear])
+    dispatch(getRamu(selectedYear));
+  }, [selectedYear]);
 
   // GET ANGGOTA FOR CHOICE
   const dataAnggota = useSelector((i) => i.anggota.data);
@@ -92,6 +95,24 @@ const TableRamu = () => {
 
   const [idDelete, setIdDelete] = useState(null);
 
+  const handleSearch = (values) => {
+    if (dataRamu.length > 0) {
+      const dataSearch = dataRamu?.filter((data) => {
+        return (
+          data.tgl_ramu.toLowerCase().includes(values.search.toLowerCase()) ||
+          data.anggota.nama
+            .toLowerCase()
+            .includes(values.search.toLowerCase()) ||
+          data.anggota.lembaga.nama_lembaga
+            .toLowerCase()
+            .includes(values.search.toLowerCase())
+        );
+      });
+      setDataSearch(dataSearch);
+    }
+  };
+  const dataFiltered = dataSearch ? dataSearch : dataRamu;
+
   return (
     <>
       <ShowDataLayout
@@ -101,8 +122,11 @@ const TableRamu = () => {
         selectedYear={selectedYear}
         setSelectedYear={setSelectedYear}
         yearNow={yearNow}
-        dataLenght={dataRamu.length}
+        dataLenght={dataRamu?.length}
         isLoading={isLoading}
+        handleSearch={handleSearch}
+        setDataSearch={setDataSearch}
+        searchPlacehold="Cari sesuai nama / asal lembaga"
       >
         <THead>
           <tr>
@@ -114,8 +138,8 @@ const TableRamu = () => {
           </tr>
         </THead>
         <TBody>
-          {Array.isArray(dataRamu) ? (
-            dataRamu.map((data, idx) => (
+          {Array.isArray(dataFiltered) ? (
+            dataFiltered.map((data, idx) => (
               <tr className="capitalize" key={idx}>
                 <td className="font-bold">{formatSK(idx)}</td>
                 <td>{data.anggota.nama}</td>

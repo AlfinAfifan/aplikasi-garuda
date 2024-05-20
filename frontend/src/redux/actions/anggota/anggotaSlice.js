@@ -11,6 +11,7 @@ const initialState = {
   data: [],
   dataById: {},
   loading: false,
+  loadingById: false,
   error: null,
   type: "",
 };
@@ -46,14 +47,14 @@ const anggotaSlice = createSlice({
       .addCase(getAnggotaById.pending, (state, action) => {
         return {
           ...state,
-          loading: true,
+          loadingById: true,
           type: action.type,
         };
       })
       .addCase(getAnggotaById.fulfilled, (state, action) => {
         return {
           ...state,
-          loading: false,
+          loadingById: false,
           type: action.type,
           dataById: action.payload,
         };
@@ -61,7 +62,7 @@ const anggotaSlice = createSlice({
       .addCase(getAnggotaById.rejected, (state, action) => {
         return {
           ...state,
-          loading: false,
+          loadingById: false,
           error: action.payload,
           type: action.type,
         };

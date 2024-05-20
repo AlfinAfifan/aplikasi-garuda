@@ -23,7 +23,10 @@ import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import SelectSearch from "../Form/SelectSearch";
 import InputDisabled from "../Form/InputDisabled";
-import { getMadya, getOptionMadya } from "../../../redux/actions/madya/madyaThunk";
+import {
+  getMadya,
+  getOptionMadya,
+} from "../../../redux/actions/madya/madyaThunk";
 import ModalDetail from "../Modal/ModalDetail";
 import ListDetail from "../Modal/ListDetail";
 import ModalDelete from "../Modal/ModalDelete";
@@ -48,8 +51,10 @@ const TableUtama = () => {
   const isLoading = useSelector((i) => i.utama.loading);
   const yearNow = new Date().getFullYear();
   const [selectedYear, setSelectedYear] = useState(yearNow);
+  const [dataSearch, setDataSearch] = useState(null);
 
   useEffect(() => {
+    dispatch(getUtama(selectedYear));
     dispatch(getYearUtama());
     dispatch(getOptionMadya());
   }, []);
@@ -61,6 +66,7 @@ const TableUtama = () => {
     ) {
       dispatch(getUtama(selectedYear));
       dispatch(getYearUtama());
+      setDataSearch(null);
     }
   }, [typeAction]);
 
@@ -119,17 +125,41 @@ const TableUtama = () => {
 
   const [idDelete, setIdDelete] = useState(null);
 
+  const handleSearch = (values) => {
+    if (dataUtama.length > 0) {
+      const dataSearch = dataUtama?.filter((data) => {
+        return (
+          data.tgl_utama.toLowerCase().includes(values.search.toLowerCase()) ||
+          data.anggota.nama
+            .toLowerCase()
+            .includes(values.search.toLowerCase()) ||
+          data.anggota.lembaga.nama_lembaga
+            .toLowerCase()
+            .includes(values.search.toLowerCase()) ||
+          data.jenis_tkk.nama
+            .toLowerCase()
+            .includes(values.search.toLowerCase())
+        );
+      });
+      setDataSearch(dataSearch);
+    }
+  };
+  const dataFiltered = dataSearch ? dataSearch : dataUtama;
+
   return (
     <>
       <ShowDataLayout
         title="Tabel Data Utama"
         clickAdd={openModal}
-        dataLenght={dataUtama.length}
+        dataLenght={dataUtama?.length}
         yearList={yearList}
         yearNow={yearNow}
         selectedYear={selectedYear}
         setSelectedYear={setSelectedYear}
         isLoading={isLoading}
+        handleSearch={handleSearch}
+        setDataSearch={setDataSearch}
+        searchPlacehold="Cari sesuai nama / asal lembaga / jenis tkk"
       >
         <THead>
           <tr>
@@ -142,8 +172,8 @@ const TableUtama = () => {
           </tr>
         </THead>
         <TBody>
-          {Array.isArray(dataUtama) ? (
-            dataUtama.map((data, idx) => (
+          {Array.isArray(dataFiltered) ? (
+            dataFiltered.map((data, idx) => (
               <tr className="capitalize" key={idx}>
                 <td className="font-bold">{formatSK(idx)}</td>
                 <td>{data.anggota.nama}</td>

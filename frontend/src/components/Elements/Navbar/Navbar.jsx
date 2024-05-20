@@ -20,8 +20,8 @@ const Navbar = () => {
     }
   };
   return (
-    <div className="sticky top-0 z-20 flex h-14 items-center justify-between bg-white px-5 shadow-md">
-      <div className="flex w-[35%] items-center">
+    <div className="sticky top-0 z-20 flex h-14 items-center justify-end bg-white px-5 shadow-md">
+      {/* <div className="flex w-[35%] items-center">
         <input
           type="text"
           className="h-8 w-full rounded-l-md border border-gray-500 p-2"
@@ -32,7 +32,7 @@ const Navbar = () => {
         >
           <MagnifyingGlassIcon className="w-5" />
         </button>
-      </div>
+      </div> */}
       <div
         className="flex cursor-pointer items-center gap-2"
         onClick={handleLogout}

@@ -6,6 +6,7 @@ const initialState = {
   dataById: [],
   yearList: [],
   loading: false,
+  loadingById: false,
   error: null,
   type: "",
 };
@@ -64,14 +65,14 @@ const utamaSlice = createSlice({
       .addCase(getUtamaId.pending, (state, action) => {
         return {
           ...state,
-          loading: true,
+          loadingById: true,
           type: action.type,
         };
       })
       .addCase(getUtamaId.fulfilled, (state, action) => {
         return {
           ...state,
-          loading: false,
+          loadingById: false,
           dataById: action.payload,
           type: action.type,
         };
@@ -79,7 +80,7 @@ const utamaSlice = createSlice({
       .addCase(getUtamaId.rejected, (state, action) => {
         return {
           ...state,
-          loading: false,
+          loadingById: false,
           error: action.payload,
           type: action.type,
         };

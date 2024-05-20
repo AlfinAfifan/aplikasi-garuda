@@ -22,7 +22,9 @@ import { dateFormat } from "../DataFormat/DateFormat";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import InputDisabled from "../Form/InputDisabled";
-import { getOptionPurwa, getPurwa } from "../../../redux/actions/purwa/purwaThunk";
+import {
+  getOptionPurwa,
+} from "../../../redux/actions/purwa/purwaThunk";
 import SelectSearch from "../Form/SelectSearch";
 import ModalDetail from "../Modal/ModalDetail";
 import ListDetail from "../Modal/ListDetail";
@@ -48,8 +50,10 @@ const TableMadya = () => {
   const yearList = useSelector((i) => i.madya.yearList);
   const yearNow = new Date().getFullYear();
   const [selectedYear, setSelectedYear] = useState(yearNow);
+  const [dataSearch, setDataSearch] = useState(null);
 
   useEffect(() => {
+    dispatch(getMadya(selectedYear));
     dispatch(getOptionPurwa());
     dispatch(getYearMadya());
   }, []);
@@ -61,6 +65,7 @@ const TableMadya = () => {
     ) {
       dispatch(getMadya(selectedYear));
       dispatch(getYearMadya());
+      setDataSearch(null);
     }
   }, [typeAction]);
 
@@ -117,19 +122,44 @@ const TableMadya = () => {
     document.body.style.overflow = "auto";
   };
 
+  // HANDLE DELETE
   const [idDelete, setIdDelete] = useState(null);
+
+  const handleSearch = (values) => {
+    if (dataMadya.length > 0) {
+      const dataSearch = dataMadya?.filter((data) => {
+        return (
+          data.tgl_madya.toLowerCase().includes(values.search.toLowerCase()) ||
+          data.anggota.nama
+            .toLowerCase()
+            .includes(values.search.toLowerCase()) ||
+          data.anggota.lembaga.nama_lembaga
+            .toLowerCase()
+            .includes(values.search.toLowerCase()) ||
+          data.jenis_tkk.nama
+            .toLowerCase()
+            .includes(values.search.toLowerCase())
+        );
+      });
+      setDataSearch(dataSearch);
+    }
+  };
+  const dataFiltered = dataSearch ? dataSearch : dataMadya;
 
   return (
     <>
       <ShowDataLayout
         title="Tabel Data Madya"
         clickAdd={openModal}
-        dataLenght={dataMadya.length}
+        dataLenght={dataMadya?.length}
         yearList={yearList}
         yearNow={yearNow}
         selectedYear={selectedYear}
         setSelectedYear={setSelectedYear}
         isLoading={isLoading}
+        handleSearch={handleSearch}
+        setDataSearch={setDataSearch}
+        searchPlacehold="Cari sesuai nama / asal lembaga / jenis tkk"
       >
         <THead>
           <tr>
@@ -142,8 +172,8 @@ const TableMadya = () => {
           </tr>
         </THead>
         <TBody>
-          {Array.isArray(dataMadya) ? (
-            dataMadya.map((data, idx) => (
+          {Array.isArray(dataFiltered) ? (
+            dataFiltered.map((data, idx) => (
               <tr className="capitalize" key={idx}>
                 <td className="font-bold">{formatSK(idx)}</td>
                 <td>{data.anggota.nama}</td>
