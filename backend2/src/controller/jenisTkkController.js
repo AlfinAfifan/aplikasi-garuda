@@ -184,9 +184,16 @@ exports.deleteJenisTkk = async (req, res) => {
     });
     res.status(200).json({ message: 'Delete Jenis TKK Success' });
   } catch (error) {
-    res.status(500).json({
-      message: error,
-      error: error,
-    });
+    if (error.original.errno === 1451) {
+      res.status(500).json({
+        message: 'Data masih tertaut pada tabel Kecakapan Khusus',
+        error: error,
+      });
+    } else {
+      res.status(500).json({
+        message: 'Delete Jenis TKK Failed',
+        error: error,
+      });
+    }
   }
 };

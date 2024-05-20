@@ -286,11 +286,18 @@ exports.deleteAnggota = async (req, res) => {
         id: req.params.id,
       },
     });
-    res.status(200).json({ message: 'Deleted Anggota Success' });
+    res.status(200).json({ message: 'Delete Anggota Success' });
   } catch (error) {
-    res.status(500).json({
-      message: error,
-      error: error,
-    });
+    if (error.original.errno === 1451) {
+      res.status(500).json({
+        message: 'Data masih tertaut pada tabel TKU / TKK',
+        error: error,
+      });
+    } else {
+      res.status(500).json({
+        message: 'Delete Anggota Failed',
+        error: error,
+      });
+    }
   }
 };
