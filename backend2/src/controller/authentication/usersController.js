@@ -55,9 +55,10 @@ exports.loginUsers = async (req, res) => {
     const userid = user[0].id;
     const name = user[0].name;
     const email = user[0].email;
+    const idLembaga = user[0].id_lembaga;
 
-    const accessToken = jwt.sign({ userid, name, email }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '20s' });
-    const refreshTokenToken = jwt.sign({ userid, name, email }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '1d' });
+    const accessToken = jwt.sign({ userid, name, email, idLembaga }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '20s' });
+    const refreshTokenToken = jwt.sign({ userid, name, email, idLembaga }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '1d' });
     await usersModel.update(
       { refresh_token: refreshTokenToken },
       {
