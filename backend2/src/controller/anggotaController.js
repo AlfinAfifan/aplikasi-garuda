@@ -16,8 +16,15 @@ exports.getAnggota = async (req, res) => {
   });
   if (!user[0]) return res.sendStatus(403);
 
+  let whereClause = {};
+  if (user[0].id_lembaga !== null) {
+    whereClause = {
+      id_lembaga: user[0].id_lembaga,
+    };
+  }
   try {
     const response = await anggotaModel.findAll({
+      where: whereClause,
       include: [
         {
           model: lembagaModel,
@@ -44,11 +51,20 @@ exports.getAnggotaById = async (req, res) => {
   });
   if (!user[0]) return res.sendStatus(403);
 
+  let whereClause = {};
+  if (user[0].id_lembaga !== null) {
+    whereClause = {
+      id: req.params.id,
+      id_lembaga: user[0].id_lembaga,
+    };
+  } else {
+    whereClause = {
+      id: req.params.id,
+    };
+  }
   try {
     const response = await anggotaModel.findOne({
-      where: {
-        id: req.params.id,
-      },
+      where: whereClause,
       include: [
         {
           model: lembagaModel,
@@ -163,11 +179,20 @@ exports.updateAnggota = async (req, res) => {
   });
   if (!user[0]) return res.sendStatus(403);
 
+  let whereClause = {};
+  if (user[0].id_lembaga !== null) {
+    whereClause = {
+      id: req.params.id,
+      id_lembaga: user[0].id_lembaga,
+    };
+  } else {
+    whereClause = {
+      id: req.params.id,
+    };
+  }
   // cek if there is data by id
   const dataUpdate = await anggotaModel.findOne({
-    where: {
-      id: req.params.id,
-    },
+    where: whereClause,
   });
   if (!dataUpdate)
     return res.status(404).json({
@@ -270,10 +295,19 @@ exports.deleteAnggota = async (req, res) => {
   });
   if (!user[0]) return res.sendStatus(403);
 
-  const dataDelete = await anggotaModel.findOne({
-    where: {
+  let whereClause = {};
+  if (user[0].id_lembaga !== null) {
+    whereClause = {
       id: req.params.id,
-    },
+      id_lembaga: user[0].id_lembaga,
+    };
+  } else {
+    whereClause = {
+      id: req.params.id,
+    };
+  }
+  const dataDelete = await anggotaModel.findOne({
+    where: whereClause
   });
 
   // cek if there is no data
