@@ -20,12 +20,19 @@ exports.getTkk = async (req, res) => {
   });
   if (!user[0]) return res.sendStatus(403);
 
+  let whereClause = {};
+  if (user[0].id_lembaga !== null) {
+    whereClause = {
+      id_lembaga: user[0].id_lembaga,
+    };
+  }
   try {
     const response = await tkkModel.findAll({
       include: [
         {
           model: anggotaModel,
           as: 'anggota',
+          where: whereClause,
           attributes: ['nama'],
           include: [
             {
@@ -59,6 +66,12 @@ exports.getPurwa = async (req, res) => {
   });
   if (!user[0]) return res.sendStatus(403);
 
+  let whereClause = {};
+  if (user[0].id_lembaga !== null) {
+    whereClause = {
+      id_lembaga: user[0].id_lembaga,
+    };
+  }
   try {
     const response = await tkkModel.findAll({
       where: {
@@ -71,6 +84,7 @@ exports.getPurwa = async (req, res) => {
         {
           model: anggotaModel,
           as: 'anggota',
+          where: whereClause,
           attributes: ['nama'],
           include: [
             {
@@ -104,6 +118,12 @@ exports.getPurwaByYear = async (req, res) => {
   });
   if (!user[0]) return res.sendStatus(403);
 
+  let whereClause = {};
+  if (user[0].id_lembaga !== null) {
+    whereClause = {
+      id_lembaga: user[0].id_lembaga,
+    };
+  }
   const year = req.params.year;
   try {
     const response = await tkkModel.findAll({
@@ -120,6 +140,7 @@ exports.getPurwaByYear = async (req, res) => {
         {
           model: anggotaModel,
           as: 'anggota',
+          where: whereClause,
           attributes: ['nama'],
           include: [
             {
@@ -153,6 +174,12 @@ exports.getMadya = async (req, res) => {
   });
   if (!user[0]) return res.sendStatus(403);
 
+  let whereClause = {};
+  if (user[0].id_lembaga !== null) {
+    whereClause = {
+      id_lembaga: user[0].id_lembaga,
+    };
+  }
   try {
     const response = await tkkModel.findAll({
       where: {
@@ -165,6 +192,7 @@ exports.getMadya = async (req, res) => {
         {
           model: anggotaModel,
           as: 'anggota',
+          where: whereClause,
           attributes: ['nama'],
           include: [
             {
@@ -198,6 +226,12 @@ exports.getMadyaByYear = async (req, res) => {
   });
   if (!user[0]) return res.sendStatus(403);
 
+  let whereClause = {};
+  if (user[0].id_lembaga !== null) {
+    whereClause = {
+      id_lembaga: user[0].id_lembaga,
+    };
+  }
   const year = req.params.year;
   try {
     const response = await tkkModel.findAll({
@@ -214,6 +248,7 @@ exports.getMadyaByYear = async (req, res) => {
         {
           model: anggotaModel,
           as: 'anggota',
+          where: whereClause,
           attributes: ['nama'],
           include: [
             {
@@ -247,6 +282,12 @@ exports.getUtama = async (req, res) => {
   });
   if (!user[0]) return res.sendStatus(403);
 
+  let whereClause = {};
+  if (user[0].id_lembaga !== null) {
+    whereClause = {
+      id_lembaga: user[0].id_lembaga,
+    };
+  }
   try {
     const response = await tkkModel.findAll({
       where: {
@@ -256,6 +297,7 @@ exports.getUtama = async (req, res) => {
         {
           model: anggotaModel,
           as: 'anggota',
+          where: whereClause,
           attributes: ['nama'],
           include: [
             {
@@ -289,6 +331,12 @@ exports.getUtamaByYear = async (req, res) => {
   });
   if (!user[0]) return res.sendStatus(403);
 
+  let whereClause = {};
+  if (user[0].id_lembaga !== null) {
+    whereClause = {
+      id_lembaga: user[0].id_lembaga,
+    };
+  }
   const year = req.params.year;
   try {
     const response = await tkkModel.findAll({
@@ -302,6 +350,7 @@ exports.getUtamaByYear = async (req, res) => {
         {
           model: anggotaModel,
           as: 'anggota',
+          where: whereClause,
           attributes: ['nama'],
           include: [
             {
@@ -336,6 +385,12 @@ exports.getTkkById = async (req, res) => {
   });
   if (!user[0]) return res.sendStatus(403);
 
+  let whereClause = {};
+  if (user[0].id_lembaga !== null) {
+    whereClause = {
+      id_lembaga: user[0].id_lembaga,
+    };
+  }
   try {
     const response = await tkkModel.findOne({
       where: {
@@ -346,6 +401,7 @@ exports.getTkkById = async (req, res) => {
           model: anggotaModel,
           as: 'anggota',
           attributes: ['nama'],
+          where: whereClause,
           include: [
             {
               model: lembagaModel,
@@ -504,11 +560,24 @@ exports.createMadya = async (req, res) => {
   });
   if (!user[0]) return res.sendStatus(403);
 
+  let whereClause = {};
+  if (user[0].id_lembaga !== null) {
+    whereClause = {
+      id_lembaga: user[0].id_lembaga,
+    };
+  }
   // cek if there is data by id
   const dataUpdate = await tkkModel.findOne({
     where: {
       id: req.params.id,
     },
+    include: [
+      {
+        model: anggotaModel,
+        as: 'anggota',
+        where: whereClause
+      }
+    ]
   });
   if (!dataUpdate)
     return res.status(404).json({
@@ -572,11 +641,24 @@ exports.createUtama = async (req, res) => {
   });
   if (!user[0]) return res.sendStatus(403);
 
+  let whereClause = {};
+  if (user[0].id_lembaga !== null) {
+    whereClause = {
+      id_lembaga: user[0].id_lembaga,
+    };
+  }
   // cek if there is data by id
   const dataUpdate = await tkkModel.findOne({
     where: {
       id: req.params.id,
     },
+    include: [
+      {
+        model: anggotaModel,
+        as: 'anggota',
+        where: whereClause
+      }
+    ]
   });
   if (!dataUpdate)
     return res.status(404).json({
@@ -641,11 +723,24 @@ exports.updateTkk = async (req, res) => {
   });
   if (!user[0]) return res.sendStatus(403);
 
+  let whereClause = {};
+  if (user[0].id_lembaga !== null) {
+    whereClause = {
+      id_lembaga: user[0].id_lembaga,
+    };
+  }
   // cek if there is data by id
   const dataUpdate = await tkkModel.findOne({
     where: {
       id: req.params.id,
     },
+    include: [
+      {
+        model: anggotaModel,
+        as: 'anggota',
+        where: whereClause
+      }
+    ]
   });
   if (!dataUpdate)
     return res.status(404).json({
@@ -691,10 +786,23 @@ exports.deletePurwa = async (req, res) => {
   });
   if (!user[0]) return res.sendStatus(403);
 
+  let whereClause = {};
+  if (user[0].id_lembaga !== null) {
+    whereClause = {
+      id_lembaga: user[0].id_lembaga,
+    };
+  }
   const dataDelete = await tkkModel.findOne({
     where: {
       id: req.params.id,
     },
+    include: [
+      {
+        model: anggotaModel,
+        as: 'anggota',
+        where: whereClause
+      }
+    ]
   });
 
   // cek if there is no data
@@ -727,11 +835,24 @@ exports.deleteMadya = async (req, res) => {
   });
   if (!user[0]) return res.sendStatus(403);
 
+  let whereClause = {};
+  if (user[0].id_lembaga !== null) {
+    whereClause = {
+      id_lembaga: user[0].id_lembaga,
+    };
+  }
   // cek if there is data by id
   const dataUpdate = await tkkModel.findOne({
     where: {
       id: req.params.id,
     },
+    include: [
+      {
+        model: anggotaModel,
+        as: 'anggota',
+        where: whereClause
+      }
+    ]
   });
   if (!dataUpdate)
     return res.status(404).json({
@@ -774,11 +895,24 @@ exports.deleteUtama = async (req, res) => {
   });
   if (!user[0]) return res.sendStatus(403);
 
+  let whereClause = {};
+  if (user[0].id_lembaga !== null) {
+    whereClause = {
+      id_lembaga: user[0].id_lembaga,
+    };
+  }
   // cek if there is data by id
   const dataUpdate = await tkkModel.findOne({
     where: {
       id: req.params.id,
     },
+    include: [
+      {
+        model: anggotaModel,
+        as: 'anggota',
+        where: whereClause
+      }
+    ]
   });
   if (!dataUpdate)
     return res.status(404).json({
