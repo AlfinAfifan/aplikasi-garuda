@@ -62,7 +62,7 @@ const Sidebar = () => {
           <h1 className={`${isOpen ? "" : "hidden"}`}>Dashboard</h1>
         </div>
       </NavLink>
-      {idLembaga === "null" && (
+      {idLembaga === 'null' && (
         <NavLink to="/admin" className="flex items-center">
           <div
             className={`h-11 w-1.5 bg-orange-600 ${isAdmin ? "opacity-100" : "opacity-0"}`}
