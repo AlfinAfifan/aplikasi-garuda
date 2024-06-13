@@ -33,13 +33,13 @@ const Search = ({ handleSearch, searchPlacehold = "Cari", setDataSearch }) => {
               id="search"
               name="search"
               type="text"
-              className={`-mr-[38px] h-10 rounded-full border-2 border-second pl-3 duration-500 placeholder:text-sm ${activeSearch ? "w-full pr-14" : "w-10"}`}
+              className={`-mr-[38px] h-10 rounded-full border-2 border-second focus:outline-second pl-3 duration-500 placeholder:text-sm ${activeSearch ? "w-full pr-14" : "w-10"}`}
               onMouseOver={() => setActiveSearch(true)}
               innerRef={inputRef}
               placeholder={activeSearch ? searchPlacehold : ""}
             />
             <label
-              className={`flex h-9 w-9 cursor-pointer items-center justify-center`}
+              className={`flex h-9 w-9 cursor-pointer items-center justify-center text-second`}
               htmlFor="search"
               onMouseOver={() => setActiveSearch(true)}
             >
@@ -47,7 +47,7 @@ const Search = ({ handleSearch, searchPlacehold = "Cari", setDataSearch }) => {
             </label>
             {activeSearch && (
               <label
-                className="absolute right-[77px] cursor-pointer"
+                className="absolute right-[77px] cursor-pointer text-second"
                 htmlFor="search"
                 onMouseOver={() => setActiveSearch(true)}
                 onClick={() => {
