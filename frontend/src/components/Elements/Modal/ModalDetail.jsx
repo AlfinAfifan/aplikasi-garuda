@@ -9,7 +9,7 @@ const ModalDetail = ({ children, isModalOpen, title, onClick }) => {
         onClick={onClick}
       ></div>
       <div
-        className={`fixed left-80 right-80 z-30 flex  max-h-[90%] overflow-auto rounded-t-2xl bg-white p-8 shadow-md duration-1000 ${isModalOpen ? "bottom-0" : "-bottom-[100%]"}`}
+        className={`fixed left-80 right-80 z-30 flex  max-h-[90%] overflow-auto rounded-t-2xl bg-white p-8 shadow-md duration-500 ${isModalOpen ? "bottom-0" : "-bottom-[100%]"}`}
       >
         <div className="flex w-full flex-col">
           <div className="flex w-full justify-between">

@@ -182,13 +182,13 @@ const TableMadya = () => {
                 <td>{dateFormat(data.tgl_madya)}</td>
                 <td className="flex gap-2">
                   <TrashIcon
-                    className="hover w-6 cursor-pointer text-red-600 hover:text-red-700"
+                    className="hover w-5 cursor-pointer text-red-600 hover:text-red-700"
                     onClick={() => {
                       dispatch(openModalDelete()), setIdDelete(data.id);
                     }}
                   />
                   <DocumentTextIcon
-                    className="w-6 cursor-pointer text-amber-500 hover:text-amber-600"
+                    className="w-5 cursor-pointer text-amber-500 hover:text-amber-600"
                     onClick={() => handleDetail(data.id, formatSK(idx))}
                   />
                 </td>
