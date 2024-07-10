@@ -30,6 +30,7 @@ import {
   closeModalDelete,
   openModalDelete,
 } from "../../../redux/actions/modal/modalSlice";
+import { optionAgama, optionGender, optionWarga } from "../../../models/option";
 
 const TableAnggota = () => {
   // GET DATA
@@ -132,19 +133,6 @@ const TableAnggota = () => {
   }));
 
   // HANDLE FORM & VALIDASI
-  const optionGender = [
-    { key: "Laki - Laki", value: "laki - laki" },
-    { key: "Perempuan", value: "perempuan" },
-  ];
-  const optionAgama = [
-    { key: "Islam", value: "islam" },
-    { key: "Kristen", value: "kristen" },
-  ];
-  const optionWarga = [
-    { key: "WNI (Warga Negara Indonesia)", value: "wni" },
-    { key: "WNA (Warga Negara Asing)", value: "wna" },
-  ];
-
   const validationSchema = Yup.object().shape({
     nama: Yup.string().required("Nama harus diisi"),
     id_lembaga: Yup.number().required("Lembaga harus diisi"),
@@ -310,17 +298,17 @@ const TableAnggota = () => {
                 <td>{data.no_telp}</td>
                 <td className="flex gap-2">
                   <TrashIcon
-                    className="hover w-6 cursor-pointer text-red-600 hover:text-red-700"
+                    className="hover w-5 cursor-pointer text-red-600 hover:text-red-700"
                     onClick={() => {
                       dispatch(openModalDelete()), setIdDelete(data.id);
                     }}
                   />
                   <PencilSquareIcon
-                    className="w-6 cursor-pointer text-third hover:text-first"
+                    className="w-5 cursor-pointer text-third hover:text-first"
                     onClick={() => handleEdit(data.id)}
                   />
                   <DocumentTextIcon
-                    className="w-6 cursor-pointer text-amber-500 hover:text-amber-600"
+                    className="w-5 cursor-pointer text-amber-500 hover:text-amber-600"
                     onClick={() => handleDetail(data.id)}
                   />
                 </td>

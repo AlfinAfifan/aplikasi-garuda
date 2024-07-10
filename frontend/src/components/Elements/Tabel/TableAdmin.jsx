@@ -24,6 +24,7 @@ import {
   closeModalDelete,
   openModalDelete,
 } from "../../../redux/actions/modal/modalSlice";
+import { optionAgama, optionJabatan } from "../../../models/option";
 
 const TableAdmin = () => {
   // GET LEMBAGA FOR CHOICE
@@ -47,6 +48,7 @@ const TableAdmin = () => {
     id_lembaga: "",
     alamat: "",
     email: "",
+    password: "",
     nta: "",
     tmpt_lahir: "",
     tgl_lahir: "",
@@ -75,6 +77,7 @@ const TableAdmin = () => {
         id_lembaga: dataAdminById.id_lembaga || "",
         alamat: dataAdminById.alamat || "",
         email: dataAdminById.email || "",
+        password: dataAdminById.password || "",
         nta: dataAdminById.nta || "",
         tmpt_lahir: dataAdminById.tmpt_lahir || "",
         tgl_lahir: dataAdminById.tgl_lahir || "",
@@ -85,20 +88,12 @@ const TableAdmin = () => {
   }, [typeAction]);
 
   // HANDLE FORM & VALIDASI
-  const optionAgama = [
-    { key: "Islam", value: "islam" },
-    { key: "Kristen", value: "kristen" },
-  ];
-  const optionJabatan = [
-    { key: "Pembina", value: "pembina" },
-    { key: "Guru", value: "guru" },
-  ];
-
   const validationSchema = Yup.object().shape({
     nama: Yup.string().required("Nama harus diisi"),
     id_lembaga: Yup.number().required("Lembaga harus diisi"),
     alamat: Yup.string().required("Alamat harus diisi"),
     email: Yup.string().email().required("Email harus diisi"),
+    password: Yup.string().required("Password harus diisi"),
     nta: Yup.string().required("NTA harus diisi"),
     tmpt_lahir: Yup.string().required("Tempat lahir harus diisi"),
     tgl_lahir: Yup.string().required("Tanggal lahir harus diisi"),
@@ -132,6 +127,7 @@ const TableAdmin = () => {
       id_lembaga: "",
       alamat: "",
       email: "",
+      password: "",
       nta: "",
       tmpt_lahir: "",
       tgl_lahir: "",
@@ -172,7 +168,6 @@ const TableAdmin = () => {
     <>
       <ShowDataLayout
         title="Tabel Data Admin"
-        descript="*Gunakan alamat email admin untuk mengisi form email dan password login"
         clickAdd={openModalInput}
         dataLenght={dataAdmin?.length}
         isLoading={isLoading}
@@ -207,13 +202,13 @@ const TableAdmin = () => {
                 <td>{data.jabatan}</td>
                 <td className="flex gap-2">
                   <TrashIcon
-                    className="hover w-6 cursor-pointer text-red-600 hover:text-red-700"
+                    className="hover w-5 cursor-pointer text-red-600 hover:text-red-700"
                     onClick={() => {
                       dispatch(openModalDelete()), setIdDelete(data.id);
                     }}
                   />
                   <PencilSquareIcon
-                    className="w-6 cursor-pointer text-third hover:text-first"
+                    className="w-5 cursor-pointer text-third hover:text-first"
                     onClick={() => handleEdit(data?.id)}
                   />
                 </td>
@@ -248,7 +243,6 @@ const TableAdmin = () => {
                 className="mt-8 grid grid-cols-2 gap-x-10 gap-y-4 pb-10"
               >
                 <Input label="Nama" name="nama" type="text" />
-                <Input label="Email" name="email" type="email" />
                 <SelectSearch
                   name="id_lembaga"
                   label="Asal Lembaga"
@@ -263,6 +257,8 @@ const TableAdmin = () => {
                     setFieldValue("id_lembaga", selected?.value);
                   }}
                 />
+                <Input label="Email" name="email" type="email" />
+                <Input label="Password" name="password" type="password" />
                 <Input label="NTA" name="nta" type="text" />
                 <Input label="Tempat Lahir" name="tmpt_lahir" type="text" />
                 <Input label="Tanggal Lahir" name="tgl_lahir" type="date" />

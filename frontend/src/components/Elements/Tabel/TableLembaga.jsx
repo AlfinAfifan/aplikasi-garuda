@@ -171,13 +171,13 @@ const TableLembaga = () => {
                 <td>{data?.nip_kepsek}</td>
                 <td className="flex gap-2">
                   <TrashIcon
-                    className="hover w-6 cursor-pointer text-red-600 hover:text-red-700"
+                    className="hover w-5 cursor-pointer text-red-600 hover:text-red-700"
                     onClick={() => {
                       dispatch(openModalDelete()), setIdDelete(data.id);
                     }}
                   />
                   <PencilSquareIcon
-                    className="w-6 cursor-pointer text-third hover:text-first"
+                    className="w-5 cursor-pointer text-third hover:text-first"
                     onClick={() => handleEdit(data?.id)}
                   />
                 </td>
