@@ -1,13 +1,17 @@
 import { XMarkIcon } from "@heroicons/react/24/solid";
 import { Formik, Form } from "formik";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import * as Yup from "yup";
 import SelectOpt from "../Form/SelectOpt";
 import Input from "../Form/Input";
 import Button from "../Form/Button";
 import { optionAgama } from "../../../models/option";
+import axios from "axios";
+import { useDispatch } from "react-redux";
+import { updateAdmin } from "../../../redux/actions/admin/adminThunk";
 
 const ModalProfile = ({ isModalOpen, onClick }) => {
+  const getUser = JSON.parse(sessionStorage.getItem("user"));
 
   const [initialValues, setInitialValues] = useState({
     namaUser: "",
@@ -19,6 +23,24 @@ const ModalProfile = ({ isModalOpen, onClick }) => {
     agamaUser: "",
   });
 
+  useEffect(() => {
+    axios
+      .get(`${import.meta.env.VITE_APP_DOMAIN}/admin/${getUser.userid}`, {
+        withCredentials: true,
+      })
+      .then((response) => {
+        setInitialValues({
+          namaUser: response.data.nama,
+          alamatUser: response.data.alamat,
+          emailUser: response.data.email,
+          passwordUser: response.data.password,
+          tmpt_lahirUser: response.data.tmpt_lahir,
+          tgl_lahirUser: response.data.tgl_lahir,
+          agamaUser: response.data.agama,
+        });
+      });
+  }, []);
+
   const validationSchema = Yup.object().shape({
     namaUser: Yup.string().required("Nama harus diisi"),
     alamatUser: Yup.string().required("Alamat harus diisi"),
@@ -29,8 +51,9 @@ const ModalProfile = ({ isModalOpen, onClick }) => {
     agamaUser: Yup.string().required("Agama harus diisi"),
   });
 
-  const onSubmit = () => {
-    console.log("object");
+  const dispatch = useDispatch()
+  const onSubmit = (values) => {
+    dispatch(updateAdmin({ id: getUser.userid, data: values }));
   };
   return (
     <>

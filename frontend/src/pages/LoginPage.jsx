@@ -8,7 +8,6 @@ import { jwtDecode } from "jwt-decode";
 import Image from "../assets/images/not-found.jpg";
 import Logo from "../../public/vite.svg";
 import { login } from "../redux/actions/auth/loginThunk";
-import Loader from "../components/Elements/Loader/Loader";
 import ScaleLoader from "react-spinners/ScaleLoader";
 
 const LoginPage = () => {
@@ -27,6 +26,8 @@ const LoginPage = () => {
           email: decodedToken.email,
           name: decodedToken.name,
           id_lembaga: decodedToken.idLembaga,
+          role: decodedToken.role,
+          access_token: token
         };
 
         const allowedUserIDs = [
@@ -35,10 +36,7 @@ const LoginPage = () => {
 
         if (allowedUserIDs.includes(user.userid)) {
           toast.success("Login Berhasil");
-          sessionStorage.setItem("access_token", token);
-          sessionStorage.setItem("email", user.email);
-          sessionStorage.setItem("name", user.name);
-          sessionStorage.setItem("id_lembaga", user.id_lembaga);
+          sessionStorage.setItem("user", JSON.stringify(user));
           navigate("/dashboard");
         } else {
           toast.error("Gagal Login !");
@@ -49,10 +47,10 @@ const LoginPage = () => {
     });
   };
 
-  const getToken = sessionStorage.getItem("access_token");
+  const getUser = JSON.parse(sessionStorage.getItem("user"));
 
   useEffect(() => {
-    if (getToken) {
+    if (getUser?.access_token) {
       navigate("/dashboard");
     }
   }, []);
