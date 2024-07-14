@@ -8,7 +8,6 @@ import { jwtDecode } from "jwt-decode";
 import Image from "../assets/images/not-found.jpg";
 import Logo from "../../public/vite.svg";
 import { login } from "../redux/actions/auth/loginThunk";
-import Loader from "../components/Elements/Loader/Loader";
 import ScaleLoader from "react-spinners/ScaleLoader";
 
 const LoginPage = () => {
