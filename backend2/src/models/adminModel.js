@@ -7,6 +7,7 @@ const adminModel = db.define(
   {
     nama: DataTypes.STRING,
     email: { type: DataTypes.STRING, unique: true },
+    password: DataTypes.STRING,
     id_lembaga: DataTypes.INTEGER,
     nta: DataTypes.STRING,
     tmpt_lahir: DataTypes.STRING,

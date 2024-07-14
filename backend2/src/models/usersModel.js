@@ -7,11 +7,12 @@ const usersModel = db.define(
   {
     name: DataTypes.STRING,
     id_lembaga: DataTypes.INTEGER,
+    role: DataTypes.STRING,
     email: { type: DataTypes.STRING, unique: true },
     password: DataTypes.STRING,
     refresh_token: DataTypes.TEXT,
   },
-  {
+  { 
     freezeTableName: true,
   }
 );

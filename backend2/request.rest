@@ -7,8 +7,9 @@ Content-Type: application/json
 
 {
     "name": "aku",
+    "role": "super_admin",
     "id_lembaga": 1,
-    "email": "aku@gmail.com",
+    "email": "akuu@gmail.com",
     "password" : "123",
     "confirmPassword": "123"
 }
