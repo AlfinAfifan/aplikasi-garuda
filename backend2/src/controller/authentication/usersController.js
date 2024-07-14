@@ -1,13 +1,12 @@
 const usersModel = require('../../models/usersModel.js');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const { refreshToken } = require('./refreshToken.js');
 
 // CONTROLLER GET ALL USERS
 exports.getUsers = async (req, res) => {
   try {
     const users = await usersModel.findAll({
-      attributes: ['id', 'name', 'email'],
+      attributes: ['id', 'name', 'email', 'role'],
     });
     res.json(users);
   } catch (error) {
@@ -19,7 +18,7 @@ exports.getUsers = async (req, res) => {
 
 // CONTROLLER CREATE USERS
 exports.createUsers = async (req, res) => {
-  const { name, email, password, confirmPassword } = req.body;
+  const { name, role,email, password, confirmPassword } = req.body;
   if (password !== confirmPassword)
     return res.status(400).json({
       message: `password and confirm password doesn't match`,
@@ -29,6 +28,7 @@ exports.createUsers = async (req, res) => {
   try {
     await usersModel.create({
       name: name,
+      role: role,
       email: email,
       password: hashPassword,
     });
@@ -54,11 +54,12 @@ exports.loginUsers = async (req, res) => {
     if (!match) return res.status(400).json({ message: 'wrong password' });
     const userid = user[0].id;
     const name = user[0].name;
+    const role = user[0].role;
     const email = user[0].email;
     const idLembaga = user[0].id_lembaga;
 
-    const accessToken = jwt.sign({ userid, name, email, idLembaga }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '20s' });
-    const refreshTokenToken = jwt.sign({ userid, name, email, idLembaga }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '1d' });
+    const accessToken = jwt.sign({ userid, name, role, email, idLembaga }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '20s' });
+    const refreshTokenToken = jwt.sign({ userid, role, name, email, idLembaga }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '1d' });
     await usersModel.update(
       { refresh_token: refreshTokenToken },
       {

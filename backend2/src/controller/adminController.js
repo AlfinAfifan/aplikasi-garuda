@@ -13,7 +13,7 @@ exports.getAdmin = async (req, res) => {
   const user = await usersModel.findAll({
     where: {
       refresh_token: refreshToken,
-      id_lembaga: null
+      role: "super_admin" || "admin"
     },
   });
   if (!user[0]) return res.sendStatus(403);
@@ -42,7 +42,7 @@ exports.getAdminById = async (req, res) => {
   const user = await usersModel.findAll({
     where: {
       refresh_token: refreshToken,
-      id_lembaga: null
+      role: "super_admin" || "admin"
     },
   });
   if (!user[0]) return res.sendStatus(403);
@@ -73,16 +73,19 @@ exports.createAdmin = async (req, res) => {
   const user = await usersModel.findAll({
     where: {
       refresh_token: refreshToken,
-      id_lembaga: null
+      role: "super_admin" || "admin"
     },
   });
   if (!user[0]) return res.sendStatus(403);
 
   // request body
-  const { nama, id_lembaga, nta, tmpt_lahir, tgl_lahir, alamat, agama, jabatan, email } = req.body;
+  const { nama, id_lembaga, nta, tmpt_lahir, tgl_lahir, alamat, agama, jabatan, email, password } = req.body;
 
   try {
     // Save data to database without file processing
+    const salt = await bcrypt.genSalt();
+    const hashPassword = await bcrypt.hash(password, salt);
+
     await adminModel.create({
       nama,
       id_lembaga,
@@ -93,15 +96,15 @@ exports.createAdmin = async (req, res) => {
       agama,
       jabatan,
       email,
+      password: hashPassword
     });
 
     // CREATE NEW USER
-    const salt = await bcrypt.genSalt();
-    const hashPassword = await bcrypt.hash(email, salt);
     await usersModel.create({
       name: nama,
       email: email,
       password: hashPassword,
+      role: "admin",
       id_lembaga,
     });
 
@@ -122,7 +125,7 @@ exports.updateAdmin = async (req, res) => {
   const user = await usersModel.findAll({
     where: {
       refresh_token: refreshToken,
-      id_lembaga: null
+      role: "super_admin" || "admin"
     },
   });
   if (!user[0]) return res.sendStatus(403);
@@ -152,10 +155,13 @@ exports.updateAdmin = async (req, res) => {
     });
 
   // request new update
-  const { nama, id_lembaga, nta, tmpt_lahir, tgl_lahir, alamat, agama, jabatan, email } = req.body;
+  const { nama, id_lembaga, nta, tmpt_lahir, tgl_lahir, alamat, agama, jabatan, email, password } = req.body;
 
   // save update to database
   try {
+    const salt = await bcrypt.genSalt();
+    const hashPassword = await bcrypt.hash(password, salt);
+
     await adminModel.update(
       {
         nama,
@@ -167,6 +173,7 @@ exports.updateAdmin = async (req, res) => {
         agama,
         jabatan,
         email,
+        password: hashPassword
       },
       {
         where: {
@@ -180,6 +187,7 @@ exports.updateAdmin = async (req, res) => {
       {
         name: nama,
         email,
+        password: hashPassword
       },
       {
         where: {
@@ -205,7 +213,7 @@ exports.deleteAdmin = async (req, res) => {
   const user = await usersModel.findAll({
     where: {
       refresh_token: refreshToken,
-      id_lembaga: null
+      role: "super_admin" || "admin"
     },
   });
   if (!user[0]) return res.sendStatus(403);
