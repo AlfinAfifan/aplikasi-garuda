@@ -38,11 +38,11 @@ const Sidebar = () => {
   // SMALL SIDEBAR
   const [isOpen, setIsOpen] = useState(true);
 
-  const idLembaga = sessionStorage.getItem("id_lembaga");
+  const getUser = JSON.parse(sessionStorage.getItem("user"));
 
   return (
     <div
-      className={`sticky top-0 flex h-screen flex-col bg-first font-montserrat text-sm text-white duration-500 ${isOpen ? "w-64" : "w-24"} ${idLembaga === "null" ? "gap-2.5" : "gap-3.5"}`}
+      className={`sticky top-0 flex h-screen flex-col bg-first font-montserrat text-sm text-white duration-500 ${isOpen ? "w-64" : "w-24"} ${getUser.role === "super_admin" ? "gap-2.5" : "gap-3.5"}`}
     >
       <img
         src={Garuda}
@@ -62,7 +62,7 @@ const Sidebar = () => {
           <h1 className={`${isOpen ? "" : "hidden"}`}>Dashboard</h1>
         </div>
       </NavLink>
-      {idLembaga === 'null' && (
+      {getUser.role === 'super_admin' && (
         <NavLink to="/admin" className="flex items-center">
           <div
             className={`h-11 w-1.5 bg-orange-600 ${isAdmin ? "opacity-100" : "opacity-0"}`}
