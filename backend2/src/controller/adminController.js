@@ -1,8 +1,8 @@
 const { response } = require('express');
-const adminModel = require('../models/adminModel.js');
 const lembagaModel = require('../models/lembagaModel.js');
 const usersModel = require('../models/usersModel.js');
 const bcrypt = require('bcrypt');
+const { Op } = require('sequelize');
 
 // CONTROLLER GET ALL SURAT
 
@@ -13,13 +13,15 @@ exports.getAdmin = async (req, res) => {
   const user = await usersModel.findAll({
     where: {
       refresh_token: refreshToken,
-      role: "super_admin" || "admin"
+      role: {
+        [Op.in]: ['super_admin', 'admin'],
+      },
     },
   });
   if (!user[0]) return res.sendStatus(403);
 
   try {
-    const response = await adminModel.findAll({
+    const response = await usersModel.findAll({
       include: [
         {
           model: lembagaModel,
@@ -42,13 +44,15 @@ exports.getAdminById = async (req, res) => {
   const user = await usersModel.findAll({
     where: {
       refresh_token: refreshToken,
-      role: "super_admin" || "admin"
+      role: {
+        [Op.in]: ['super_admin', 'admin'],
+      },
     },
   });
   if (!user[0]) return res.sendStatus(403);
 
   try {
-    const response = await adminModel.findOne({
+    const response = await usersModel.findOne({
       where: {
         id: req.params.id,
       },
@@ -73,7 +77,9 @@ exports.createAdmin = async (req, res) => {
   const user = await usersModel.findAll({
     where: {
       refresh_token: refreshToken,
-      role: "super_admin" || "admin"
+      role: {
+        [Op.in]: ['super_admin', 'admin'],
+      },
     },
   });
   if (!user[0]) return res.sendStatus(403);
@@ -86,7 +92,7 @@ exports.createAdmin = async (req, res) => {
     const salt = await bcrypt.genSalt();
     const hashPassword = await bcrypt.hash(password, salt);
 
-    await adminModel.create({
+    await usersModel.create({
       nama,
       id_lembaga,
       nta,
@@ -96,16 +102,8 @@ exports.createAdmin = async (req, res) => {
       agama,
       jabatan,
       email,
-      password: hashPassword
-    });
-
-    // CREATE NEW USER
-    await usersModel.create({
-      name: nama,
-      email: email,
       password: hashPassword,
-      role: "admin",
-      id_lembaga,
+      role: 'admin',
     });
 
     res.status(201).json({ message: 'Creating Admin Success' });
@@ -125,13 +123,15 @@ exports.updateAdmin = async (req, res) => {
   const user = await usersModel.findAll({
     where: {
       refresh_token: refreshToken,
-      role: "super_admin" || "admin"
+      role: {
+        [Op.in]: ['super_admin', 'admin'],
+      },
     },
   });
   if (!user[0]) return res.sendStatus(403);
 
   // cek if there is data by id
-  const dataUpdate = await adminModel.findOne({
+  const dataUpdate = await usersModel.findOne({
     where: {
       id: req.params.id,
     },
@@ -162,7 +162,7 @@ exports.updateAdmin = async (req, res) => {
     const salt = await bcrypt.genSalt();
     const hashPassword = await bcrypt.hash(password, salt);
 
-    await adminModel.update(
+    await usersModel.update(
       {
         nama,
         id_lembaga,
@@ -173,25 +173,11 @@ exports.updateAdmin = async (req, res) => {
         agama,
         jabatan,
         email,
-        password: hashPassword
+        password: hashPassword,
       },
       {
         where: {
           id: req.params.id,
-        },
-      }
-    );
-
-    // UPDATE USER
-    await usersModel.update(
-      {
-        name: nama,
-        email,
-        password: hashPassword
-      },
-      {
-        where: {
-          email: dataEmail,
         },
       }
     );
@@ -213,12 +199,14 @@ exports.deleteAdmin = async (req, res) => {
   const user = await usersModel.findAll({
     where: {
       refresh_token: refreshToken,
-      role: "super_admin" || "admin"
+      role: {
+        [Op.in]: ['super_admin', 'admin'],
+      },
     },
   });
   if (!user[0]) return res.sendStatus(403);
 
-  const dataDelete = await adminModel.findOne({
+  const dataDelete = await usersModel.findOne({
     where: {
       id: req.params.id,
     },
@@ -229,18 +217,12 @@ exports.deleteAdmin = async (req, res) => {
 
   // if there is data
   try {
-    await adminModel.destroy({
+    await usersModel.destroy({
       where: {
         id: req.params.id,
       },
     });
 
-    await usersModel.destroy({
-      where: {
-        name: dataDelete.nama,
-        email: dataDelete.email
-      }
-    })
     res.status(200).json({ message: 'Deleted Admin Success' });
   } catch (error) {
     res.json({
@@ -248,5 +230,4 @@ exports.deleteAdmin = async (req, res) => {
       Error: error,
     });
   }
-  
 };
