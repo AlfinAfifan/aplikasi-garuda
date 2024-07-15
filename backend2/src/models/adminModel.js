@@ -5,10 +5,6 @@ const lembagaModel = require('./lembagaModel.js');
 const adminModel = db.define(
   'admin',
   {
-    nama: DataTypes.STRING,
-    email: { type: DataTypes.STRING, unique: true },
-    password: DataTypes.STRING,
-    id_lembaga: DataTypes.INTEGER,
     nta: DataTypes.STRING,
     tmpt_lahir: DataTypes.STRING,
     tgl_lahir: DataTypes.DATEONLY,

@@ -9,7 +9,7 @@ Content-Type: application/json
     "name": "aku",
     "role": "super_admin",
     "id_lembaga": 1,
-    "email": "akuu@gmail.com",
+    "email": "aku@gmail.com",
     "password" : "123",
     "confirmPassword": "123"
 }
