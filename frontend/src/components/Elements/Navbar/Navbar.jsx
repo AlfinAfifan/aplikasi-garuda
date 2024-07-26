@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 
 const Navbar = () => {
   const navigate = useNavigate();
-  const getUser = JSON.parse(sessionStorage.getItem("user"));
+  const getUser = JSON.parse(localStorage.getItem("user"));
   const username = getUser.name.split(" ").slice(0, 2).join(" ")
 
   const handleLogout = () => {
@@ -15,7 +15,7 @@ const Navbar = () => {
         withCredentials: true,
       })
       .then((response) => {
-        sessionStorage.removeItem("user");
+        localStorage.removeItem("user");
         navigate("/", { replace: true });
       })
       .catch((error) => {
@@ -82,7 +82,7 @@ const Navbar = () => {
         </div>
       </div>
 
-      <ModalProfile onClick={closeModal} isModalOpen={modalOpen} />
+      <ModalProfile onClick={closeModal} isModalOpen={modalOpen} setModalOpen={setModalOpen} />
     </>
   );
 };

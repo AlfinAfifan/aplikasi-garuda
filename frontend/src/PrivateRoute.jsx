@@ -1,20 +1,18 @@
 import { jwtDecode } from "jwt-decode";
-import { useNavigate } from "react-router-dom";
 
 const PrivateRoute = ({ children }) => {
-  const navigate = useNavigate();
 
   const authCheck = () => {
     // CEK EXPIRE
     const currentTime = new Date().getTime();
-    const loginTime = sessionStorage.getItem("login_time");
+    const loginTime = localStorage.getItem("login_time");
     const expire = parseInt(loginTime, 10) + 24 * 60 * 60 * 1000;
 
     if (currentTime > expire) {
-      sessionStorage.removeItem("user");
+      localStorage.removeItem("user");
     }
 
-    const getUser = JSON.parse(sessionStorage.getItem("user"));
+    const getUser = JSON.parse(localStorage.getItem("user"));
     const allowedUserIDs = [
       1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 23,
     ];

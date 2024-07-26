@@ -27,27 +27,19 @@ const LoginPage = () => {
           name: decodedToken.name,
           id_lembaga: decodedToken.idLembaga,
           role: decodedToken.role,
-          access_token: token
+          access_token: token,
         };
-
-        const allowedUserIDs = [
-          1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
-        ];
-
-        if (allowedUserIDs.includes(user.userid)) {
-          toast.success("Login Berhasil");
-          sessionStorage.setItem("user", JSON.stringify(user));
-          navigate("/dashboard");
-        } else {
-          toast.error("Gagal Login !");
-        }
+        toast.success("Login Berhasil");
+        localStorage.setItem("user", JSON.stringify(user));
+        navigate("/dashboard");
       } else {
         setIsLoginError(true);
+        toast.error("Gagal Login !");
       }
     });
   };
 
-  const getUser = JSON.parse(sessionStorage.getItem("user"));
+  const getUser = JSON.parse(localStorage.getItem("user"));
 
   useEffect(() => {
     if (getUser?.access_token) {
