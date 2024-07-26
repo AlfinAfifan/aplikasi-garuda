@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken');
 exports.getUsers = async (req, res) => {
   try {
     const users = await usersModel.findAll({
-      attributes: ['id', 'name', 'email', 'role'],
+      attributes: ['id', 'nama', 'email', 'role'],
     });
     res.json(users);
   } catch (error) {
@@ -18,7 +18,8 @@ exports.getUsers = async (req, res) => {
 
 // CONTROLLER CREATE USERS
 exports.createUsers = async (req, res) => {
-  const { name, role,email, password, confirmPassword } = req.body;
+  const { nama, role, email, password, confirmPassword } = req.body;
+  console.log("SDSDSDSCS", req.body);
   if (password !== confirmPassword)
     return res.status(400).json({
       message: `password and confirm password doesn't match`,
@@ -27,7 +28,7 @@ exports.createUsers = async (req, res) => {
   const hashPassword = await bcrypt.hash(password, salt);
   try {
     await usersModel.create({
-      name: name,
+      nama: nama,
       role: role,
       email: email,
       password: hashPassword,
@@ -38,6 +39,7 @@ exports.createUsers = async (req, res) => {
   } catch (error) {
     res.json({
       message: 'Create Users Failed',
+      error: error
     });
   }
 };
@@ -50,10 +52,11 @@ exports.loginUsers = async (req, res) => {
         email: req.body.email,
       },
     });
+
     const match = await bcrypt.compare(req.body.password, user[0].password);
     if (!match) return res.status(400).json({ message: 'wrong password' });
     const userid = user[0].id;
-    const name = user[0].name;
+    const name = user[0].nama;
     const role = user[0].role;
     const email = user[0].email;
     const idLembaga = user[0].id_lembaga;

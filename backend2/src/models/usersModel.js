@@ -5,7 +5,15 @@ const lembagaModel = require('./lembagaModel.js');
 const usersModel = db.define(
   'users',
   {
-    nama: DataTypes.STRING,
+    nama: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notEmpty: {
+          msg: "Field name can't be empty"
+        }
+      }
+    },
     id_lembaga: DataTypes.INTEGER,
     role: DataTypes.STRING,
     email: { type: DataTypes.STRING, unique: true },
