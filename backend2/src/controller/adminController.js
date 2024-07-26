@@ -13,15 +13,18 @@ exports.getAdmin = async (req, res) => {
   const user = await usersModel.findAll({
     where: {
       refresh_token: refreshToken,
-      role: {
-        [Op.in]: ['super_admin', 'admin'],
-      },
+      role: 'super_admin',
     },
   });
   if (!user[0]) return res.sendStatus(403);
 
   try {
     const response = await usersModel.findAll({
+      where: {
+        id_lembaga: {
+          [Op.ne]: null,
+        },
+      },
       include: [
         {
           model: lembagaModel,
@@ -77,9 +80,7 @@ exports.createAdmin = async (req, res) => {
   const user = await usersModel.findAll({
     where: {
       refresh_token: refreshToken,
-      role: {
-        [Op.in]: ['super_admin', 'admin'],
-      },
+      role: 'super_admin',
     },
   });
   if (!user[0]) return res.sendStatus(403);
@@ -156,24 +157,31 @@ exports.updateAdmin = async (req, res) => {
 
   // request new update
   const { nama, id_lembaga, nta, tmpt_lahir, tgl_lahir, alamat, agama, jabatan, email, password } = req.body;
+  const { namaUser, tmpt_lahirUser, tgl_lahirUser, alamatUser, agamaUser, emailUser, passwordUser } = req.body;
+
+  const salt = await bcrypt.genSalt();
+  let thisPassword
+  if (passwordUser && passwordUser !== dataUpdate.password) {
+    thisPassword = await bcrypt.hash(passwordUser, salt)
+  }
+  if (password && password !== dataUpdate.password) {
+    thisPassword = await bcrypt.hash(password, salt)
+  }
 
   // save update to database
   try {
-    const salt = await bcrypt.genSalt();
-    const hashPassword = await bcrypt.hash(password, salt);
-
     await usersModel.update(
       {
-        nama,
+        nama: nama ? nama : namaUser,
+        tmpt_lahir: tmpt_lahir ? tmpt_lahir : tmpt_lahirUser,
+        tgl_lahir: tgl_lahir ? tgl_lahir : tgl_lahirUser,
+        alamat: alamat ? alamat : alamatUser,
+        agama: agama ? agama : agamaUser,
+        email: email ? email : emailUser,
+        password: thisPassword,
         id_lembaga,
         nta,
-        tmpt_lahir,
-        tgl_lahir,
-        alamat,
-        agama,
         jabatan,
-        email,
-        password: hashPassword,
       },
       {
         where: {
@@ -199,9 +207,7 @@ exports.deleteAdmin = async (req, res) => {
   const user = await usersModel.findAll({
     where: {
       refresh_token: refreshToken,
-      role: {
-        [Op.in]: ['super_admin', 'admin'],
-      },
+      role: 'super_admin',
     },
   });
   if (!user[0]) return res.sendStatus(403);

@@ -56,6 +56,7 @@ exports.createLembaga = async (req, res) => {
   const user = await usersModel.findAll({
     where: {
       refresh_token: refreshToken,
+      role: "super_admin"
     },
   });
   if (!user[0]) return res.sendStatus(403);
@@ -90,6 +91,7 @@ exports.updateLembaga = async (req, res) => {
   const user = await usersModel.findAll({
     where: {
       refresh_token: refreshToken,
+      role: "super_admin"
     },
   });
   if (!user[0]) return res.sendStatus(403);
@@ -142,6 +144,7 @@ exports.deleteLembaga = async (req, res) => {
   const user = await usersModel.findAll({
     where: {
       refresh_token: refreshToken,
+      role: "super_admin"
     },
   });
   if (!user[0]) return res.sendStatus(403);

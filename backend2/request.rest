@@ -6,9 +6,9 @@ POST http://localhost:4000/users
 Content-Type: application/json
 
 {
-    "name": "aku",
+    "nama": "aku",
     "role": "super_admin",
-    "id_lembaga": 1,
+    "id_lembaga": 2,
     "email": "aku@gmail.com",
     "password" : "123",
     "confirmPassword": "123"
