@@ -10,8 +10,8 @@ import axios from "axios";
 import { useDispatch } from "react-redux";
 import { updateAdmin } from "../../../redux/actions/admin/adminThunk";
 
-const ModalProfile = ({ isModalOpen, onClick }) => {
-  const getUser = JSON.parse(sessionStorage.getItem("user"));
+const ModalProfile = ({ isModalOpen, setModalOpen, onClick }) => {
+  const getUser = JSON.parse(localStorage.getItem("user"));
 
   const [initialValues, setInitialValues] = useState({
     namaUser: "",
@@ -54,6 +54,7 @@ const ModalProfile = ({ isModalOpen, onClick }) => {
   const dispatch = useDispatch()
   const onSubmit = (values) => {
     dispatch(updateAdmin({ id: getUser.userid, data: values }));
+    setModalOpen(false)
   };
   return (
     <>

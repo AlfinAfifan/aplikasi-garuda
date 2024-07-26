@@ -38,7 +38,7 @@ const Sidebar = () => {
   // SMALL SIDEBAR
   const [isOpen, setIsOpen] = useState(true);
 
-  const getUser = JSON.parse(sessionStorage.getItem("user"));
+  const getUser = JSON.parse(localStorage.getItem("user"));
 
   return (
     <div
