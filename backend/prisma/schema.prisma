@@ -1,0 +1,174 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Lembaga {
+  id Int @id @default(autoincrement())
+  nama_lembaga String @db.VarChar(100)
+  alamat String? @db.VarChar(255)
+  no_gudep_lk String? @db.VarChar(100)
+  no_gudep_pr String? @db.VarChar(100)
+  kepsek String? @db.VarChar(100)
+  nip_kepsek String? @db.VarChar(100)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User[]
+  anggota Anggota[]
+
+  @@map("lembaga")
+}
+
+model User {
+  id Int @id @default(autoincrement())
+  email String @db.VarChar(100) @unique
+  password String @db.VarChar(100)
+  nama String @db.VarChar(100)
+  id_lembaga Int @db.Int
+  role String @db.VarChar(50)
+  nta String? @db.VarChar(50)
+  tmpt_lahir String? @db.VarChar(100)
+  tgl_lahir DateTime? @db.Date
+  alamat String? @db.VarChar(255)
+  agama String? @db.VarChar(30)
+  jabatan String? @db.VarChar(50)
+  token String? @db.VarChar(255)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  lembaga Lembaga @relation(fields: [id_lembaga], references: [id])
+
+  @@map("users")
+}
+
+model Anggota {
+  id Int @id @default(autoincrement())
+  nama String @db.VarChar(100)
+  id_lembaga Int @db.Int
+  no_induk String @db.VarChar(50)
+  nta String @db.VarChar(50)
+  tmpt_lahir String? @db.VarChar(100)
+  tgl_lahir DateTime? @db.Date
+  gender String? @db.VarChar(20)
+  agama String? @db.VarChar(50)
+  warga String? @db.VarChar(20)
+  rt String? @db.VarChar(20)
+  rw String? @db.VarChar(20)
+  desa_kelurahan String? @db.VarChar(50)
+  kecamatan String? @db.VarChar(50)
+  kab_kota String? @db.VarChar(50)
+  provinsi String? @db.VarChar(50)
+  no_telp String? @db.VarChar(50)
+  bakat_hobi String? @db.VarChar(100)
+  nama_ayah String? @db.VarChar(50)
+  tmpt_lahir_ayah String? @db.VarChar(100)
+  tgl_lahir_ayah DateTime? @db.Date
+  nama_ibu String? @db.VarChar(50)
+  tmpt_lahir_ibu String? @db.VarChar(100)
+  tgl_lahir_ibu DateTime? @db.Date
+  no_telp_ortu String? @db.VarChar(50)
+  alamat_ortu String? @db.VarChar(255)
+  tgl_masuk_pangkalan DateTime? @db.Date
+  tingkat_masuk_pangkalan String? @db.VarChar(50)
+  tgl_keluar_pangkalan DateTime? @db.Date
+  alasan_keluar String? @db.VarChar(100)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  lembaga Lembaga @relation(fields: [id_lembaga], references: [id])
+  tku Tku[]
+  tkk Tkk[]
+
+  @@map("anggota")
+}
+
+model JenisTkk {
+  id Int @id @default(autoincrement())
+  nama String @db.VarChar(50)
+  bidang String @db.VarChar(100)
+  warna String @db.VarChar(50)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  tkk Tkk[]
+
+  @@map("jenis_tkk")
+}
+
+model Tku {
+  id Int @id @default(autoincrement())
+  no_sk String @db.VarChar(100)
+  id_anggota Int @db.Int
+  ramu Boolean?
+  rakit Boolean?
+  terap Boolean?
+  tgl_ramu DateTime? @db.Date
+  tgl_rakit DateTime? @db.Date
+  tgl_terap DateTime? @db.Date
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  anggota Anggota @relation(fields: [id_anggota], references: [id])
+
+  @@map("tku")
+}
+
+model Tkk {
+  id Int @id @default(autoincrement())
+  no_sk String @db.VarChar(100)
+  id_anggota Int @db.Int
+  id_jenis_tkk Int @db.Int
+  purwa Boolean?
+  madya Boolean?
+  utama Boolean?
+  tgl_purwa DateTime? @db.Date
+  tgl_madya DateTime? @db.Date
+  tgl_utama DateTime? @db.Date
+  nama_penguji String @db.VarChar(100)
+  jabatan_penguji String? @db.VarChar(50)
+  alamat_penguji String? @db.VarChar(255)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  anggota Anggota @relation(fields: [id_anggota], references: [id])
+  jenis_tkk JenisTkk @relation(fields: [id_jenis_tkk], references: [id])
+
+  @@map("tkk")
+}
+
+// ALTER TABLE `lembaga`
+// MODIFY COLUMN `createdAt` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+// MODIFY COLUMN `updatedAt` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
+
+// ALTER TABLE `users`
+// MODIFY COLUMN `createdAt` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+// MODIFY COLUMN `updatedAt` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
+
+// ALTER TABLE `anggota`
+// MODIFY COLUMN `createdAt` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+// MODIFY COLUMN `updatedAt` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
+
+// ALTER TABLE `jenis_tkk`
+// MODIFY COLUMN `createdAt` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+// MODIFY COLUMN `updatedAt` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
+
+// ALTER TABLE `tkk`
+// MODIFY COLUMN `createdAt` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+// MODIFY COLUMN `updatedAt` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
+
+// ALTER TABLE `tku`
+// MODIFY COLUMN `createdAt` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+// MODIFY COLUMN `updatedAt` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
+
+
