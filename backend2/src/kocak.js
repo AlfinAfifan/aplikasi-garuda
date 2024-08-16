@@ -10,6 +10,7 @@ const anggotaRoute = require('./routes/anggotaRoute.js');
 const tkuRoute = require('./routes/tkuRoute.js');
 const tkkRoute = require('./routes/tkkRoute.js');
 const jenisTkkRoute = require('./routes/jenisTkkRoute.js');
+const rekapRoute = require('./routes/rekapRoute.js');
 
 dotenv.config();
 
@@ -45,5 +46,6 @@ app.use(anggotaRoute);
 app.use(tkuRoute);
 app.use(tkkRoute);
 app.use(jenisTkkRoute);
+app.use(rekapRoute);
 
 app.listen(PORT, () => console.log(`the server is running on port ${PORT}....`));
